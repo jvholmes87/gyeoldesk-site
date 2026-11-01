@@ -128,12 +128,12 @@ const grainSvg = (cls, rows = 9) => {
   }
   return `<svg class="${cls}" viewBox="0 0 1000 460" preserveAspectRatio="none" aria-hidden="true">${paths}</svg>`;
 };
-const logoHtml = (org) => {
+const logoHtml = (org, variant = 'mark') => {
   const initials = (org.slug || 'G').toUpperCase().slice(0, 3);
   const style = org.brand_color ? ` style="background:${esc(org.brand_color)}"` : '';
-  return org.logo_url
-    ? `<span class="org-logo"><img src="${esc(org.logo_url)}" alt=""></span>`
-    : `<span class="org-logo"${style} aria-hidden="true">${esc(initials)}</span>`;
+  const src = variant === 'wide' ? (lang === 'en' && org.logo_wide_en_url) || org.logo_wide_url || org.logo_url : org.logo_url;
+  if (src) return `<img class="org-img ${variant}" src="${esc(src)}" alt="${esc(org.name)}">`;
+  return `<span class="org-logo"${style} aria-hidden="true">${esc(initials)}</span>`;
 };
 function errText(e) {
   const m = String(e?.message || e || '');
@@ -181,9 +181,9 @@ async function renderPortal() {
   const box = $('#orgs');
   if (error || !data?.length) { box.innerHTML = '<p class="empty">—</p>'; return; }
   box.innerHTML = data.map((o) => `
-    <a class="org-card" href="${esc(orgUrl(o.slug))}">
-      ${logoHtml(o)}
-      <span><span class="name">${esc(pick(o.name_ko, o.name))}</span><br>
+    <a class="org-card${o.logo_wide_url ? ' has-logo' : ''}" href="${esc(orgUrl(o.slug))}">
+      ${o.logo_wide_url ? logoHtml(o, 'wide') : logoHtml(o)}
+      <span>${o.logo_wide_url ? '' : `<span class="name">${esc(pick(o.name_ko, o.name))}</span><br>`}
       <span class="sub">${esc(o.slug)}.${ROOT_DOMAIN}</span></span>
     </a>`).join('');
 }
@@ -202,7 +202,7 @@ function shell(crumb, inner) {
   const org = state.org;
   app.innerHTML = `
     <header class="top"><div class="top-in">
-      <a class="org" href="#/">${logoHtml(org)}<span>${esc(pick(org.name_ko, org.name))}</span></a>
+      <a class="org" href="#/">${logoHtml(org)}<span class="org-name">${esc(pick(org.name_ko, org.name))}</span></a>
       ${crumb ? `<span class="crumb">/ ${esc(crumb)}</span>` : ''}
       <span class="spacer"></span>
       <span class="lang">${langButtons()}</span>
@@ -213,7 +213,7 @@ function shell(crumb, inner) {
   $('#signout')?.addEventListener('click', async () => { await sb.auth.signOut(); state.user = null; state.profile = null; route(); });
 }
 function gate(inner) {
-  shell('', `<div class="gate"><div class="gate-card">${logoHtml(state.org)}${inner}</div></div>`);
+  shell('', `<div class="gate"><div class="gate-card"><div class="gate-logo">${logoHtml(state.org, 'wide')}</div>${inner}</div></div>`);
 }
 
 // ---------------------------------------------------------------- sign-in

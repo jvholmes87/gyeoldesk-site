@@ -112,7 +112,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--blue); outline: 
 .top-in { max-width: 1180px; margin: 0 auto; padding: 10px clamp(16px, 4vw, 32px); display: flex; align-items: center; gap: 14px; }
 .top .org { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-weight: 700; }
 .top .org .org-logo { width: 34px; height: 34px; border-radius: 8px; font-size: 12px; flex: none; }
-.top .org span:last-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.top .org .org-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .lang { flex: none; }
 .lang button { white-space: nowrap; }
 .who { white-space: nowrap; }
@@ -131,7 +131,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--blue); outline: 
 /* Sign-in */
 .gate { min-height: calc(100vh - 60px); display: grid; place-items: center; padding: 24px 16px; }
 .gate-card { width: min(420px, 100%); background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 28px; }
-.gate-card .org-logo { width: 56px; height: 56px; margin-bottom: 16px; }
 .gate-card h1 { font-size: 22px; margin: 0 0 4px; }
 .gate-card p { color: var(--ink-2); margin: 0 0 20px; font-size: 15px; }
 .gate-card .btn { width: 100%; justify-content: center; padding: .75em 1em; }
@@ -233,7 +232,7 @@ a.tile:hover { border-color: var(--ink-3); }
   .roster td { border: 0; padding: 3px 0; }
   .roster td.inl { display: inline-block; width: auto; margin-right: 12px; vertical-align: middle; }
   .req { grid-template-columns: 1fr; }
-  .top .org span:last-child { max-width: 40vw; }
+  .top .org .org-name { max-width: 40vw; }
   .top-in { gap: 8px; }
   .roster input[type=email] { min-width: 0; }
   .addrow { grid-template-columns: 1fr 1fr; }
@@ -249,3 +248,12 @@ a.tile:hover { border-color: var(--ink-3); }
   .item { break-inside: avoid; border-color: #bbb; }
   .internal { display: none; }
 }
+
+/* Company logos */
+.org-img { display: block; object-fit: contain; }
+.org-img.mark { height: 28px; width: auto; max-width: 90px; }
+.org-img.wide { height: 56px; width: auto; max-width: 100%; }
+.org-card.has-logo { grid-template-columns: 1fr; gap: 12px; padding: 22px; }
+.gate-logo { margin-bottom: 18px; }
+.gate-logo .org-img.wide { height: 52px; }
+.gate-logo .org-logo { width: 56px; height: 56px; }
