@@ -711,10 +711,15 @@ async function renderProjectPage(keyParam) {
   $('#ask').addEventListener('submit', async (ev) => {
     ev.preventDefault();
     const body = $('#qb').value.trim(); if (!body) return;
-    const { error } = await sb.from('questions').insert({ org_id: state.orgId, project_id: p.id, body, asked_name: state.profile?.name || state.user.email });
+    const { data: nq, error } = await sb.from('questions').insert({ org_id: state.orgId, project_id: p.id, body, asked_name: state.profile?.name || state.user.email }).select('id').single();
     if (error) return toast(errText(error));
+    notify(nq.id, 'asked');
     $('#qb').value = ''; toast(t('askSent')); drawQs();
   });
+}
+// Email the admins (new question) or the asker (answer). Failures never block the page.
+function notify(id, event) {
+  sb.functions.invoke('notify', { body: { question_id: id, event } }).catch(() => {});
 }
 function qItem(q, withProject) {
   return `<div class="q ${q.status}">
@@ -731,7 +736,9 @@ function bindAnswer(root, redraw) {
     ev.preventDefault();
     const answer = $('input', f).value.trim(); if (!answer) return;
     const { error } = await sb.from('questions').update({ answer, status: 'answered', answered_by: state.user.id, answered_at: new Date().toISOString() }).eq('id', f.dataset.q);
-    if (error) return toast(errText(error)); toast(t('saved')); redraw();
+    if (error) return toast(errText(error));
+    notify(f.dataset.q, 'answered');
+    toast(t('saved')); redraw();
   }));
 }
 async function renderQuestions() {
