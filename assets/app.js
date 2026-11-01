@@ -14,7 +14,7 @@ const app = document.getElementById('app');
 // ---------------------------------------------------------------- text
 const T = {
   ko: {
-    featTitle: '결데스크가 하는 일', contactLine: '회사 도입 문의:', tagline: '주한미군 기지 안에서 공사를 수행하는 한국 건설사를 위한 프로젝트 데스크. 과업, 입찰, 제출물, 허가, 하자보수, 주간 보고까지 한국어와 영어로 한곳에서 관리합니다.',
+    footLine: '주한미군 기지 공사를 수행하는 한국 건설사를 위한 프로젝트 데스크', featTitle: '결데스크가 하는 일', contactLine: '회사 도입 문의:', tagline: '주한미군 기지 안에서 공사를 수행하는 한국 건설사를 위한 프로젝트 데스크. 과업, 입찰, 제출물, 허가, 하자보수, 주간 보고까지 한국어와 영어로 한곳에서 관리합니다.',
     companies: '회사', openWorkspace: '작업 공간 열기',
     signInTitle: '로그인', signInLede: '회사 이메일을 입력하면 6자리 코드를 보내 드립니다.',
     email: '이메일', sendCode: '코드 받기', sending: '보내는 중…',
@@ -59,7 +59,7 @@ const T = {
     unknownOrg: '이 주소의 회사를 찾을 수 없습니다.', notOnRoster: '명단에 없는 사용자', shareHelp: '이메일을 모르는 사람은 이 주소로 직접 접근 요청을 보내게 하세요. 요청이 오면 명단의 이름을 골라 승인하면 이메일이 자동으로 채워집니다:', koOnly: '영문 없음 — 한국어 원문', home: '홈', back: '홈으로',
   },
   en: {
-    featTitle: 'What Gyeoldesk covers', contactLine: 'Want it for your company?', tagline: 'The project desk for Korean contractors building on USFK installations. Task orders, proposals, submittals, permits, warranties and the weekly report, in Korean and English, in one place.',
+    footLine: 'The project desk for Korean contractors on USFK installations', featTitle: 'What Gyeoldesk covers', contactLine: 'Want it for your company?', tagline: 'The project desk for Korean contractors building on USFK installations. Task orders, proposals, submittals, permits, warranties and the weekly report, in Korean and English, in one place.',
     companies: 'Companies', openWorkspace: 'Open workspace',
     signInTitle: 'Sign in', signInLede: 'Enter your work email and we will send you a 6-digit code.',
     email: 'Email', sendCode: 'Send code', sending: 'Sending…',
@@ -195,9 +195,8 @@ async function renderPortal() {
         <div class="feat-grid">${FEATURES.map(([en, ko, den, dko]) => `<div class="feat"><h3>${esc(lang === 'ko' ? ko : en)}</h3><p>${esc(lang === 'ko' ? dko : den)}</p></div>`).join('')}</div>
         <p class="contact">${esc(t('contactLine'))} <a href="mailto:hello@gyeoldesk.com">hello@gyeoldesk.com</a></p>
       </section>
-      <footer class="portal-foot"><img src="assets/brand/gyeoldesk-logo.svg" alt="Gyeoldesk 결데스크" height="28">
-        <span class="lang" style="margin-left:auto">${langButtons()}</span></footer>
-    </div>`;
+    </div>
+    ${siteFoot(`<span class="lang">${langButtons()}</span>`)}`;
   bindLang();
   const { data, error } = await sb.rpc('org_directory');
   const box = $('#orgs');
@@ -222,6 +221,14 @@ function bindLang() {
     route();
   }));
 }
+// Gyeoldesk footer on every page (portal, company desks, sign-in, unknown company).
+function siteFoot(extra = '') {
+  return `<footer class="site-foot" translate="no">
+    <a class="sf-brand" href="https://${ROOT_DOMAIN}/" aria-label="Gyeoldesk 결데스크 — ${esc(ROOT_DOMAIN)}"><img src="assets/brand/gyeoldesk-logo.svg" alt="Gyeoldesk 결데스크" height="24"></a>
+    <span class="sf-line">${esc(t('footLine'))}</span>
+    <span class="sf-right">${extra}<span class="sf-copy">© ${new Date().getFullYear()} Gyeoldesk · <a href="https://${ROOT_DOMAIN}/">${esc(ROOT_DOMAIN)}</a> · <a href="mailto:hello@${ROOT_DOMAIN}">hello@${esc(ROOT_DOMAIN)}</a></span></span>
+  </footer>`;
+}
 function shell(crumb, inner) {
   const org = state.org;
   app.innerHTML = `
@@ -240,7 +247,8 @@ function shell(crumb, inner) {
           <button type="button" class="menu-out" id="signout2">${esc(t('signOut'))}<small>${esc(state.user?.email || '')}</small></button>
         </nav></div>` : ''}
     </div></header>
-    <main class="page" id="main">${inner}</main>`;
+    <main class="page" id="main">${inner}</main>
+    ${siteFoot()}`;
   bindLang();
   const out = async () => { await sb.auth.signOut(); state.user = null; state.profile = null; route(); };
   $('#signout')?.addEventListener('click', out);
@@ -1035,7 +1043,7 @@ async function route() {
     state.org = (data || []).find((o) => o.slug === state.slug) || null;
     if (!state.org) {
       app.innerHTML = `<div class="gate"><div class="gate-card"><h1>Gyeoldesk</h1><p>${esc(t('unknownOrg'))}</p>
-        <a class="btn" href="https://${ROOT_DOMAIN}/">${esc(t('back'))}</a></div></div>`;
+        <a class="btn" href="https://${ROOT_DOMAIN}/">${esc(t('back'))}</a></div></div>${siteFoot()}`;
       return;
     }
     document.title = `${state.org.name} · Gyeoldesk`;
