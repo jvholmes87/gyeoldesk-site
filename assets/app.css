@@ -483,3 +483,7 @@ a.rec.empty-rec { color: var(--ink-3); }
 .qcard .ans { display: grid; gap: 6px; justify-items: start; margin: 0; }
 .qcard .ans textarea { width: 100%; border: 1px solid var(--line); border-radius: var(--radius-sm); padding: .5em .7em; resize: vertical; }
 .q-wait { margin: 0; font-size: 13px; color: var(--ink-3); }
+
+.rec-help { margin: -2px 0 8px; font-size: 13px; color: var(--ink-3); max-width: 60em; }
+.q-del { margin-left: auto; border: 0; background: none; color: var(--danger); font-size: 13px; cursor: pointer; padding: 2px 4px; }
+.q-del:hover { text-decoration: underline; }

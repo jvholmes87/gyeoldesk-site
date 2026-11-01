@@ -30,7 +30,7 @@ const T = {
     stPreNtp: '착공 전', stConstruction: '시공', stCloseout: '준공 정산', submitted: '제출 완료', drafts: '작성 중', active: '진행 중', activeRequests: '진행 중인 요청', closedOut: '종결',
     count: (n) => `${n}건`, none: '없음', noDrafts: '작성 중인 제안이 없습니다.', stageNotSet: '단계 미지정', openQuestions: '건의 질문이 답변을 기다리고 있습니다', menu: '메뉴', teamMenu: '팀 접근 권한', settings: '설정',
     latestStatus: '최신 현황', openInWar: (d) => `WAR에서 보기 (${d})`, noStatus: '아직 WAR 현황이 없습니다.', records: '과업 기록', askTitle: '질문하기', askPh: '이 과업에 대한 질문을 한국어나 영어로 적어 주세요.', askSend: '질문 보내기', askSent: '질문을 보냈습니다',
-    qOpen: '답변 대기', qAnswered: '답변 완료', answerPh: '답변을 입력하세요', qAskedBy: '질문', qAnsweredBy: '답변', qYourAnswer: '내 답변', qWaitNote: '관리자 답변을 기다리고 있습니다. 답변이 등록되면 이메일로 알려 드립니다.', answer: '답변', questionsTitle: '질문', questionsLede: '과업 페이지에서 올라온 질문. 관리자가 답변합니다.', noQuestions: '질문이 없습니다.', projectPage: '과업 페이지 열기',
+    qOpen: '답변 대기', qAnswered: '답변 완료', answerPh: '답변을 입력하세요', qAskedBy: '질문', qDelete: '삭제', qDeleteConfirm: '이 질문을 삭제할까요? 팀 화면에서 사라집니다.', qDeleted: '삭제했습니다', qAnsweredBy: '답변', qYourAnswer: '내 답변', qWaitNote: '관리자 답변을 기다리고 있습니다. 답변이 등록되면 이메일로 알려 드립니다.', answer: '답변', questionsTitle: '질문', questionsLede: '과업 페이지에서 올라온 질문. 관리자가 답변합니다.', noQuestions: '질문이 없습니다.', projectPage: '과업 페이지 열기',
     recCount: (n, a) => `${n}건 · 승인 ${a}`, recFiles: (n) => `${n}건`, recNone: '없음', recOpen: '열기', recNoFile: '파일 없음', recNotes: '메모', recNotMade: 'AF 3000 미작성 (미제출 항목)', recEmpty: '아직 등록된 기록이 없습니다. 드라이브 과업 폴더와 PCES 제출물 대장에서 매시간 갱신됩니다.', recLede: '드라이브 과업 폴더와 PCES 제출물 대장에서 매시간 갱신. 파일은 구글 드라이브에서 열립니다.', printEyebrow: '주간 현황 — 전체 과업', printPrimeNote: '과업 번호 옆에 원도급사 표시', cont: '계속', printFoot: '금액 단위 원(KRW) · 상세 내용은 주간 현황 보고(WAR) 참조', boardTitle: '주간 현황 보드', weeksNav: '주 선택', backBoard: '보드로 돌아가기', newerWeek: '더 최신 주가 있습니다:', itemNo: (n) => `항목 ${n}`, thisWeek: '이번 주 현황', bothLangs: '한국어·영어 함께 보기', krimaText: 'Krima 현황 시트 문구', otherWeeks: '다른 주', warTitle: '주간 현황 보고', warLede: '매일 갱신되는 이번 주 WAR와 지난 주 기록.',
     accessTitle: '팀 접근 권한', accessLede: '조직도(10_GNC_ORG)에서 불러온 명단입니다. 접근이 필요한 사람에 체크하고 이메일과 역할을 정하세요.',
     reviewTitle: '검토 데스크', reviewLede: '팀원이 한국어로 답하면 영어로 정리됩니다.',
@@ -75,7 +75,7 @@ const T = {
     stPreNtp: 'Pre-NTP', stConstruction: 'Construction', stCloseout: 'Closeout', submitted: 'Submitted', drafts: 'In draft', active: 'Active', activeRequests: 'Active requests', closedOut: 'Closed out',
     count: (n) => `${n}`, none: 'None', noDrafts: 'No proposals in draft.', stageNotSet: 'Stage not set', openQuestions: 'question(s) waiting for an answer', menu: 'Menu', teamMenu: 'Team and access', settings: 'Settings',
     latestStatus: 'Latest status', openInWar: (d) => `Open in WAR (${d})`, noStatus: 'No WAR status for this project yet.', records: 'Project records', askTitle: 'Ask a question', askPh: 'Write your question about this project in Korean or English.', askSend: 'Send question', askSent: 'Question sent',
-    qOpen: 'Waiting for an answer', qAnswered: 'Answered', answerPh: 'Write your answer', qAskedBy: 'Question from', qAnsweredBy: 'Answer from', qYourAnswer: 'Your answer', qWaitNote: 'Waiting for an admin to answer. You will get an email when they do.', answer: 'Answer', questionsTitle: 'Questions', questionsLede: 'Questions asked from project pages. Admins answer them here.', noQuestions: 'No questions yet.', projectPage: 'Open the project page',
+    qOpen: 'Waiting for an answer', qAnswered: 'Answered', answerPh: 'Write your answer', qAskedBy: 'Question from', qDelete: 'Delete', qDeleteConfirm: 'Delete this question? It disappears for everyone.', qDeleted: 'Deleted', qAnsweredBy: 'Answer from', qYourAnswer: 'Your answer', qWaitNote: 'Waiting for an admin to answer. You will get an email when they do.', answer: 'Answer', questionsTitle: 'Questions', questionsLede: 'Questions asked from project pages. Admins answer them here.', noQuestions: 'No questions yet.', projectPage: 'Open the project page',
     recCount: (n, a) => `${n} · ${a} approved`, recFiles: (n) => `${n}`, recNone: 'None yet', recOpen: 'Open', recNoFile: 'No file', recNotes: 'Notes', recNotMade: 'AF 3000 not yet made (items not submitted)', recEmpty: 'Nothing here yet. This list updates every hour from the project folder in Drive and the PCES submittal register.', recLede: 'Updated every hour from the project folder in Drive and the PCES submittal register. Files open in Google Drive.', printEyebrow: 'Weekly status — all projects', printPrimeNote: 'Prime shown next to each project no.', cont: 'continued', printFoot: 'Values in KRW · full details in the Weekly Action Report', boardTitle: 'Weekly Status Board', weeksNav: 'Choose a week', backBoard: 'Back to the board', newerWeek: 'A newer week is available:', itemNo: (n) => `Item ${n}`, thisWeek: 'This week', bothLangs: 'Show Korean and English', krimaText: 'Krima sheet status text', otherWeeks: 'Other weeks', warTitle: 'Weekly Action Report', warLede: 'This week’s WAR, updated through the day, and every past week.',
     accessTitle: 'Team access', accessLede: 'People from the org chart (10_GNC_ORG). Tick who needs access, then set their email and role.',
     reviewTitle: 'Review Desk', reviewLede: 'The team answers in Korean; answers are put into English for you.',
@@ -660,6 +660,16 @@ const RECORDS = [
   ['dig', 'Dig permits (AF 103)', '굴착 허가 (AF 103)'], ['tacw', 'TACW and RA', 'TACW·RA'], ['outage', 'Outage requests', '단수·단전 요청'],
   ['jk75', 'JK-75 customs forms', 'JK-75 통관 서류'], ['corr', 'Correspondence', '서신·공문'],
 ];
+const REC_HELP = {
+  approved: ['The Government approved it (register says Approved, or the file is in an Approved folder or marked approved/signed).', '발주처 승인 완료 (제출물 대장 승인, 또는 승인 폴더·승인/서명 표시 파일).'],
+  submitted: ['Sent to the Government and waiting for a decision.', '발주처에 제출했으며 결정을 기다리는 중.'],
+  disapproved: ['The Government rejected it. Fix and send again.', '발주처 반려. 수정 후 다시 제출해야 함.'],
+  not_started: ['Not sent yet: still in preparation or a draft.', '아직 제출 전: 준비 중이거나 초안.'],
+  filed: ['Kept in the project folder. The file name and register do not say approved or rejected, so check the file. Letters are always here.', '과업 폴더에 보관된 파일. 파일명·대장에 승인/반려 표시가 없어 확인 필요. 서신은 모두 여기에 표시.'],
+  closed: ['Finished and no longer active.', '종결되어 더 이상 진행하지 않음.'],
+  needs3000: ['Register items not submitted yet. Each needs an AF Form 3000 when it is sent.', '아직 제출하지 않은 대장 항목. 제출할 때 AF Form 3000이 필요함.'],
+};
+const recHelp = (k) => (REC_HELP[k] ? REC_HELP[k][lang === 'ko' ? 1 : 0] : '');
 const REC_STATUS = [
   ['approved', 'Approved', '승인', 'final'], ['submitted', 'Under review', '검토 중', 'review'], ['disapproved', 'Disapproved — resubmit', '반려 — 재제출', 'warn'],
   ['not_started', 'Not yet submitted', '미제출', 'muted'], ['filed', 'Filed', '보관', 'muted'], ['closed', 'Closed', '종결', 'muted'],
@@ -762,8 +772,10 @@ async function renderRecords(keyParam, cat) {
     <h1>${esc(recName(cat))}</h1>
     <p class="lede">${esc(t('recLede'))}</p>
     ${groups.map((g) => `<section class="recgroup"><h2><span class="chip ${statCls(g.st)}">${esc(statName(g.st))}</span> <span class="item-key">${g.rows.length}</span></h2>
+      <p class="rec-help">${esc(recHelp(g.st))}</p>
       <ul class="reclist">${g.rows.map(row).join('')}</ul></section>`).join('')}
     ${needs.length ? `<section class="recgroup"><h2><span class="chip warn">${esc(t('recNotMade'))}</span> <span class="item-key">${needs.length}</span></h2>
+      <p class="rec-help">${esc(recHelp('needs3000'))}</p>
       <ul class="reclist">${needs.map(row).join('')}</ul></section>` : ''}
     ${!groups.length && !needs.length ? `<p class="empty">${esc(t('recEmpty'))}</p>` : ''}`;
 }
@@ -771,7 +783,8 @@ function qItem(q, withProject) {
   const open = q.status === 'open';
   const proj = withProject && q.projects ? `<a class="q-proj" href="#/p/${encodeURIComponent(q.projects.project_key)}">${esc(keyLabel(q.projects.project_key))}</a>` : '';
   return `<article class="qcard ${open ? 'is-open' : 'is-done'}">
-    <header class="q-head">${proj}<span class="chip ${open ? 'live' : 'final'}">${esc(t(open ? 'qOpen' : 'qAnswered'))}</span></header>
+    <header class="q-head">${proj}<span class="chip ${open ? 'live' : 'final'}">${esc(t(open ? 'qOpen' : 'qAnswered'))}</span>
+      ${isAdmin() ? `<button type="button" class="q-del" data-del="${q.id}">${esc(t('qDelete'))}</button>` : ''}</header>
     <div class="msgb ask">
       <div class="msgb-who"><span class="who-role">${esc(t('qAskedBy'))}</span> <b>${esc(q.asked_name || '—')}</b> <time>${esc(fmtTime(q.created_at))}</time></div>
       <p>${esc(q.body)}</p>
@@ -788,6 +801,11 @@ function qItem(q, withProject) {
   </article>`;
 }
 function bindAnswer(root, redraw) {
+  $$('[data-del]', root).forEach((b) => b.addEventListener('click', async () => {
+    if (!confirm(t('qDeleteConfirm'))) return;
+    const { error } = await sb.from('questions').update({ deleted_at: new Date().toISOString(), deleted_by: state.user.id }).eq('id', b.dataset.del);
+    if (error) return toast(errText(error)); toast(t('qDeleted')); redraw();
+  }));
   $$('form.ans', root).forEach((f) => f.addEventListener('submit', async (ev) => {
     ev.preventDefault();
     const answer = $('textarea', f).value.trim(); if (!answer) return;
