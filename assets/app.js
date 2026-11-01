@@ -831,7 +831,7 @@ function qItem(q, withProject) {
 function bindAnswer(root, redraw) {
   $$('[data-del]', root).forEach((b) => b.addEventListener('click', async () => {
     if (!confirm(t('qDeleteConfirm'))) return;
-    const { error } = await sb.from('questions').update({ deleted_at: new Date().toISOString(), deleted_by: state.user.id }).eq('id', b.dataset.del);
+    const { error } = await sb.rpc('delete_question', { qid: b.dataset.del });
     if (error) return toast(errText(error)); toast(t('qDeleted')); redraw();
   }));
   $$('form.ans', root).forEach((f) => f.addEventListener('submit', async (ev) => {
@@ -891,7 +891,7 @@ async function renderAccess() {
   const invitable = (r) => r.employed && r.needs_access && r.email && r.email.toLowerCase() !== state.user.email.toLowerCase();
   const inviteSentTo = (r) => r.invite_sent_to && r.invite_sent_to.toLowerCase() === r.email.toLowerCase();
   const inviteCell = (r) => !invitable(r) ? ''
-    : inviteSentTo(r) ? `<small class="inv">${esc(t('inviteOn')(shortDate(r.invite_sent_at)))}</small>`
+    : inviteSentTo(r) ? `<small class="inv">${esc(t('inviteOn', shortDate(r.invite_sent_at)))}</small>`
     : `<button type="button" class="linkbtn inv" data-invite="${r.id}">${esc(t('sendInvite'))}</button>`;
   const roleSel = (id, val, disabled) => `<select data-f="access_role" data-id="${id}" ${disabled ? 'disabled' : ''} aria-label="${esc(t('role'))}">
       ${['team', 'exec', 'admin'].map((r) => `<option value="${r}" ${val === r ? 'selected' : ''}>${esc(t('role' + r[0].toUpperCase() + r.slice(1)))}</option>`).join('')}</select>`;
