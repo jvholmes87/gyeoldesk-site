@@ -487,3 +487,19 @@ a.rec.empty-rec { color: var(--ink-3); }
 .rec-help { margin: -2px 0 8px; font-size: 13px; color: var(--ink-3); max-width: 60em; }
 .q-del { margin-left: auto; border: 0; background: none; color: var(--danger); font-size: 13px; cursor: pointer; padding: 2px 4px; }
 .q-del:hover { text-decoration: underline; }
+
+/* Portal: features, footer, no-JS content */
+.features h2 { font-size: 18px; margin: 0 0 14px; }
+.feat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr)); gap: 14px; }
+.feat { border-top: 3px solid var(--grain); padding-top: 10px; }
+.feat h3 { margin: 0 0 4px; font-size: 16px; }
+.feat p { margin: 0; color: var(--ink-2); font-size: 14.5px; }
+.contact { margin: 22px 0 0; color: var(--ink-2); }
+.portal-foot { display: flex; align-items: center; gap: 12px; border-top: 1px solid var(--line); }
+.portal-foot img { display: block; }
+.seo { max-width: 720px; margin: 0 auto; padding: 48px 20px; }
+
+/* Team access: invite email state */
+.roster .inv { display: block; margin-top: 4px; font-size: 12px; color: var(--ink-3); white-space: nowrap; }
+.linkbtn { background: none; border: 0; padding: 0; font: inherit; color: var(--blue); text-decoration: underline; cursor: pointer; }
+.linkbtn:disabled { opacity: .5; cursor: default; }

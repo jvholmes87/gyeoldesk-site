@@ -14,7 +14,7 @@ const app = document.getElementById('app');
 // ---------------------------------------------------------------- text
 const T = {
   ko: {
-    tagline: '주한미군 기지 안에서 공사를 수행하는 한국 건설사를 위한 프로젝트 데스크. 과업, 입찰, 제출물, 허가, 하자보수, 주간 보고까지 한국어와 영어로 한곳에서 관리합니다.',
+    featTitle: '결데스크가 하는 일', contactLine: '회사 도입 문의:', tagline: '주한미군 기지 안에서 공사를 수행하는 한국 건설사를 위한 프로젝트 데스크. 과업, 입찰, 제출물, 허가, 하자보수, 주간 보고까지 한국어와 영어로 한곳에서 관리합니다.',
     companies: '회사', openWorkspace: '작업 공간 열기',
     signInTitle: '로그인', signInLede: '회사 이메일을 입력하면 6자리 코드를 보내 드립니다.',
     email: '이메일', sendCode: '코드 받기', sending: '보내는 중…',
@@ -46,7 +46,7 @@ const T = {
     keyDates: '주요 일정', date: '일자', item: '항목', search: '과업 검색', searchPeople: '이름 검색',
     noWeeks: '아직 WAR가 없습니다. 드라이브 00_WAR 주간 폴더에 문서를 넣으면 15분 안에 나타납니다.',
     noMatch: '검색 결과가 없습니다.',
-    pending: '승인 요청', noPending: '대기 중인 요청이 없습니다.', matchTo: '명단의 누구인가요?', matchNone: '명단에 없음', approve: '승인', decline: '거절',
+    pending: '승인 요청', noPending: '대기 중인 요청이 없습니다.', matchTo: '명단의 누구인가요?', matchNone: '명단에 없음', approve: '승인', decline: '거절', inviteSent: '안내 메일 발송', inviteOn: (d) => `안내 메일 ${d}`, sendInvite: '안내 메일 보내기', inviteFail: '저장됨. 안내 메일은 발송되지 않았습니다.',
     roster: '명단', all: '전체', withAccess: '접근 허용', withoutAccess: '미허용',
     name: '이름', title: '직책', needsAccess: '접근', role: '역할', status: '상태',
     roleAdmin: '관리자', roleExec: '임원', roleTeam: '팀원',
@@ -59,7 +59,7 @@ const T = {
     unknownOrg: '이 주소의 회사를 찾을 수 없습니다.', notOnRoster: '명단에 없는 사용자', shareHelp: '이메일을 모르는 사람은 이 주소로 직접 접근 요청을 보내게 하세요. 요청이 오면 명단의 이름을 골라 승인하면 이메일이 자동으로 채워집니다:', koOnly: '영문 없음 — 한국어 원문', home: '홈', back: '홈으로',
   },
   en: {
-    tagline: 'The project desk for Korean contractors building on USFK installations. Task orders, proposals, submittals, permits, warranties and the weekly report, in Korean and English, in one place.',
+    featTitle: 'What Gyeoldesk covers', contactLine: 'Want it for your company?', tagline: 'The project desk for Korean contractors building on USFK installations. Task orders, proposals, submittals, permits, warranties and the weekly report, in Korean and English, in one place.',
     companies: 'Companies', openWorkspace: 'Open workspace',
     signInTitle: 'Sign in', signInLede: 'Enter your work email and we will send you a 6-digit code.',
     email: 'Email', sendCode: 'Send code', sending: 'Sending…',
@@ -91,7 +91,7 @@ const T = {
     keyDates: 'Key dates', date: 'Date', item: 'Item', search: 'Search projects', searchPeople: 'Search people',
     noWeeks: 'No WAR yet. Docs placed in a 00_WAR week folder on Drive show up here within 15 minutes.',
     noMatch: 'No projects match.',
-    pending: 'Access requests', noPending: 'No requests waiting.', matchTo: 'Who is this on the roster?', matchNone: 'Not on roster', approve: 'Approve', decline: 'Decline',
+    pending: 'Access requests', noPending: 'No requests waiting.', matchTo: 'Who is this on the roster?', matchNone: 'Not on roster', approve: 'Approve', decline: 'Decline', inviteSent: 'Invite email sent', inviteOn: (d) => `Invite emailed ${d}`, sendInvite: 'Send invite email', inviteFail: 'Saved, but the invite email did not send.',
     roster: 'Roster', all: 'All', withAccess: 'Has access', withoutAccess: 'No access',
     name: 'Name', title: 'Title', needsAccess: 'Access', role: 'Role', status: 'Status',
     roleAdmin: 'Admin', roleExec: 'Executive', roleTeam: 'Team',
@@ -171,8 +171,14 @@ const state = { slug: tenantSlug(), org: null, orgId: null, user: null, profile:
 const isAdmin = () => state.profile?.status === 'approved' && state.profile?.role === 'admin';
 
 // ---------------------------------------------------------------- portal
+const FEATURES = [
+  ['Projects by stage', '단계별 과업', 'Every task order from Pre-NTP to construction and closeout, with its installation, prime contractor and COR.', '착공 전부터 시공·준공 정산까지 모든 과업을 기지, 원도급사, 감독관과 함께 봅니다.'],
+  ['Submittals and permits', '제출물과 허가', 'Submittal register, AF Form 3000, RFIs, dig permits (AF 103), TACW and RA, outage requests and JK-75 — approved, under review or not yet sent.', '제출물 대장, AF Form 3000, RFI, 굴착 허가(AF 103), TACW·RA, 단수 요청, JK-75를 승인·검토 중·미제출로 구분합니다.'],
+  ['Weekly Action Report', '주간 현황 보고', 'A live weekly board for every project. It locks when final and prints as one landscape sheet.', '모든 과업의 주간 현황 보드. 확정하면 잠기고 가로 한 장으로 인쇄됩니다.'],
+  ['Korean and English', '한국어와 영어', 'Every screen in both languages. The team asks in Korean, and answers arrive by email.', '모든 화면을 두 언어로. 팀은 한국어로 질문하고 답변은 이메일로 받습니다.'],
+];
 async function renderPortal() {
-  document.title = 'Gyeoldesk 결';
+  document.title = 'Gyeoldesk 결데스크 — Project desk for Korean contractors on USFK installations';
   app.innerHTML = `
     <div class="portal">
       <header class="portal-hero">
@@ -184,8 +190,13 @@ async function renderPortal() {
         <h2>${esc(t('companies'))}</h2>
         <div class="org-grid" id="orgs"><p class="empty">…</p></div>
       </main>
-      <footer class="portal-foot">gyeoldesk.com
-        <span class="lang" style="margin-left:12px">${langButtons()}</span></footer>
+      <section class="portal-main features" aria-labelledby="ft">
+        <h2 id="ft">${esc(t('featTitle'))}</h2>
+        <div class="feat-grid">${FEATURES.map(([en, ko, den, dko]) => `<div class="feat"><h3>${esc(lang === 'ko' ? ko : en)}</h3><p>${esc(lang === 'ko' ? dko : den)}</p></div>`).join('')}</div>
+        <p class="contact">${esc(t('contactLine'))} <a href="mailto:hello@gyeoldesk.com">hello@gyeoldesk.com</a></p>
+      </section>
+      <footer class="portal-foot"><img src="assets/brand/gyeoldesk-logo.svg" alt="Gyeoldesk 결데스크" height="28">
+        <span class="lang" style="margin-left:auto">${langButtons()}</span></footer>
     </div>`;
   bindLang();
   const { data, error } = await sb.rpc('org_directory');
@@ -747,6 +758,15 @@ async function renderProjectPage(keyParam) {
 function notify(id, event) {
   sb.functions.invoke('notify', { body: { question_id: id, event } }).catch(() => {});
 }
+// Welcome email (Korean + English) to someone just given access: who gave it, which desk, what it is, how to sign in.
+// Pass { roster_id } or { user_id }. The server sends it once per address. Returns 'sent', 'already_sent', 'fail', …
+async function sendInvite(target) {
+  try {
+    const { data, error } = await sb.functions.invoke('notify', { body: { event: 'invited', ...target } });
+    return error ? 'fail' : (data?.status || 'fail');
+  } catch { return 'fail'; }
+}
+const shortDate = (iso) => new Date(iso).toLocaleDateString(lang === 'ko' ? 'ko-KR' : 'en-GB', { day: 'numeric', month: 'short' });
 async function renderRecords(keyParam, cat) {
   const key = decodeURIComponent(keyParam);
   shell(recName(cat), `<div id="rl"><p class="empty">…</p></div>`);
@@ -860,6 +880,11 @@ async function renderAccess() {
     needEmail: roster.filter((r) => r.employed && !r.email).length,
     total: roster.filter((r) => r.employed).length,
   };
+  const invitable = (r) => r.employed && r.needs_access && r.email && r.email.toLowerCase() !== state.user.email.toLowerCase();
+  const inviteSentTo = (r) => r.invite_sent_to && r.invite_sent_to.toLowerCase() === r.email.toLowerCase();
+  const inviteCell = (r) => !invitable(r) ? ''
+    : inviteSentTo(r) ? `<small class="inv">${esc(t('inviteOn')(shortDate(r.invite_sent_at)))}</small>`
+    : `<button type="button" class="linkbtn inv" data-invite="${r.id}">${esc(t('sendInvite'))}</button>`;
   const roleSel = (id, val, disabled) => `<select data-f="access_role" data-id="${id}" ${disabled ? 'disabled' : ''} aria-label="${esc(t('role'))}">
       ${['team', 'exec', 'admin'].map((r) => `<option value="${r}" ${val === r ? 'selected' : ''}>${esc(t('role' + r[0].toUpperCase() + r.slice(1)))}</option>`).join('')}</select>`;
 
@@ -880,7 +905,7 @@ async function renderAccess() {
         <td class="keep"><input type="email" data-f="email" data-id="${r.id}" value="${esc(r.email || '')}" placeholder="name@company.com" aria-label="${esc(t('email'))}" ${self ? 'disabled' : ''}></td>
         <td class="keep inl"><input type="checkbox" data-f="needs_access" data-id="${r.id}" ${r.needs_access ? 'checked' : ''} ${!r.employed || self ? 'disabled' : ''} aria-label="${esc(t('needsAccess'))}"></td>
         <td class="keep inl">${roleSel(r.id, r.access_role, self || !r.employed)}</td>
-        <td class="inl"><span class="chip ${cls}">${esc(label)}</span> <span class="fb" aria-live="polite"></span></td>
+        <td class="inl"><span class="chip ${cls}">${esc(label)}</span>${inviteCell(r)} <span class="fb" aria-live="polite"></span></td>
       </tr>`;
     }
     return html || `<tr><td colspan="6" class="empty">${esc(t('noMatch'))}</td></tr>`;
@@ -950,10 +975,25 @@ async function renderAccess() {
       const { data, error } = await sb.from('roster').update(patch).eq('id', id).select().single();
       if (error) { fb.className = 'fb err'; fb.textContent = errText(error); if (el.type === 'checkbox') el.checked = !value; return; }
       Object.assign(row, data);
+      let note = t('saved');
+      if ((fld === 'needs_access' || fld === 'email') && invitable(row) && !inviteSentTo(row)) {
+        const st = await sendInvite({ roster_id: id });
+        if (st === 'sent') { row.invite_sent_to = row.email; row.invite_sent_at = new Date().toISOString(); note = t('inviteSent'); }
+        else if (st === 'fail') note = t('inviteFail');
+      }
       const { data: ps } = await sb.from('profiles').select('user_id,email,name,role,status,requested_note,created_at').eq('org_id', state.orgId);
       byEmail.clear(); (ps || []).forEach((p) => byEmail.set(p.email.toLowerCase(), p));
       tbody.innerHTML = rows(); rebind();
-      const fb2 = $(`tr[data-row="${id}"] .fb`); if (fb2) { fb2.className = 'fb saved'; fb2.textContent = t('saved'); }
+      const fb2 = $(`tr[data-row="${id}"] .fb`); if (fb2) { fb2.className = note === t('inviteFail') ? 'fb err' : 'fb saved'; fb2.textContent = note; }
+    }));
+    $$('[data-invite]', tbody).forEach((b) => b.addEventListener('click', async () => {
+      const id = b.dataset.invite; const row = roster.find((r) => r.id === id);
+      b.disabled = true;
+      const st = await sendInvite({ roster_id: id });
+      if (st === 'sent' || st === 'already_sent') { row.invite_sent_to = row.email; row.invite_sent_at = row.invite_sent_at || new Date().toISOString(); }
+      tbody.innerHTML = rows(); rebind();
+      const fb = $(`tr[data-row="${id}"] .fb`);
+      if (fb) { fb.className = st === 'fail' ? 'fb err' : 'fb saved'; fb.textContent = st === 'fail' ? t('inviteFail') : t('inviteSent'); }
     }));
   };
   rebind();
@@ -968,7 +1008,9 @@ async function renderAccess() {
     const { error } = match
       ? await sb.from('roster').update({ email: prof.email, needs_access: true, access_role: role }).eq('id', match)
       : await sb.rpc('decide_access', { target: id, approve: true, new_role: role });
-    if (error) return toast(errText(error)); toast(t('saved')); renderAccess();
+    if (error) return toast(errText(error));
+    const st = await sendInvite(match ? { roster_id: match } : { user_id: id });
+    toast(st === 'fail' ? t('inviteFail') : st === 'sent' ? t('inviteSent') : t('saved')); renderAccess();
   }));
   $$('[data-decline]').forEach((b) => b.addEventListener('click', async () => {
     const { error } = await sb.rpc('decide_access', { target: b.dataset.decline, approve: false });

@@ -1,0 +1,14 @@
+{
+  "name": "Gyeoldesk 결데스크",
+  "short_name": "Gyeoldesk",
+  "description": "Project desk for Korean contractors on USFK installations",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F3F5F7",
+  "theme_color": "#14243A",
+  "icons": [
+    { "src": "assets/brand/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/brand/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "assets/brand/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
