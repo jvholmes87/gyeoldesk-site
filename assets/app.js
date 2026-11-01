@@ -1046,7 +1046,7 @@ async function route() {
         <a class="btn" href="https://${ROOT_DOMAIN}/">${esc(t('back'))}</a></div></div>${siteFoot()}`;
       return;
     }
-    document.title = `${state.org.name} · Gyeoldesk`;
+    document.title = document.querySelector('meta[name="application-name"]')?.content || `${state.org.name} · Gyeoldesk`;
   }
   if (!state.user) return renderEmailStep();
   if (!state.profile) await loadProfile();

@@ -1,0 +1,12 @@
+{
+  "slug": "gnc",
+  "short": "GNC",
+  "name": "Good Neighbor Construction",
+  "name_ko": "(주)굿네이버건설",
+  "title": "GNC — Projects Desk",
+  "title_ko": "GNC 프로젝트 데스크",
+  "description": "Good Neighbor Construction (GNC) projects desk: task orders, submittals, permits, warranties and the Weekly Action Report, in Korean and English. Sign in with your company email.",
+  "description_ko": "(주)굿네이버건설 프로젝트 데스크 — 과업, 제출물, 허가, 하자보수, 주간 보고를 한국어와 영어로.",
+  "theme": "#141B5C",
+  "assets": "assets/orgs/gnc"
+}
