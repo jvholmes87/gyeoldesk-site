@@ -94,8 +94,9 @@ const T = {
     unknownOrg: 'No company uses this address.', notOnRoster: 'Signed-in users not on the roster', koOnly: 'No English text in the source doc yet. Korean original shown.', home: 'Home', back: 'Back to home',
   },
 };
-let lang = 'ko';
-try { lang = localStorage.getItem('gd.lang') || ((navigator.language || 'ko').startsWith('ko') ? 'ko' : 'en'); } catch { lang = 'ko'; }
+// English by default. Each person's choice is kept on this device and, once signed in, on their account.
+let lang = 'en';
+try { lang = localStorage.getItem('gd.lang') || 'en'; } catch { lang = 'en'; }
 const t = (k, ...a) => { const v = T[lang][k] ?? T.en[k] ?? k; return typeof v === 'function' ? v(...a) : v; };
 const pick = (ko, en) => (lang === 'ko' ? (ko || en) : (en || ko)) || '';
 
@@ -166,7 +167,7 @@ async function renderPortal() {
     <div class="portal">
       <header class="portal-hero">
         ${grainSvg('grain', 11)}
-        <h1 class="wordmark"><span class="ko">결</span><span class="en">Gyeoldesk</span></h1>
+        <h1 class="wordmark" translate="no"><span class="ko" lang="ko">결</span><span class="en">Gyeoldesk</span></h1>
         <p>${esc(t('tagline'))}</p>
       </header>
       <main class="portal-main">
@@ -195,7 +196,9 @@ function langButtons() {
 function bindLang() {
   $$('[data-lang]').forEach((b) => b.addEventListener('click', () => {
     lang = b.dataset.lang; try { localStorage.setItem('gd.lang', lang); } catch {}
-    document.documentElement.lang = lang; route();
+    document.documentElement.lang = lang;
+    if (state.user) { sb.rpc('set_my_lang', { l: lang }); if (state.profile) state.profile.lang = lang; }
+    route();
   }));
 }
 function shell(crumb, inner) {
@@ -269,8 +272,9 @@ function renderCodeStep(email, message = '') {
 
 async function loadProfile() {
   if (!state.user) { state.profile = null; return; }
-  const { data } = await sb.from('profiles').select('user_id,org_id,email,name,role,status,requested_note').eq('user_id', state.user.id).maybeSingle();
+  const { data } = await sb.from('profiles').select('user_id,org_id,email,name,role,status,requested_note,lang').eq('user_id', state.user.id).maybeSingle();
   state.profile = data || null;
+  if (data?.lang && data.lang !== lang) { lang = data.lang; try { localStorage.setItem('gd.lang', lang); } catch {} }
   if (state.profile?.status === 'approved' && !state.orgId) {
     const { data: o } = await sb.from('orgs').select('id').eq('slug', state.slug).maybeSingle();
     state.orgId = o?.id || null;
