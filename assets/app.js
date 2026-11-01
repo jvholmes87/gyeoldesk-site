@@ -21,7 +21,7 @@ const T = {
     codeTitle: '코드 입력', codeLede: (e) => `${e}로 보낸 코드를 입력하세요. 10분 동안 유효합니다.`,
     code: '로그인 코드', verify: '로그인', verifying: '확인 중…', otherEmail: '다른 이메일 사용', resend: '코드 다시 보내기',
     requestTitle: '접근 요청', requestLede: '이름을 남기면 관리자가 승인합니다. 승인되면 다시 로그인할 필요 없이 이 화면이 바뀝니다.',
-    yourName: '이름', note: '메모 (선택)', notePh: '예: 공무팀, 26-1028 담당', sendRequest: '요청 보내기',
+    yourName: '이름', nameEn: '영문 이름 (필수)', nameKo: '한글 이름', note: '메모 (선택, 가능하면 영어로)', notePh: '예: Admin team, 26-1028', sendRequest: '요청 보내기',
     waitingTitle: '승인 대기 중', waitingLede: '관리자에게 요청이 전달되었습니다. 승인되면 이 페이지를 새로 고침하세요.', refresh: '새로 고침',
     declinedTitle: '접근 권한 없음', declinedLede: '이 계정은 이 작업 공간에 접근할 수 없습니다. 관리자에게 문의하세요.',
     otherOrgTitle: '다른 회사 계정', otherOrgLede: '이 계정은 다른 회사의 작업 공간에 속해 있습니다.',
@@ -51,7 +51,7 @@ const T = {
     roleHelp: '관리자: 전체 + 확정 버튼 + 내부 메모. 임원: 전체 보기. 팀원: WAR 보기와 검토.',
     errGeneric: '저장하지 못했습니다. 다시 시도하세요.', errCode: '코드가 맞지 않거나 만료되었습니다. 새 코드를 받으세요.',
     errEmail: '이메일 주소를 확인하세요.', errRate: '요청이 너무 잦습니다. 1분 후 다시 시도하세요.',
-    unknownOrg: '이 주소의 회사를 찾을 수 없습니다.', notOnRoster: '명단에 없는 사용자', home: '홈', back: '홈으로',
+    unknownOrg: '이 주소의 회사를 찾을 수 없습니다.', notOnRoster: '명단에 없는 사용자', koOnly: '영문 없음 — 한국어 원문', home: '홈', back: '홈으로',
   },
   en: {
     tagline: 'Where site documents become the weekly report. Each company has its own workspace to read and review its Weekly Action Report.',
@@ -61,7 +61,7 @@ const T = {
     codeTitle: 'Enter your code', codeLede: (e) => `Enter the code sent to ${e}. It works for 10 minutes.`,
     code: 'Sign-in code', verify: 'Sign in', verifying: 'Checking…', otherEmail: 'Use a different email', resend: 'Send a new code',
     requestTitle: 'Request access', requestLede: 'Leave your name and an admin will approve you. This page updates once you are approved.',
-    yourName: 'Name', note: 'Note (optional)', notePh: 'e.g. Admin team, working on 26-1028', sendRequest: 'Send request',
+    yourName: 'Name', nameEn: 'Name in English (required)', nameKo: 'Name in Korean', note: 'Note (optional)', notePh: 'e.g. Admin team, working on 26-1028', sendRequest: 'Send request',
     waitingTitle: 'Waiting for approval', waitingLede: 'Your request is with the admin. Refresh this page after you are approved.', refresh: 'Refresh',
     declinedTitle: 'No access', declinedLede: 'This account cannot open this workspace. Contact your admin.',
     otherOrgTitle: 'Account belongs to another company', otherOrgLede: 'This account is set up for another company workspace.',
@@ -91,7 +91,7 @@ const T = {
     roleHelp: 'Admin: everything, the Final button and internal notes. Executive: sees everything. Team: reads the WAR and reviews.',
     errGeneric: 'Could not save. Try again.', errCode: 'That code is wrong or expired. Send a new code.',
     errEmail: 'Check the email address.', errRate: 'Too many tries. Wait a minute and try again.',
-    unknownOrg: 'No company uses this address.', notOnRoster: 'Signed-in users not on the roster', home: 'Home', back: 'Back to home',
+    unknownOrg: 'No company uses this address.', notOnRoster: 'Signed-in users not on the roster', koOnly: 'No English text in the source doc yet. Korean original shown.', home: 'Home', back: 'Back to home',
   },
 };
 let lang = 'ko';
@@ -281,14 +281,17 @@ function renderRequest() {
   gate(`
     <h1>${esc(t('requestTitle'))}</h1><p>${esc(t('requestLede'))}</p>
     <form id="f">
-      <div class="field"><label for="nm">${esc(t('yourName'))}</label><input id="nm" type="text" autocomplete="name" required maxlength="100"></div>
+      <div class="field"><label for="nm">${esc(t('nameEn'))}</label><input id="nm" type="text" autocomplete="name" required maxlength="60" placeholder="Ra-Hee Kim"></div>
+      <div class="field"><label for="nk">${esc(t('nameKo'))}</label><input id="nk" type="text" maxlength="30" placeholder="김라희"></div>
       <div class="field"><label for="nt">${esc(t('note'))}</label><input id="nt" type="text" maxlength="500" placeholder="${esc(t('notePh'))}"></div>
       <button class="btn" type="submit">${esc(t('sendRequest'))}</button>
     </form>`);
   $('#nm').focus();
   $('#f').addEventListener('submit', async (ev) => {
     ev.preventDefault();
-    const { error } = await sb.rpc('request_access', { org_slug: state.slug, full_name: $('#nm').value, note: $('#nt').value });
+    const en = $('#nm').value.trim(); const ko = $('#nk').value.trim();
+    if (!en) return $('#nm').focus();
+    const { error } = await sb.rpc('request_access', { org_slug: state.slug, full_name: ko ? `${en} (${ko})` : en, note: $('#nt').value });
     if (error) return toast(errText(error));
     await loadProfile(); route();
   });
@@ -385,6 +388,7 @@ function itemCard(it) {
   const f = s.fields || {};
   const title = pick(f.title_ko || p.title_ko, f.title_en || p.title_en);
   const body = lang === 'ko' ? (s.ko?.length ? s.ko : s.en) : (s.en?.length ? s.en : s.ko);
+  const fallback = lang === 'en' && !s.en?.length && s.ko?.length;
   const carried = f.status === 'carried';
   const kd = (s.key_dates || []).filter((r) => r.date_text);
   const intl = Array.isArray(s.snapshots_internal) ? s.snapshots_internal[0] : s.snapshots_internal;
@@ -398,7 +402,7 @@ function itemCard(it) {
         ${carried ? `<span class="chip muted">${esc(t('carried'))}</span>` : ''}
       </div>
       <div class="item-body">
-        ${bullets(body)}
+        ${fallback ? `<p class="alt">${esc(t('koOnly'))}</p>` : ''}${bullets(body)}
         ${kd.length ? `<table class="kd"><caption class="sr">${esc(t('keyDates'))}</caption>
           <thead><tr><th scope="col">${esc(t('date'))}</th><th scope="col">${esc(t('keyDates'))}</th></tr></thead>
           <tbody>${kd.map((r) => `<tr><td>${esc(r.date_text)}</td><td>${esc(pick(r.ko, r.en))}</td></tr>`).join('')}</tbody></table>` : ''}
