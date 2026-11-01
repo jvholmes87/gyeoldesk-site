@@ -31,7 +31,7 @@ const T = {
     count: (n) => `${n}건`, none: '없음', noDrafts: '작성 중인 제안이 없습니다.', stageNotSet: '단계 미지정', openQuestions: '건의 질문이 답변을 기다리고 있습니다', menu: '메뉴', teamMenu: '팀 접근 권한', settings: '설정',
     latestStatus: '최신 현황', openInWar: (d) => `WAR에서 보기 (${d})`, noStatus: '아직 WAR 현황이 없습니다.', records: '과업 기록', askTitle: '질문하기', askPh: '이 과업에 대한 질문을 한국어나 영어로 적어 주세요.', askSend: '질문 보내기', askSent: '질문을 보냈습니다',
     qOpen: '답변 대기', qAnswered: '답변 완료', answerPh: '답변 입력', answer: '답변', questionsTitle: '질문', questionsLede: '과업 페이지에서 올라온 질문. 관리자가 답변합니다.', noQuestions: '질문이 없습니다.', projectPage: '과업 페이지 열기',
-    printEyebrow: '주간 현황 — 전체 과업', printPrimeNote: '과업 번호 옆에 원도급사 표시', cont: '계속', printFoot: '금액 단위 원(KRW) · 상세 내용은 주간 현황 보고(WAR) 참조', boardTitle: '주간 현황 보드', weeksNav: '주 선택', backBoard: '보드로 돌아가기', newerWeek: '더 최신 주가 있습니다:', itemNo: (n) => `항목 ${n}`, thisWeek: '이번 주 현황', bothLangs: '한국어·영어 함께 보기', krimaText: 'Krima 현황 시트 문구', otherWeeks: '다른 주', warTitle: '주간 현황 보고', warLede: '매일 갱신되는 이번 주 WAR와 지난 주 기록.',
+    recCount: (n, a) => `${n}건 · 승인 ${a}`, recFiles: (n) => `${n}건`, recNone: '없음', recOpen: '열기', recNoFile: '파일 없음', recNotes: '메모', recNotMade: 'AF 3000 미작성 (미제출 항목)', recEmpty: '아직 등록된 기록이 없습니다. 드라이브 과업 폴더와 PCES 제출물 대장에서 매시간 갱신됩니다.', recLede: '드라이브 과업 폴더와 PCES 제출물 대장에서 매시간 갱신. 파일은 구글 드라이브에서 열립니다.', printEyebrow: '주간 현황 — 전체 과업', printPrimeNote: '과업 번호 옆에 원도급사 표시', cont: '계속', printFoot: '금액 단위 원(KRW) · 상세 내용은 주간 현황 보고(WAR) 참조', boardTitle: '주간 현황 보드', weeksNav: '주 선택', backBoard: '보드로 돌아가기', newerWeek: '더 최신 주가 있습니다:', itemNo: (n) => `항목 ${n}`, thisWeek: '이번 주 현황', bothLangs: '한국어·영어 함께 보기', krimaText: 'Krima 현황 시트 문구', otherWeeks: '다른 주', warTitle: '주간 현황 보고', warLede: '매일 갱신되는 이번 주 WAR와 지난 주 기록.',
     accessTitle: '팀 접근 권한', accessLede: '조직도(10_GNC_ORG)에서 불러온 명단입니다. 접근이 필요한 사람에 체크하고 이메일과 역할을 정하세요.',
     reviewTitle: '검토 데스크', reviewLede: '팀원이 한국어로 답하면 영어로 정리됩니다.',
     krimaTitle: 'Krima 현황 시트', krimaLede: 'Krima 과업만 해당. 주간 확정 시 생성됩니다.',
@@ -76,7 +76,7 @@ const T = {
     count: (n) => `${n}`, none: 'None', noDrafts: 'No proposals in draft.', stageNotSet: 'Stage not set', openQuestions: 'question(s) waiting for an answer', menu: 'Menu', teamMenu: 'Team and access', settings: 'Settings',
     latestStatus: 'Latest status', openInWar: (d) => `Open in WAR (${d})`, noStatus: 'No WAR status for this project yet.', records: 'Project records', askTitle: 'Ask a question', askPh: 'Write your question about this project in Korean or English.', askSend: 'Send question', askSent: 'Question sent',
     qOpen: 'Waiting', qAnswered: 'Answered', answerPh: 'Type an answer', answer: 'Answer', questionsTitle: 'Questions', questionsLede: 'Questions asked from project pages. Admins answer them here.', noQuestions: 'No questions yet.', projectPage: 'Open the project page',
-    printEyebrow: 'Weekly status — all projects', printPrimeNote: 'Prime shown next to each project no.', cont: 'continued', printFoot: 'Values in KRW · full details in the Weekly Action Report', boardTitle: 'Weekly Status Board', weeksNav: 'Choose a week', backBoard: 'Back to the board', newerWeek: 'A newer week is available:', itemNo: (n) => `Item ${n}`, thisWeek: 'This week', bothLangs: 'Show Korean and English', krimaText: 'Krima sheet status text', otherWeeks: 'Other weeks', warTitle: 'Weekly Action Report', warLede: 'This week’s WAR, updated through the day, and every past week.',
+    recCount: (n, a) => `${n} · ${a} approved`, recFiles: (n) => `${n}`, recNone: 'None yet', recOpen: 'Open', recNoFile: 'No file', recNotes: 'Notes', recNotMade: 'AF 3000 not yet made (items not submitted)', recEmpty: 'Nothing here yet. This list updates every hour from the project folder in Drive and the PCES submittal register.', recLede: 'Updated every hour from the project folder in Drive and the PCES submittal register. Files open in Google Drive.', printEyebrow: 'Weekly status — all projects', printPrimeNote: 'Prime shown next to each project no.', cont: 'continued', printFoot: 'Values in KRW · full details in the Weekly Action Report', boardTitle: 'Weekly Status Board', weeksNav: 'Choose a week', backBoard: 'Back to the board', newerWeek: 'A newer week is available:', itemNo: (n) => `Item ${n}`, thisWeek: 'This week', bothLangs: 'Show Korean and English', krimaText: 'Krima sheet status text', otherWeeks: 'Other weeks', warTitle: 'Weekly Action Report', warLede: 'This week’s WAR, updated through the day, and every past week.',
     accessTitle: 'Team access', accessLede: 'People from the org chart (10_GNC_ORG). Tick who needs access, then set their email and role.',
     reviewTitle: 'Review Desk', reviewLede: 'The team answers in Korean; answers are put into English for you.',
     krimaTitle: 'Krima status sheet', krimaLede: 'Krima task orders only. Generated when the week is final.',
@@ -656,10 +656,17 @@ function renderWarranties() {
 
 // ---------------------------------------------------------------- Project page
 const RECORDS = [
-  ['submittals', 'Submittal register', '제출물 대장'], ['af3000', 'AF Form 3000s', 'AF Form 3000'], ['rfi', 'RFIs (sent and received)', 'RFI (발신·수신)'],
-  ['jk75', 'JK-75 customs forms', 'JK-75 통관 서류'], ['tacw', 'TACW and RA', 'TACW·RA'], ['dig', 'Dig permits (AF 103)', '굴착 허가 (AF 103)'],
-  ['outage', 'Outage requests', '단수·단전 요청'], ['corr', 'Correspondence', '서신·이메일'],
+  ['submittal', 'Submittal register', '제출물 대장'], ['af3000', 'AF Form 3000s', 'AF Form 3000'], ['rfi', 'RFIs (sent and received)', 'RFI (발신·수신)'],
+  ['dig', 'Dig permits (AF 103)', '굴착 허가 (AF 103)'], ['tacw', 'TACW and RA', 'TACW·RA'], ['outage', 'Outage requests', '단수·단전 요청'],
+  ['jk75', 'JK-75 customs forms', 'JK-75 통관 서류'], ['corr', 'Correspondence', '서신·공문'],
 ];
+const REC_STATUS = [
+  ['approved', 'Approved', '승인', 'final'], ['submitted', 'Under review', '검토 중', 'review'], ['disapproved', 'Disapproved — resubmit', '반려 — 재제출', 'warn'],
+  ['not_started', 'Not yet submitted', '미제출', 'muted'], ['filed', 'Filed', '보관', 'muted'], ['closed', 'Closed', '종결', 'muted'],
+];
+const recName = (k) => { const r = RECORDS.find((x) => x[0] === k); return r ? (lang === 'ko' ? r[2] : r[1]) : k; };
+const statName = (k) => { const r = REC_STATUS.find((x) => x[0] === k); return r ? (lang === 'ko' ? r[2] : r[1]) : k; };
+const statCls = (k) => (REC_STATUS.find((x) => x[0] === k) || [])[3] || 'muted';
 async function renderProjectPage(keyParam) {
   const key = decodeURIComponent(keyParam);
   shell(t('projectsTitle'), `<div id="pp"><p class="empty">…</p></div>`);
@@ -691,7 +698,7 @@ async function renderProjectPage(keyParam) {
         ${dates.length ? `<table class="kd"><tbody>${dates.map((r) => `<tr><td>${esc(r.date_text)}</td><td>${esc(pick(r.ko, r.en))}</td></tr>`).join('')}</tbody></table>` : ''}
       </section>
       <section><h2>${esc(t('records'))}</h2>
-        <div class="records">${RECORDS.map(([k, en, ko]) => `<div class="rec"><span>${esc(lang === 'ko' ? ko : en)}</span><span class="chip muted">${esc(t('soon'))}</span></div>`).join('')}</div>
+        <div class="records" id="recgrid">${RECORDS.map(([k]) => `<a class="rec" href="#/p/${encodeURIComponent(key)}/${k}"><span>${esc(recName(k))}</span><span class="chip muted">…</span></a>`).join('')}</div>
       </section>
       <section><h2>${esc(t('askTitle'))}</h2>
         <form id="ask" class="ask">
@@ -702,6 +709,15 @@ async function renderProjectPage(keyParam) {
         <div id="qlist"></div>
       </section>
     </article>`;
+  sb.from('records').select('category,status').eq('project_id', p.id).then(({ data }) => {
+    const recs = data || [];
+    $('#recgrid').innerHTML = RECORDS.map(([k]) => {
+      const mine = recs.filter((r) => r.category === k);
+      const ok = mine.filter((r) => r.status === 'approved').length;
+      const label = mine.length ? (ok ? t('recCount', mine.length, ok) : t('recFiles', mine.length)) : t('recNone');
+      return `<a class="rec${mine.length ? '' : ' empty-rec'}" href="#/p/${encodeURIComponent(key)}/${k}"><span>${esc(recName(k))}</span><span class="chip ${mine.length ? (ok ? 'final' : 'review') : 'muted'}">${esc(label)}</span></a>`;
+    }).join('');
+  });
   const drawQs = async () => {
     const { data: qs } = await sb.from('questions').select('*').eq('project_id', p.id).order('created_at', { ascending: false });
     $('#qlist').innerHTML = (qs || []).map(qItem).join('') || '';
@@ -720,6 +736,36 @@ async function renderProjectPage(keyParam) {
 // Email the admins (new question) or the asker (answer). Failures never block the page.
 function notify(id, event) {
   sb.functions.invoke('notify', { body: { question_id: id, event } }).catch(() => {});
+}
+async function renderRecords(keyParam, cat) {
+  const key = decodeURIComponent(keyParam);
+  shell(recName(cat), `<div id="rl"><p class="empty">…</p></div>`);
+  const { data: p } = await sb.from('projects').select('id,project_key,title_en,title_ko,prime,stage,installation').eq('project_key', key).maybeSingle();
+  if (!p) { $('#rl').innerHTML = `<p class="empty">${esc(t('noMatch'))}</p>`; return; }
+  const cats = cat === 'af3000' ? ['af3000', 'submittal'] : [cat];
+  const { data } = await sb.from('records').select('*').eq('project_id', p.id).in('category', cats).order('title');
+  let recs = (data || []).filter((r) => r.category === cat);
+  // AF 3000 page: register lines not yet submitted still need a transmittal, so list them as "not yet made".
+  const needs = cat === 'af3000' ? (data || []).filter((r) => r.category === 'submittal' && r.status === 'not_started') : [];
+  const groups = REC_STATUS.map(([st]) => ({ st, rows: recs.filter((r) => r.status === st) })).filter((g) => g.rows.length);
+  const row = (r) => `
+    <li class="recrow">
+      <div class="rr-main">
+        <b>${esc(r.title)}</b>
+        <span class="rr-meta">${esc([r.ref, r.status_date, r.source === 'drive' && r.path ? r.path.split(' / ').slice(1).join(' / ') : ''].filter(Boolean).join(' · '))}</span>
+        ${r.notes ? `<details><summary>${esc(t('recNotes'))}</summary><p>${esc(r.notes)}</p></details>` : ''}
+      </div>
+      ${r.file_url ? `<a class="btn small quiet" href="${esc(r.file_url)}" target="_blank" rel="noopener">${esc(t('recOpen'))}</a>` : `<span class="chip muted">${esc(t('recNoFile'))}</span>`}
+    </li>`;
+  $('#rl').innerHTML = `
+    <p><a href="#/p/${encodeURIComponent(key)}">← ${esc(keyLabel(p.project_key))} ${esc(pick(p.title_ko, p.title_en))}</a></p>
+    <h1>${esc(recName(cat))}</h1>
+    <p class="lede">${esc(t('recLede'))}</p>
+    ${groups.map((g) => `<section class="recgroup"><h2><span class="chip ${statCls(g.st)}">${esc(statName(g.st))}</span> <span class="item-key">${g.rows.length}</span></h2>
+      <ul class="reclist">${g.rows.map(row).join('')}</ul></section>`).join('')}
+    ${needs.length ? `<section class="recgroup"><h2><span class="chip warn">${esc(t('recNotMade'))}</span> <span class="item-key">${needs.length}</span></h2>
+      <ul class="reclist">${needs.map(row).join('')}</ul></section>` : ''}
+    ${!groups.length && !needs.length ? `<p class="empty">${esc(t('recEmpty'))}</p>` : ''}`;
 }
 function qItem(q, withProject) {
   return `<div class="q ${q.status}">
@@ -941,6 +987,8 @@ async function route() {
   if (page === 'proposals') return renderProposals();
   if (page === 'warranties') return renderWarranties();
   if (page === 'questions') return renderQuestions();
+  const sub2 = (location.hash || '').split('/')[3];
+  if (page === 'p' && arg && sub2) return renderRecords(arg, sub2);
   if (page === 'p' && arg) return renderProjectPage(arg);
   return renderHome();
 }
