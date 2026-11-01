@@ -466,3 +466,20 @@ a.rec.empty-rec { color: var(--ink-3); }
 .rr-main details { font-size: 13px; color: var(--ink-2); }
 .rr-main details p { margin: 4px 0 0; white-space: pre-wrap; }
 .recrow .btn { flex: none; }
+
+/* Question threads */
+.qcard { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--live); border-radius: var(--radius); padding: 12px 14px; margin-top: 12px; display: grid; gap: 10px; }
+.qcard.is-done { border-left-color: var(--final); }
+.q-head { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 13px; }
+.q-proj { font-weight: 700; }
+.msgb { border-radius: var(--radius); padding: 10px 12px; }
+.msgb.ask { background: #F3F5F7; }
+.msgb.reply { background: var(--final-bg); margin-left: clamp(0px, 4vw, 32px); }
+.msgb-who { font-size: 13px; color: var(--ink-3); display: flex; gap: 6px; align-items: baseline; flex-wrap: wrap; }
+.msgb-who b { color: var(--ink); }
+.who-role { font-weight: 700; text-transform: none; color: var(--ink-2); }
+.msgb.reply .who-role { color: var(--final); }
+.msgb p { margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.qcard .ans { display: grid; gap: 6px; justify-items: start; margin: 0; }
+.qcard .ans textarea { width: 100%; border: 1px solid var(--line); border-radius: var(--radius-sm); padding: .5em .7em; resize: vertical; }
+.q-wait { margin: 0; font-size: 13px; color: var(--ink-3); }
