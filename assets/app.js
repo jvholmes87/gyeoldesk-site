@@ -14,7 +14,7 @@ const app = document.getElementById('app');
 // ---------------------------------------------------------------- text
 const T = {
   ko: {
-    tagline: '현장 문서가 매주 보고서가 되는 곳. 회사별 작업 공간에서 주간 현황 보고(WAR)를 확인하고 검토합니다.',
+    tagline: '주한미군 기지 안에서 공사를 수행하는 한국 건설사를 위한 프로젝트 데스크. 과업, 입찰, 제출물, 허가, 하자보수, 주간 보고까지 한국어와 영어로 한곳에서 관리합니다.',
     companies: '회사', openWorkspace: '작업 공간 열기',
     signInTitle: '로그인', signInLede: '회사 이메일을 입력하면 6자리 코드를 보내 드립니다.',
     email: '이메일', sendCode: '코드 받기', sending: '보내는 중…',
@@ -26,6 +26,11 @@ const T = {
     declinedTitle: '접근 권한 없음', declinedLede: '이 계정은 이 작업 공간에 접근할 수 없습니다. 관리자에게 문의하세요.',
     otherOrgTitle: '다른 회사 계정', otherOrgLede: '이 계정은 다른 회사의 작업 공간에 속해 있습니다.',
     signOut: '로그아웃',
+    projectsTitle: '프로젝트', projectsLede: '수주한 과업. 착공 전·시공·준공 정산 단계별로 묶었습니다.', proposalsTitle: '입찰·제안', proposalsLede: '제출한 제안과 작성 중인 제안.', warrantiesTitle: '하자보수', warrantiesLede: '진행 중인 하자보수 요청과 종결된 요청.',
+    stPreNtp: '착공 전', stConstruction: '시공', stCloseout: '준공 정산', submitted: '제출 완료', drafts: '작성 중', active: '진행 중', activeRequests: '진행 중인 요청', closedOut: '종결',
+    count: (n) => `${n}건`, none: '없음', noDrafts: '작성 중인 제안이 없습니다.', stageNotSet: '단계 미지정', openQuestions: '건의 질문이 답변을 기다리고 있습니다', menu: '메뉴', teamMenu: '팀 접근 권한', settings: '설정',
+    latestStatus: '최신 현황', openInWar: (d) => `WAR에서 보기 (${d})`, noStatus: '아직 WAR 현황이 없습니다.', records: '과업 기록', askTitle: '질문하기', askPh: '이 과업에 대한 질문을 한국어나 영어로 적어 주세요.', askSend: '질문 보내기', askSent: '질문을 보냈습니다',
+    qOpen: '답변 대기', qAnswered: '답변 완료', answerPh: '답변 입력', answer: '답변', questionsTitle: '질문', questionsLede: '과업 페이지에서 올라온 질문. 관리자가 답변합니다.', noQuestions: '질문이 없습니다.', projectPage: '과업 페이지 열기',
     boardTitle: '주간 현황 보드', weeksNav: '주 선택', backBoard: '보드로 돌아가기', newerWeek: '더 최신 주가 있습니다:', itemNo: (n) => `항목 ${n}`, thisWeek: '이번 주 현황', bothLangs: '한국어·영어 함께 보기', krimaText: 'Krima 현황 시트 문구', otherWeeks: '다른 주', warTitle: '주간 현황 보고', warLede: '매일 갱신되는 이번 주 WAR와 지난 주 기록.',
     accessTitle: '팀 접근 권한', accessLede: '조직도(10_GNC_ORG)에서 불러온 명단입니다. 접근이 필요한 사람에 체크하고 이메일과 역할을 정하세요.',
     reviewTitle: '검토 데스크', reviewLede: '팀원이 한국어로 답하면 영어로 정리됩니다.',
@@ -54,7 +59,7 @@ const T = {
     unknownOrg: '이 주소의 회사를 찾을 수 없습니다.', notOnRoster: '명단에 없는 사용자', shareHelp: '이메일을 모르는 사람은 이 주소로 직접 접근 요청을 보내게 하세요. 요청이 오면 명단의 이름을 골라 승인하면 이메일이 자동으로 채워집니다:', koOnly: '영문 없음 — 한국어 원문', home: '홈', back: '홈으로',
   },
   en: {
-    tagline: 'Where site documents become the weekly report. Each company has its own workspace to read and review its Weekly Action Report.',
+    tagline: 'The project desk for Korean contractors building on USFK installations. Task orders, proposals, submittals, permits, warranties and the weekly report, in Korean and English, in one place.',
     companies: 'Companies', openWorkspace: 'Open workspace',
     signInTitle: 'Sign in', signInLede: 'Enter your work email and we will send you a 6-digit code.',
     email: 'Email', sendCode: 'Send code', sending: 'Sending…',
@@ -66,6 +71,11 @@ const T = {
     declinedTitle: 'No access', declinedLede: 'This account cannot open this workspace. Contact your admin.',
     otherOrgTitle: 'Account belongs to another company', otherOrgLede: 'This account is set up for another company workspace.',
     signOut: 'Sign out',
+    projectsTitle: 'Projects', projectsLede: 'Awarded task orders, grouped by stage: Pre-NTP, Construction and Closeout.', proposalsTitle: 'Proposals', proposalsLede: 'Proposals already submitted, and proposals still in draft.', warrantiesTitle: 'Warranties', warrantiesLede: 'Active warranty requests and requests that are closed out.',
+    stPreNtp: 'Pre-NTP', stConstruction: 'Construction', stCloseout: 'Closeout', submitted: 'Submitted', drafts: 'In draft', active: 'Active', activeRequests: 'Active requests', closedOut: 'Closed out',
+    count: (n) => `${n}`, none: 'None', noDrafts: 'No proposals in draft.', stageNotSet: 'Stage not set', openQuestions: 'question(s) waiting for an answer', menu: 'Menu', teamMenu: 'Team and access', settings: 'Settings',
+    latestStatus: 'Latest status', openInWar: (d) => `Open in WAR (${d})`, noStatus: 'No WAR status for this project yet.', records: 'Project records', askTitle: 'Ask a question', askPh: 'Write your question about this project in Korean or English.', askSend: 'Send question', askSent: 'Question sent',
+    qOpen: 'Waiting', qAnswered: 'Answered', answerPh: 'Type an answer', answer: 'Answer', questionsTitle: 'Questions', questionsLede: 'Questions asked from project pages. Admins answer them here.', noQuestions: 'No questions yet.', projectPage: 'Open the project page',
     boardTitle: 'Weekly Status Board', weeksNav: 'Choose a week', backBoard: 'Back to the board', newerWeek: 'A newer week is available:', itemNo: (n) => `Item ${n}`, thisWeek: 'This week', bothLangs: 'Show Korean and English', krimaText: 'Krima sheet status text', otherWeeks: 'Other weeks', warTitle: 'Weekly Action Report', warLede: 'This week’s WAR, updated through the day, and every past week.',
     accessTitle: 'Team access', accessLede: 'People from the org chart (10_GNC_ORG). Tick who needs access, then set their email and role.',
     reviewTitle: 'Review Desk', reviewLede: 'The team answers in Korean; answers are put into English for you.',
@@ -210,10 +220,20 @@ function shell(crumb, inner) {
       <span class="spacer"></span>
       <span class="lang">${langButtons()}</span>
       ${state.user ? `<span class="who"><span class="addr">${esc(state.user.email)}</span><button type="button" id="signout">${esc(t('signOut'))}</button></span>` : ''}
+      ${state.profile?.status === 'approved' ? `<div class="menu"><button type="button" id="menuBtn" aria-expanded="false" aria-controls="menuList" aria-label="${esc(t('menu'))}">☰</button>
+        <nav id="menuList" hidden>
+          <a href="#/">${esc(t('home'))}</a>
+          <a href="#/questions">${esc(t('questionsTitle'))}</a>
+          ${isAdmin() ? `<a href="#/access">${esc(t('teamMenu'))}</a>` : ''}
+          <span class="soon-item">${esc(t('settings'))} <span class="chip muted">${esc(t('soon'))}</span></span>
+        </nav></div>` : ''}
     </div></header>
     <main class="page" id="main">${inner}</main>`;
   bindLang();
   $('#signout')?.addEventListener('click', async () => { await sb.auth.signOut(); state.user = null; state.profile = null; route(); });
+  const mb = $('#menuBtn'); const ml = $('#menuList');
+  mb?.addEventListener('click', (e) => { e.stopPropagation(); ml.hidden = !ml.hidden; mb.setAttribute('aria-expanded', String(!ml.hidden)); });
+  document.addEventListener('click', () => { if (ml && !ml.hidden) { ml.hidden = true; mb.setAttribute('aria-expanded', 'false'); } }, { once: true });
 }
 function gate(inner) {
   shell('', `<div class="gate"><div class="gate-card"><div class="gate-logo">${logoHtml(state.org, 'wide')}</div>${inner}</div></div>`);
@@ -307,25 +327,6 @@ function renderNotice(titleKey, ledeKey, withRefresh) {
 }
 
 // ---------------------------------------------------------------- home
-async function renderHome() {
-  shell('', `<h1 class="sr">${esc(t('home'))}</h1><div class="tiles" id="tiles"></div>`);
-  const { data: weeks } = await sb.from('weeks').select('id,war_date,status,rev').order('war_date', { ascending: false }).order('rev', { ascending: false }).limit(1);
-  const wk = weeks?.[0];
-  let count = 0;
-  if (wk) { const { data: its } = await sb.from('items').select('id').eq('week_id', wk.id); count = its?.length || 0; }
-  $('#tiles').innerHTML = `
-    <a class="tile main" href="#/war">
-      ${grainSvg('grain', 7)}
-      <h2>WAR</h2>
-      <p>${esc(t('warTitle'))}. ${esc(t('warLede'))}</p>
-      <span class="stat">${wk ? `<span class="chip ${wk.status}">${esc(t(wk.status))}</span>
-        <span>${esc(t('week', fmtDate(wk.war_date)))}</span><span>${esc(t('projects', count))}</span>` : `<span>${esc(t('noWeeks'))}</span>`}</span>
-    </a>
-    ${isAdmin() ? `<a class="tile" href="#/access"><h2>${esc(t('accessTitle'))}</h2><p>${esc(t('accessLede'))}</p></a>` : ''}
-    <div class="tile soon"><h2>${esc(t('reviewTitle'))}</h2><p>${esc(t('reviewLede'))}</p><span class="stat"><span class="chip muted">${esc(t('soon'))}</span></span></div>
-    <div class="tile soon"><h2>${esc(t('krimaTitle'))}</h2><p>${esc(t('krimaLede'))}</p><span class="stat"><span class="chip muted">${esc(t('soon'))}</span></span></div>`;
-}
-
 // ---------------------------------------------------------------- WAR
 const warView = { q: '', both: false };
 const STAGES = [
@@ -336,7 +337,7 @@ const STAGES = [
   { k: 'warranty', en: 'Warranty', ko: '하자보수', den: 'Warranty clocks running', dko: '하자 기간 진행 중', c: '#8E1F3F' },
   { k: 'other', en: 'Other', ko: '기타', den: 'Stage not set yet', dko: '단계 미지정', c: '#5B6775' },
 ];
-const PRIMES = { krima: 'KRIMA', livart: 'LIVART', gnc: 'GNC' };
+const PRIMES = { krima: 'KRIMA', livart: 'LIVART', gnc: 'GNC', geumjang: 'GEUMJANG' };
 function stageOf(p, f) {
   const s = String(p?.stage || f?.stage || '').toLowerCase();
   if (s.includes('warrant')) return 'warranty';
@@ -381,7 +382,7 @@ async function renderWar(dateParam) {
   const wk = weeks.find((w) => w.war_date === dateParam) || weeks[0];
 
   const { data: items, error } = await sb.from('items')
-    .select('id,item_no,projects(project_key,title_ko,title_en,prime,stage,facts),snapshots(id,captured_at,source_modified_at,fields,ko,en,key_dates)')
+    .select('id,item_no,projects(project_key,title_ko,title_en,prime,stage,facts,installation),snapshots(id,captured_at,source_modified_at,fields,ko,en,key_dates)')
     .eq('week_id', wk.id)
     .order('source_modified_at', { referencedTable: 'snapshots', ascending: false })
     .limit(1, { referencedTable: 'snapshots' });
@@ -439,6 +440,7 @@ function boardCard(it, wk, s) {
       <div class="bc-top"><span class="bc-key">${esc(keyLabel(p.project_key))}</span>${primeTag(primeOf(p, f))}
         <span class="bc-stage">${esc(lang === 'ko' ? s.ko : s.en)}</span></div>
       <h3>${esc(title)}</h3>
+      ${p.installation ? `<div class="tags">${instTag(p)}</div>` : ''}
       ${factsBox(p.facts)}
       <ul class="clamp">${(body || []).filter((x) => !x.startsWith('· ')).slice(0, 4).map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
       ${dates.length ? `<div class="bc-dates">${dates.map((r) => `<div><b>${esc(r.date_text.replace(/\s*\(.+\)$/, ''))}</b><span>${esc(pick(r.ko, r.en))}</span></div>`).join('')}</div>` : ''}
@@ -455,7 +457,7 @@ async function renderProject(dateParam, keyParam) {
   const wk = weeks.find((w) => w.war_date === dateParam) || weeks[0];
   const intl = isAdmin() ? ',snapshots_internal(internal_notes,open_items)' : '';
   const { data: rows, error } = await sb.from('items')
-    .select(`id,item_no,week_id,projects!inner(project_key,title_ko,title_en,prime,stage,facts),snapshots(id,captured_at,source_modified_at,fields,ko,en,krima_ko,krima_en,key_dates,payments${intl})`)
+    .select(`id,item_no,week_id,projects!inner(project_key,title_ko,title_en,prime,stage,facts,installation),snapshots(id,captured_at,source_modified_at,fields,ko,en,krima_ko,krima_en,key_dates,payments${intl})`)
     .eq('projects.project_key', key)
     .order('source_modified_at', { referencedTable: 'snapshots', ascending: false });
   if (error) { box.innerHTML = `<div class="msg err">${esc(t('errGeneric'))}</div>`; return; }
@@ -479,7 +481,8 @@ async function renderProject(dateParam, keyParam) {
     <article class="detail" style="--stage:${st.c}">
       <div class="bc-top"><span class="bc-key">${esc(keyLabel(p.project_key))}</span>${primeTag(primeOf(p, f))}
         <span class="bc-stage">${esc(lang === 'ko' ? st.ko : st.en)}</span>
-        <span class="spacer"></span><span class="item-key">${esc(t('itemNo', it.item_no || '–'))}</span></div>
+        <span class="spacer"></span>${instTag(p)}<span class="item-key">${esc(t('itemNo', it.item_no || '–'))}</span></div>
+      <p class="no-print" style="margin:6px 0 0"><a href="#/p/${encodeURIComponent(key)}">${esc(t('projectPage'))}</a></p>
       <h1>${esc(pick(f.title_ko || p.title_ko, f.title_en || p.title_en))}</h1>
       <p class="alt">${esc(lang === 'ko' ? (f.title_en || p.title_en || '') : (f.title_ko || p.title_ko || ''))}</p>
       <p class="item-key">${esc(fmtDate(w.war_date))} <span class="chip ${w.status}">${esc(t(w.status))}</span>
@@ -503,6 +506,176 @@ async function renderProject(dateParam, keyParam) {
         <a href="#/war/${aw.war_date}/${encodeURIComponent(key)}" ${aw.id === w.id ? 'aria-current="page"' : ''}><span class="d">${esc(fmtDate(aw.war_date))}</span><span class="chip ${aw.status}">${esc(t(aw.status))}</span></a>`).join('')}</nav></section>` : ''}
     </article>`;
   $('#both')?.addEventListener('change', (e) => { warView.both = e.target.checked; renderProject(dateParam, keyParam); });
+}
+
+async function renderHome() {
+  shell('', `<h1 class="sr">${esc(t('home'))}</h1><div class="desk" id="tiles"><p class="empty">…</p></div><div id="qstrip"></div>`);
+  const [{ data: projects }, { data: weeks }, { data: qs }] = await Promise.all([
+    sb.from('projects').select('id,stage,proposal_status,warranty_status'),
+    sb.from('weeks').select('id,war_date,status,rev').order('war_date', { ascending: false }).order('rev', { ascending: false }).limit(1),
+    sb.from('questions').select('id,status').eq('status', 'open'),
+  ]);
+  const ps = projects || [];
+  const wk = weeks?.[0];
+  const n = (f) => ps.filter(f).length;
+
+  const tile = (href, title, lede, stats, main = false) => `
+    <a class="dtile${main ? ' main' : ''}" href="${href}">
+      ${main ? grainSvg('grain', 7) : ''}
+      <h2>${esc(title)}</h2><p>${esc(lede)}</p>
+      <span class="stat">${stats}</span>
+    </a>`;
+  const stat = (num, label) => `<span class="num"><b>${num}</b>${esc(label)}</span>`;
+  $('#tiles').innerHTML =
+    tile('#/projects', t('projectsTitle'), t('projectsLede'),
+      stat(n((p) => stageKey(p) === 'pre-ntp'), t('stPreNtp')) + stat(n((p) => stageKey(p) === 'construction'), t('stConstruction')) + stat(n((p) => stageKey(p) === 'closeout'), t('stCloseout')), true) +
+    tile('#/proposals', t('proposalsTitle'), t('proposalsLede'),
+      stat(n((p) => p.proposal_status === 'submitted' || (!p.proposal_status && stageKey(p) === 'bid')), t('submitted')) + stat(n((p) => p.proposal_status === 'draft'), t('drafts'))) +
+    tile(wk ? `#/war/${wk.war_date}` : '#/war', 'WAR', t('warLede'),
+      wk ? `<span class="chip ${wk.status}">${esc(t(wk.status))}</span> <span>${esc(fmtDate(wk.war_date))}</span>` : esc(t('noWeeks'))) +
+    tile('#/warranties', t('warrantiesTitle'), t('warrantiesLede'),
+      stat(n((p) => p.warranty_status === 'active' || (!p.warranty_status && stageKey(p) === 'warranty')), t('active')) + stat(n((p) => p.warranty_status === 'closed'), t('closedOut')));
+
+  const open = qs?.length || 0;
+  $('#qstrip').innerHTML = open ? `<a class="qstrip" href="#/questions"><b>${open}</b> ${esc(t('openQuestions'))}</a>` : '';
+}
+
+// ---------------------------------------------------------------- Desk lists
+function stageKey(p) { return stageOf(p, {}); }
+function isAwarded(p) { return ['pre-ntp', 'construction', 'closeout'].includes(stageKey(p)) || (!p.stage && !p.proposal_status && !p.warranty_status); }
+const instTag = (p) => (p?.installation ? `<span class="inst">${esc(p.installation)}</span>` : '');
+function projectCard(p, href) {
+  const s = STAGES.find((x) => x.k === stageKey(p));
+  return `
+    <a class="bcard pcard" href="${href}" style="--stage:${s.c}">
+      <div class="bc-top"><span class="bc-key">${esc(keyLabel(p.project_key))}</span>${primeTag(primeOf(p, {}))}
+        <span class="bc-stage">${esc(lang === 'ko' ? s.ko : s.en)}</span></div>
+      <h3>${esc(pick(p.title_ko, p.title_en))}</h3>
+      <div class="tags">${instTag(p)}${p.pid ? `<span class="inst muted">${esc(p.pid)}</span>` : ''}</div>
+      ${factsBox(p.facts)}
+    </a>`;
+}
+async function listPage(crumb, title, lede, groups) {
+  shell(crumb, `<h1>${esc(title)}</h1><p class="lede">${esc(lede)}</p><div id="list"><p class="empty">…</p></div>`);
+  const { data, error } = await sb.from('projects').select('*').order('project_key');
+  if (error) { $('#list').innerHTML = `<div class="msg err">${esc(t('errGeneric'))}</div>`; return; }
+  $('#list').innerHTML = groups.map((g) => {
+    const rows = data.filter(g.test);
+    return `<section class="stage" style="--stage:${g.c}"><h2>${esc(g.title)} <span>${esc(t('count', rows.length))}</span></h2>
+      ${rows.length ? `<div class="board">${rows.map((p) => projectCard(p, `#/p/${encodeURIComponent(p.project_key)}`)).join('')}</div>`
+        : `<p class="empty">${esc(g.empty)}</p>`}</section>`;
+  }).join('');
+}
+function renderProjects() {
+  const st = (k) => STAGES.find((s) => s.k === k);
+  return listPage(t('projectsTitle'), t('projectsTitle'), t('projectsLede'), [
+    { title: lang === 'ko' ? st('pre-ntp').ko : st('pre-ntp').en, c: st('pre-ntp').c, test: (p) => stageKey(p) === 'pre-ntp', empty: t('none') },
+    { title: lang === 'ko' ? st('construction').ko : st('construction').en, c: st('construction').c, test: (p) => stageKey(p) === 'construction', empty: t('none') },
+    { title: lang === 'ko' ? st('closeout').ko : st('closeout').en, c: st('closeout').c, test: (p) => stageKey(p) === 'closeout', empty: t('none') },
+    { title: t('stageNotSet'), c: st('other').c, test: (p) => stageKey(p) === 'other' && !p.proposal_status && !p.warranty_status, empty: t('none') },
+  ]);
+}
+function renderProposals() {
+  return listPage(t('proposalsTitle'), t('proposalsTitle'), t('proposalsLede'), [
+    { title: t('submitted'), c: '#1D6E6E', test: (p) => p.proposal_status === 'submitted' || (!p.proposal_status && stageKey(p) === 'bid'), empty: t('none') },
+    { title: t('drafts'), c: '#5B6775', test: (p) => p.proposal_status === 'draft', empty: t('noDrafts') },
+  ]);
+}
+function renderWarranties() {
+  return listPage(t('warrantiesTitle'), t('warrantiesTitle'), t('warrantiesLede'), [
+    { title: t('activeRequests'), c: '#8E1F3F', test: (p) => p.warranty_status === 'active' || (!p.warranty_status && stageKey(p) === 'warranty'), empty: t('none') },
+    { title: t('closedOut'), c: '#5B6775', test: (p) => p.warranty_status === 'closed', empty: t('none') },
+  ]);
+}
+
+// ---------------------------------------------------------------- Project page
+const RECORDS = [
+  ['submittals', 'Submittal register', '제출물 대장'], ['af3000', 'AF Form 3000s', 'AF Form 3000'], ['rfi', 'RFIs (sent and received)', 'RFI (발신·수신)'],
+  ['jk75', 'JK-75 customs forms', 'JK-75 통관 서류'], ['tacw', 'TACW and RA', 'TACW·RA'], ['dig', 'Dig permits (AF 103)', '굴착 허가 (AF 103)'],
+  ['outage', 'Outage requests', '단수·단전 요청'], ['corr', 'Correspondence', '서신·이메일'],
+];
+async function renderProjectPage(keyParam) {
+  const key = decodeURIComponent(keyParam);
+  shell(t('projectsTitle'), `<div id="pp"><p class="empty">…</p></div>`);
+  const box = $('#pp');
+  const [{ data: p }, { data: rows }, weeks] = await Promise.all([
+    sb.from('projects').select('*').eq('project_key', key).maybeSingle(),
+    sb.from('items').select('id,week_id,projects!inner(project_key),snapshots(captured_at,source_modified_at,fields,ko,en,key_dates)')
+      .eq('projects.project_key', key).order('source_modified_at', { referencedTable: 'snapshots', ascending: false }).limit(1, { referencedTable: 'snapshots' }),
+    loadWeeks().catch(() => []),
+  ]);
+  if (!p) { box.innerHTML = `<p class="empty">${esc(t('noMatch'))}</p>`; return; }
+  const s = STAGES.find((x) => x.k === stageKey(p));
+  const byId = new Map(weeks.map((w) => [w.id, w]));
+  const latest = (rows || []).map((r) => ({ r, w: byId.get(r.week_id) })).filter((x) => x.w).sort((a, b) => b.w.war_date.localeCompare(a.w.war_date))[0];
+  const sn = latest?.r.snapshots?.[0] || {};
+  const lines = lang === 'ko' ? (sn.ko?.length ? sn.ko : sn.en) : (sn.en?.length ? sn.en : sn.ko);
+  const dates = upcoming(sn.key_dates, latest?.w.war_date || '', 5);
+  box.innerHTML = `
+    <p><a href="#/projects">← ${esc(t('projectsTitle'))}</a></p>
+    <article class="detail" style="--stage:${s.c}">
+      <div class="bc-top"><span class="bc-key">${esc(keyLabel(p.project_key))}</span>${primeTag(primeOf(p, {}))}
+        <span class="bc-stage">${esc(lang === 'ko' ? s.ko : s.en)}</span><span class="spacer"></span>${instTag(p)}</div>
+      <h1>${esc(pick(p.title_ko, p.title_en))}</h1>
+      <p class="alt">${esc(lang === 'ko' ? (p.title_en || '') : (p.title_ko || ''))}${p.task_order ? ` · ${esc(p.task_order)}` : ''}</p>
+      ${factsBox(p.facts)}
+      <section><div class="sec-head"><h2>${esc(t('latestStatus'))}</h2>
+        ${latest ? `<a href="#/war/${latest.w.war_date}/${encodeURIComponent(key)}">${esc(t('openInWar', fmtDate(latest.w.war_date)))}</a>` : ''}</div>
+        ${lines?.length ? bullets(lines) : `<p class="empty" style="padding:0">${esc(t('noStatus'))}</p>`}
+        ${dates.length ? `<table class="kd"><tbody>${dates.map((r) => `<tr><td>${esc(r.date_text)}</td><td>${esc(pick(r.ko, r.en))}</td></tr>`).join('')}</tbody></table>` : ''}
+      </section>
+      <section><h2>${esc(t('records'))}</h2>
+        <div class="records">${RECORDS.map(([k, en, ko]) => `<div class="rec"><span>${esc(lang === 'ko' ? ko : en)}</span><span class="chip muted">${esc(t('soon'))}</span></div>`).join('')}</div>
+      </section>
+      <section><h2>${esc(t('askTitle'))}</h2>
+        <form id="ask" class="ask">
+          <label class="sr" for="qb">${esc(t('askTitle'))}</label>
+          <textarea id="qb" rows="3" maxlength="4000" placeholder="${esc(t('askPh'))}" required></textarea>
+          <button class="btn" type="submit">${esc(t('askSend'))}</button>
+        </form>
+        <div id="qlist"></div>
+      </section>
+    </article>`;
+  const drawQs = async () => {
+    const { data: qs } = await sb.from('questions').select('*').eq('project_id', p.id).order('created_at', { ascending: false });
+    $('#qlist').innerHTML = (qs || []).map(qItem).join('') || '';
+    bindAnswer($('#qlist'), drawQs);
+  };
+  drawQs();
+  $('#ask').addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const body = $('#qb').value.trim(); if (!body) return;
+    const { error } = await sb.from('questions').insert({ org_id: state.orgId, project_id: p.id, body, asked_name: state.profile?.name || state.user.email });
+    if (error) return toast(errText(error));
+    $('#qb').value = ''; toast(t('askSent')); drawQs();
+  });
+}
+function qItem(q, withProject) {
+  return `<div class="q ${q.status}">
+    <div class="q-meta"><b>${esc(q.asked_name || '')}</b> <span>${esc(fmtTime(q.created_at))}</span>
+      ${withProject && q.projects ? `<a href="#/p/${encodeURIComponent(q.projects.project_key)}">${esc(keyLabel(q.projects.project_key))}</a>` : ''}
+      <span class="chip ${q.status === 'open' ? 'live' : 'final'}">${esc(t(q.status === 'open' ? 'qOpen' : 'qAnswered'))}</span></div>
+    <p>${esc(q.body)}</p>
+    ${q.answer ? `<p class="q-ans">${esc(q.answer)}</p>` : ''}
+    ${isAdmin() && q.status === 'open' ? `<form class="ans" data-q="${q.id}"><input type="text" placeholder="${esc(t('answerPh'))}" required><button class="btn small" type="submit">${esc(t('answer'))}</button></form>` : ''}
+  </div>`;
+}
+function bindAnswer(root, redraw) {
+  $$('form.ans', root).forEach((f) => f.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const answer = $('input', f).value.trim(); if (!answer) return;
+    const { error } = await sb.from('questions').update({ answer, status: 'answered', answered_by: state.user.id, answered_at: new Date().toISOString() }).eq('id', f.dataset.q);
+    if (error) return toast(errText(error)); toast(t('saved')); redraw();
+  }));
+}
+async function renderQuestions() {
+  shell(t('questionsTitle'), `<h1>${esc(t('questionsTitle'))}</h1><p class="lede">${esc(t('questionsLede'))}</p><div id="qlist"><p class="empty">…</p></div>`);
+  const draw = async () => {
+    const { data } = await sb.from('questions').select('*,projects(project_key)').order('status').order('created_at', { ascending: false });
+    $('#qlist').innerHTML = (data || []).map((q) => qItem(q, true)).join('') || `<p class="empty">${esc(t('noQuestions'))}</p>`;
+    bindAnswer($('#qlist'), draw);
+  };
+  draw();
 }
 
 // ---------------------------------------------------------------- Team access
@@ -689,6 +862,11 @@ async function route() {
   if (page === 'war' && arg && sub) return renderProject(arg, sub);
   if (page === 'war') return renderWar(arg);
   if (page === 'access') return renderAccess();
+  if (page === 'projects') return renderProjects();
+  if (page === 'proposals') return renderProposals();
+  if (page === 'warranties') return renderWarranties();
+  if (page === 'questions') return renderQuestions();
+  if (page === 'p' && arg) return renderProjectPage(arg);
   return renderHome();
 }
 
