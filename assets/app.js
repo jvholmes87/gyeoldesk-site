@@ -41,7 +41,7 @@ const T = {
     keyDates: '주요 일정', date: '일자', item: '항목', search: '과업 검색', searchPeople: '이름 검색',
     noWeeks: '아직 WAR가 없습니다. 드라이브 00_WAR 주간 폴더에 문서를 넣으면 15분 안에 나타납니다.',
     noMatch: '검색 결과가 없습니다.',
-    pending: '승인 요청', noPending: '대기 중인 요청이 없습니다.', approve: '승인', decline: '거절',
+    pending: '승인 요청', noPending: '대기 중인 요청이 없습니다.', matchTo: '명단의 누구인가요?', matchNone: '명단에 없음', approve: '승인', decline: '거절',
     roster: '명단', all: '전체', withAccess: '접근 허용', withoutAccess: '미허용',
     name: '이름', title: '직책', needsAccess: '접근', role: '역할', status: '상태',
     roleAdmin: '관리자', roleExec: '임원', roleTeam: '팀원',
@@ -51,7 +51,7 @@ const T = {
     roleHelp: '관리자: 전체 + 확정 버튼 + 내부 메모. 임원: 전체 보기. 팀원: WAR 보기와 검토.',
     errGeneric: '저장하지 못했습니다. 다시 시도하세요.', errCode: '코드가 맞지 않거나 만료되었습니다. 새 코드를 받으세요.',
     errEmail: '이메일 주소를 확인하세요.', errRate: '요청이 너무 잦습니다. 1분 후 다시 시도하세요.',
-    unknownOrg: '이 주소의 회사를 찾을 수 없습니다.', notOnRoster: '명단에 없는 사용자', koOnly: '영문 없음 — 한국어 원문', home: '홈', back: '홈으로',
+    unknownOrg: '이 주소의 회사를 찾을 수 없습니다.', notOnRoster: '명단에 없는 사용자', shareHelp: '이메일을 모르는 사람은 이 주소로 직접 접근 요청을 보내게 하세요. 요청이 오면 명단의 이름을 골라 승인하면 이메일이 자동으로 채워집니다:', koOnly: '영문 없음 — 한국어 원문', home: '홈', back: '홈으로',
   },
   en: {
     tagline: 'Where site documents become the weekly report. Each company has its own workspace to read and review its Weekly Action Report.',
@@ -81,7 +81,7 @@ const T = {
     keyDates: 'Key dates', date: 'Date', item: 'Item', search: 'Search projects', searchPeople: 'Search people',
     noWeeks: 'No WAR yet. Docs placed in a 00_WAR week folder on Drive show up here within 15 minutes.',
     noMatch: 'No projects match.',
-    pending: 'Access requests', noPending: 'No requests waiting.', approve: 'Approve', decline: 'Decline',
+    pending: 'Access requests', noPending: 'No requests waiting.', matchTo: 'Who is this on the roster?', matchNone: 'Not on roster', approve: 'Approve', decline: 'Decline',
     roster: 'Roster', all: 'All', withAccess: 'Has access', withoutAccess: 'No access',
     name: 'Name', title: 'Title', needsAccess: 'Access', role: 'Role', status: 'Status',
     roleAdmin: 'Admin', roleExec: 'Executive', roleTeam: 'Team',
@@ -91,7 +91,7 @@ const T = {
     roleHelp: 'Admin: everything, the Final button and internal notes. Executive: sees everything. Team: reads the WAR and reviews.',
     errGeneric: 'Could not save. Try again.', errCode: 'That code is wrong or expired. Send a new code.',
     errEmail: 'Check the email address.', errRate: 'Too many tries. Wait a minute and try again.',
-    unknownOrg: 'No company uses this address.', notOnRoster: 'Signed-in users not on the roster', koOnly: 'No English text in the source doc yet. Korean original shown.', home: 'Home', back: 'Back to home',
+    unknownOrg: 'No company uses this address.', notOnRoster: 'Signed-in users not on the roster', shareHelp: 'For anyone without an email here, share this link. They sign in with their own email and request access; you pick their name from the roster and approve, and their email fills in:', koOnly: 'No English text in the source doc yet. Korean original shown.', home: 'Home', back: 'Back to home',
   },
 };
 // English by default. Each person's choice is kept on this device and, once signed in, on their account.
@@ -420,6 +420,11 @@ function itemCard(it) {
 
 // ---------------------------------------------------------------- Team access
 const accessView = { filter: 'all', q: '' };
+const norm = (x) => String(x || '').toLowerCase().replace(/[^a-z가-힣]/g, '');
+function guessMatch(p, r) {
+  const n = norm(p.name);
+  return !!n && ((r.name_ko && n.includes(norm(r.name_ko))) || (r.name_en && n.includes(norm(r.name_en))));
+}
 async function renderAccess() {
   if (!isAdmin()) { location.hash = '#/'; return; }
   shell(t('accessTitle'), `<h1>${esc(t('accessTitle'))}</h1><p class="lede">${esc(t('accessLede'))}</p><div id="acc"><p class="empty">…</p></div>`);
@@ -487,10 +492,16 @@ async function renderAccess() {
       ${pending.length ? pending.map((p) => `
         <div class="req"><div><b>${esc(p.name || p.email)}</b> <span class="item-key">${esc(p.email)}</span>
           ${p.requested_note ? `<div class="note">${esc(p.requested_note)}</div>` : ''}</div>
-          <div class="act">${roleSel('req-' + p.user_id, 'team', false)}
+          <div class="act">
+            <select data-match="${p.user_id}" aria-label="${esc(t('matchTo'))}" style="width:auto;max-width:220px">
+              <option value="">${esc(t('matchNone'))}</option>
+              ${roster.filter((r) => r.employed && !r.email).map((r) => `<option value="${r.id}" ${guessMatch(p, r) ? 'selected' : ''}>${esc(r.name_en)}${r.name_ko ? ` (${esc(r.name_ko)})` : ''} — ${esc(r.team || '')}</option>`).join('')}
+            </select>
+            ${roleSel('req-' + p.user_id, 'team', false)}
             <button class="btn small" data-approve="${p.user_id}">${esc(t('approve'))}</button>
             <button class="btn small quiet" data-decline="${p.user_id}">${esc(t('decline'))}</button></div></div>`).join('')
         : `<p class="empty">${esc(t('noPending'))}</p>`}
+      <p class="empty" style="font-size:13px;border-top:1px solid var(--line-2)">${esc(t('shareHelp'))} <b>https://${esc(state.slug)}.${ROOT_DOMAIN}</b></p>
     </section>
     <section class="panel">
       <header><h2>${esc(t('roster'))}</h2>
@@ -542,7 +553,12 @@ async function renderAccess() {
   $('#rf').addEventListener('change', (e) => { accessView.filter = e.target.value; tbody.innerHTML = rows(); rebind(); });
   $$('[data-approve]').forEach((b) => b.addEventListener('click', async () => {
     const id = b.dataset.approve; const role = $(`select[data-id="req-${id}"]`).value;
-    const { error } = await sb.rpc('decide_access', { target: id, approve: true, new_role: role });
+    const match = $(`select[data-match="${id}"]`)?.value;
+    const prof = pending.find((p) => p.user_id === id);
+    // Matched to a roster person: write their email onto the roster row and tick access. The roster sync approves the account.
+    const { error } = match
+      ? await sb.from('roster').update({ email: prof.email, needs_access: true, access_role: role }).eq('id', match)
+      : await sb.rpc('decide_access', { target: id, approve: true, new_role: role });
     if (error) return toast(errText(error)); toast(t('saved')); renderAccess();
   }));
   $$('[data-decline]').forEach((b) => b.addEventListener('click', async () => {
