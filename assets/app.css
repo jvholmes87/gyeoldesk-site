@@ -439,7 +439,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
   .war-tools input[type=search] { max-width: none; }
   .detail { padding: 16px 14px 20px; }
   .facts { font-size: 12.5px; }
-  .kd td:first-child { white-space: normal; }
+
   .summary div, .summary .sumbtn { min-width: calc(50% - 6px); }
   .addrow { grid-template-columns: 1fr; }
   .gate-card { padding: 22px 18px; }
@@ -448,3 +448,5 @@ html, body { max-width: 100%; overflow-x: hidden; }
 .req > div { min-width: 0; }
 .req .act { flex-wrap: wrap; }
 @media (max-width: 640px) { .req .act select { max-width: 100% !important; flex: 1 1 100%; } }
+.kd th:first-child, .kd td:first-child { white-space: nowrap; width: 1%; padding-right: 12px; }
+@media (max-width: 640px) { .kd { font-size: 13px; } .kd th, .kd td { padding: 6px 4px; } }
