@@ -31,7 +31,7 @@ const T = {
     count: (n) => `${n}건`, none: '없음', noDrafts: '작성 중인 제안이 없습니다.', stageNotSet: '단계 미지정', openQuestions: '건의 질문이 답변을 기다리고 있습니다', menu: '메뉴', teamMenu: '팀 접근 권한', settings: '설정',
     latestStatus: '최신 현황', openInWar: (d) => `WAR에서 보기 (${d})`, noStatus: '아직 WAR 현황이 없습니다.', records: '과업 기록', askTitle: '질문하기', askPh: '이 과업에 대한 질문을 한국어나 영어로 적어 주세요.', askSend: '질문 보내기', askSent: '질문을 보냈습니다',
     qOpen: '답변 대기', qAnswered: '답변 완료', answerPh: '답변 입력', answer: '답변', questionsTitle: '질문', questionsLede: '과업 페이지에서 올라온 질문. 관리자가 답변합니다.', noQuestions: '질문이 없습니다.', projectPage: '과업 페이지 열기',
-    boardTitle: '주간 현황 보드', weeksNav: '주 선택', backBoard: '보드로 돌아가기', newerWeek: '더 최신 주가 있습니다:', itemNo: (n) => `항목 ${n}`, thisWeek: '이번 주 현황', bothLangs: '한국어·영어 함께 보기', krimaText: 'Krima 현황 시트 문구', otherWeeks: '다른 주', warTitle: '주간 현황 보고', warLede: '매일 갱신되는 이번 주 WAR와 지난 주 기록.',
+    printEyebrow: '주간 현황 — 전체 과업', printPrimeNote: '과업 번호 옆에 원도급사 표시', cont: '계속', printFoot: '금액 단위 원(KRW) · 상세 내용은 주간 현황 보고(WAR) 참조', boardTitle: '주간 현황 보드', weeksNav: '주 선택', backBoard: '보드로 돌아가기', newerWeek: '더 최신 주가 있습니다:', itemNo: (n) => `항목 ${n}`, thisWeek: '이번 주 현황', bothLangs: '한국어·영어 함께 보기', krimaText: 'Krima 현황 시트 문구', otherWeeks: '다른 주', warTitle: '주간 현황 보고', warLede: '매일 갱신되는 이번 주 WAR와 지난 주 기록.',
     accessTitle: '팀 접근 권한', accessLede: '조직도(10_GNC_ORG)에서 불러온 명단입니다. 접근이 필요한 사람에 체크하고 이메일과 역할을 정하세요.',
     reviewTitle: '검토 데스크', reviewLede: '팀원이 한국어로 답하면 영어로 정리됩니다.',
     krimaTitle: 'Krima 현황 시트', krimaLede: 'Krima 과업만 해당. 주간 확정 시 생성됩니다.',
@@ -51,7 +51,7 @@ const T = {
     name: '이름', title: '직책', needsAccess: '접근', role: '역할', status: '상태',
     roleAdmin: '관리자', roleExec: '임원', roleTeam: '팀원',
     stActive: '사용 중', stInvited: '초대됨', stNeedsEmail: '이메일 필요', stOff: '—', stDeparted: '퇴사', stDeclined: '꺼짐',
-    sumAccess: '접근 허용', sumActive: '로그인 완료', sumNeedEmail: '이메일 필요', sumTotal: '명단 인원',
+    sumAccess: '접근 허용', sumActive: '로그인 완료', sumNeedEmail: '이메일 없음', noEmailFilter: '이메일 없음', sumTotal: '명단 인원',
     addPerson: '사람 추가', team: '팀', add: '추가', saved: '저장됨',
     roleHelp: '관리자: 전체 + 확정 버튼 + 내부 메모. 임원: 전체 보기. 팀원: WAR 보기와 검토.',
     errGeneric: '저장하지 못했습니다. 다시 시도하세요.', errCode: '코드가 맞지 않거나 만료되었습니다. 새 코드를 받으세요.',
@@ -76,7 +76,7 @@ const T = {
     count: (n) => `${n}`, none: 'None', noDrafts: 'No proposals in draft.', stageNotSet: 'Stage not set', openQuestions: 'question(s) waiting for an answer', menu: 'Menu', teamMenu: 'Team and access', settings: 'Settings',
     latestStatus: 'Latest status', openInWar: (d) => `Open in WAR (${d})`, noStatus: 'No WAR status for this project yet.', records: 'Project records', askTitle: 'Ask a question', askPh: 'Write your question about this project in Korean or English.', askSend: 'Send question', askSent: 'Question sent',
     qOpen: 'Waiting', qAnswered: 'Answered', answerPh: 'Type an answer', answer: 'Answer', questionsTitle: 'Questions', questionsLede: 'Questions asked from project pages. Admins answer them here.', noQuestions: 'No questions yet.', projectPage: 'Open the project page',
-    boardTitle: 'Weekly Status Board', weeksNav: 'Choose a week', backBoard: 'Back to the board', newerWeek: 'A newer week is available:', itemNo: (n) => `Item ${n}`, thisWeek: 'This week', bothLangs: 'Show Korean and English', krimaText: 'Krima sheet status text', otherWeeks: 'Other weeks', warTitle: 'Weekly Action Report', warLede: 'This week’s WAR, updated through the day, and every past week.',
+    printEyebrow: 'Weekly status — all projects', printPrimeNote: 'Prime shown next to each project no.', cont: 'continued', printFoot: 'Values in KRW · full details in the Weekly Action Report', boardTitle: 'Weekly Status Board', weeksNav: 'Choose a week', backBoard: 'Back to the board', newerWeek: 'A newer week is available:', itemNo: (n) => `Item ${n}`, thisWeek: 'This week', bothLangs: 'Show Korean and English', krimaText: 'Krima sheet status text', otherWeeks: 'Other weeks', warTitle: 'Weekly Action Report', warLede: 'This week’s WAR, updated through the day, and every past week.',
     accessTitle: 'Team access', accessLede: 'People from the org chart (10_GNC_ORG). Tick who needs access, then set their email and role.',
     reviewTitle: 'Review Desk', reviewLede: 'The team answers in Korean; answers are put into English for you.',
     krimaTitle: 'Krima status sheet', krimaLede: 'Krima task orders only. Generated when the week is final.',
@@ -96,7 +96,7 @@ const T = {
     name: 'Name', title: 'Title', needsAccess: 'Access', role: 'Role', status: 'Status',
     roleAdmin: 'Admin', roleExec: 'Executive', roleTeam: 'Team',
     stActive: 'Signed in', stInvited: 'Invited', stNeedsEmail: 'Needs email', stOff: '—', stDeparted: 'Left', stDeclined: 'Turned off',
-    sumAccess: 'Have access', sumActive: 'Signed in', sumNeedEmail: 'Need an email', sumTotal: 'On roster',
+    sumAccess: 'Have access', sumActive: 'Signed in', sumNeedEmail: 'No email yet', noEmailFilter: 'No email yet', sumTotal: 'On roster',
     addPerson: 'Add a person', team: 'Team', add: 'Add', saved: 'Saved',
     roleHelp: 'Admin: everything, the Final button and internal notes. Executive: sees everything. Team: reads the WAR and reviews.',
     errGeneric: 'Could not save. Try again.', errCode: 'That code is wrong or expired. Send a new code.',
@@ -226,11 +226,14 @@ function shell(crumb, inner) {
           <a href="#/questions">${esc(t('questionsTitle'))}</a>
           ${isAdmin() ? `<a href="#/access">${esc(t('teamMenu'))}</a>` : ''}
           <span class="soon-item">${esc(t('settings'))} <span class="chip muted">${esc(t('soon'))}</span></span>
+          <button type="button" class="menu-out" id="signout2">${esc(t('signOut'))}<small>${esc(state.user?.email || '')}</small></button>
         </nav></div>` : ''}
     </div></header>
     <main class="page" id="main">${inner}</main>`;
   bindLang();
-  $('#signout')?.addEventListener('click', async () => { await sb.auth.signOut(); state.user = null; state.profile = null; route(); });
+  const out = async () => { await sb.auth.signOut(); state.user = null; state.profile = null; route(); };
+  $('#signout')?.addEventListener('click', out);
+  $('#signout2')?.addEventListener('click', out);
   const mb = $('#menuBtn'); const ml = $('#menuList');
   mb?.addEventListener('click', (e) => { e.stopPropagation(); ml.hidden = !ml.hidden; mb.setAttribute('aria-expanded', String(!ml.hidden)); });
   document.addEventListener('click', () => { if (ml && !ml.hidden) { ml.hidden = true; mb.setAttribute('aria-expanded', 'false'); } }, { once: true });
@@ -382,7 +385,7 @@ async function renderWar(dateParam) {
   const wk = weeks.find((w) => w.war_date === dateParam) || weeks[0];
 
   const { data: items, error } = await sb.from('items')
-    .select('id,item_no,projects(project_key,title_ko,title_en,prime,stage,facts,installation),snapshots(id,captured_at,source_modified_at,fields,ko,en,key_dates)')
+    .select('id,item_no,projects(project_key,pid,title_ko,title_en,prime,stage,facts,installation),snapshots(id,captured_at,source_modified_at,fields,ko,en,key_dates)')
     .eq('week_id', wk.id)
     .order('source_modified_at', { referencedTable: 'snapshots', ascending: false })
     .limit(1, { referencedTable: 'snapshots' });
@@ -419,7 +422,8 @@ async function renderWar(dateParam) {
   };
   draw();
   $('#q').addEventListener('input', (e) => { warView.q = e.target.value; draw(); });
-  $('#print').addEventListener('click', () => window.print());
+  warView.printData = { wk, items };
+  $('#print').addEventListener('click', () => printBoard());
   $('#toReview')?.addEventListener('click', async () => {
     if (!confirm(t('confirmReview'))) return;
     const { error: er } = await sb.rpc('set_week_review', { w: wk.id }); if (er) return toast(errText(er)); renderWar(wk.war_date);
@@ -446,6 +450,68 @@ function boardCard(it, wk, s) {
       ${dates.length ? `<div class="bc-dates">${dates.map((r) => `<div><b>${esc(r.date_text.replace(/\s*\(.+\)$/, ''))}</b><span>${esc(pick(r.ko, r.en))}</span></div>`).join('')}</div>` : ''}
       ${f.status === 'carried' ? `<span class="chip muted bc-carried">${esc(t('carried'))}</span>` : ''}
     </a>`;
+}
+
+// ---------------------------------------------------------------- Print: landscape WAR Board
+const PRINT_COLS = 7;
+function printCard(it, wk, s) {
+  const sn = latestSnap(it); const p = it.projects || {}; const f = sn.fields || {};
+  const body = lang === 'ko' ? (sn.ko?.length ? sn.ko : sn.en) : (sn.en?.length ? sn.en : sn.ko);
+  const dates = upcoming(sn.key_dates, wk.war_date, 2);
+  return `<div class="pc" style="--stage:${s.c}">
+    <div class="pc-top"><span>${esc(keyLabel(p.project_key))}</span>${primeTag(primeOf(p, f))}</div>
+    <div class="pc-stage">${p.pid ? `<span class="pc-pid">${esc(p.pid)}</span> ` : ''}${esc(lang === 'ko' ? s.ko : s.en)}${p.installation ? ` <span class="pc-inst">${esc(p.installation)}</span>` : ''}</div>
+    <div class="pc-title">${esc(pick(f.title_ko || p.title_ko, f.title_en || p.title_en))}</div>
+    ${p.facts?.length ? `<dl class="pc-facts">${p.facts.map((x) => `<dt>${esc(lang === 'ko' ? (x.ko || x.en) : x.en)}</dt><dd>${esc(x.v)}</dd>`).join('')}</dl>` : ''}
+    <ul>${(body || []).filter((x) => !x.startsWith('· ')).slice(0, 4).map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+    ${dates.length ? `<div class="pc-dates">${dates.map((r) => `<div><b>${esc(r.date_text.replace(/\s*\(.+\)$/, ''))}</b><span>${esc(pick(r.ko, r.en))}</span></div>`).join('')}</div>` : ''}
+  </div>`;
+}
+function printBoard() {
+  const d = warView.printData; if (!d) return window.print();
+  const { wk, items } = d;
+  const groups = STAGES.map((s) => ({ s, cards: items.filter((it) => stageOf(it.projects, latestSnap(it).fields) === s.k) })).filter((g) => g.cards.length);
+  // Pack stage sections into rows of PRINT_COLS cards, like the paper board: small stages share a row.
+  const rows = []; let cur = []; let used = 0;
+  const flush = () => { if (cur.length) rows.push(cur); cur = []; used = 0; };
+  for (const g of groups) {
+    for (let i = 0; i < g.cards.length; i += PRINT_COLS) {
+      const chunk = { s: g.s, cards: g.cards.slice(i, i + PRINT_COLS), cont: i > 0 };
+      if (used + chunk.cards.length > PRINT_COLS) flush();
+      cur.push(chunk); used += chunk.cards.length;
+      if (used === PRINT_COLS) flush();
+    }
+  }
+  flush();
+  const org = state.org;
+  const date = new Date(wk.war_date + 'T00:00:00+09:00');
+  const big = date.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Asia/Seoul' }).toUpperCase().replace(',', '');
+  const html = `
+    <header class="pb-head">
+      <div><div class="pb-eyebrow">${esc(org.slug.toUpperCase())} · ${esc(t('printEyebrow'))}</div>
+        <h1>[WAR] ${esc(t('boardTitle'))}</h1></div>
+      <div class="pb-date"><b>${esc(big)}</b><span>${esc(t(wk.status))} · ${esc(t('projects', items.length))}</span></div>
+    </header>
+    <div class="pb-legend">${STAGES.filter((s) => s.k !== 'other').map((s) => `<span><i style="background:${s.c}"></i>${esc(lang === 'ko' ? s.ko : s.en)}</span>`).join('')}<span class="pb-note">${esc(t('printPrimeNote'))}</span></div>
+    ${rows.map((row) => `<div class="pb-row">${row.map((c) => `
+      <section class="pb-sec" style="grid-column: span ${c.cards.length}; --n:${c.cards.length}; --stage:${c.s.c}">
+        <h2>${esc(lang === 'ko' ? c.s.ko : c.s.en)}${c.cont ? ` (${esc(t('cont'))})` : ` <span>${esc(lang === 'ko' ? c.s.dko : c.s.den)}</span>`}</h2>
+        <div class="pb-cards">${c.cards.map((it) => printCard(it, wk, c.s)).join('')}</div>
+      </section>`).join('')}</div>`).join('')}
+    <footer class="pb-foot"><span>${esc(t('printFoot'))}</span><span>${esc(pick(org.name_ko, org.name))} · gyeoldesk.com</span></footer>`;
+  let root = document.getElementById('print-root');
+  if (!root) { root = document.createElement('div'); root.id = 'print-root'; document.body.append(root); }
+  root.innerHTML = html;
+  // Measure at landscape page width. If the board is only a little taller than one sheet, shrink it to fit;
+  // otherwise let rows continue on further landscape sheets.
+  root.style.zoom = ''; root.classList.add('measure');
+  const PAGE_H = 720; const h = root.scrollHeight;
+  root.classList.remove('measure');
+  if (h > PAGE_H && h <= PAGE_H * 1.45) root.style.zoom = String(Math.floor((PAGE_H / h) * 100) / 100);
+  document.body.classList.add('printing-board');
+  const done = () => { document.body.classList.remove('printing-board'); window.removeEventListener('afterprint', done); };
+  window.addEventListener('afterprint', done);
+  setTimeout(() => window.print(), 50);
 }
 
 async function renderProject(dateParam, keyParam) {
@@ -710,7 +776,7 @@ async function renderAccess() {
   const counts = {
     access: roster.filter((r) => r.needs_access && r.employed && r.email).length,
     active: roster.filter((r) => r.needs_access && r.email && byEmail.get(r.email.toLowerCase())?.status === 'approved').length,
-    needEmail: roster.filter((r) => r.needs_access && r.employed && !r.email).length,
+    needEmail: roster.filter((r) => r.employed && !r.email).length,
     total: roster.filter((r) => r.employed).length,
   };
   const roleSel = (id, val, disabled) => `<select data-f="access_role" data-id="${id}" ${disabled ? 'disabled' : ''} aria-label="${esc(t('role'))}">
@@ -719,7 +785,7 @@ async function renderAccess() {
   const rows = () => {
     const q = accessView.q.toLowerCase();
     const list = roster.filter((r) =>
-      (accessView.filter === 'all' || (accessView.filter === 'on' ? r.needs_access : !r.needs_access)) &&
+      (accessView.filter === 'all' || (accessView.filter === 'on' ? r.needs_access : accessView.filter === 'noemail' ? (r.employed && !r.email) : !r.needs_access)) &&
       (!q || [r.name_en, r.name_ko, r.email, r.team, r.title_en, r.title_ko].join(' ').toLowerCase().includes(q)));
     let team = null; let html = '';
     for (const r of list) {
@@ -744,7 +810,7 @@ async function renderAccess() {
     <div class="summary">
       <div><b>${counts.access}</b><span>${esc(t('sumAccess'))}</span></div>
       <div><b>${counts.active}</b><span>${esc(t('sumActive'))}</span></div>
-      <div><b>${counts.needEmail}</b><span>${esc(t('sumNeedEmail'))}</span></div>
+      <button type="button" class="sumbtn" id="needEmail"><b>${counts.needEmail}</b><span>${esc(t('sumNeedEmail'))}</span></button>
       <div><b>${counts.total}</b><span>${esc(t('sumTotal'))}</span></div>
     </div>
     <section class="panel">
@@ -770,6 +836,7 @@ async function renderAccess() {
           <option value="all" ${accessView.filter === 'all' ? 'selected' : ''}>${esc(t('all'))}</option>
           <option value="on" ${accessView.filter === 'on' ? 'selected' : ''}>${esc(t('withAccess'))}</option>
           <option value="off" ${accessView.filter === 'off' ? 'selected' : ''}>${esc(t('withoutAccess'))}</option>
+          <option value="noemail" ${accessView.filter === 'noemail' ? 'selected' : ''}>${esc(t('noEmailFilter'))}</option>
         </select></header>
       <div style="overflow-x:auto"><table class="roster">
         <thead><tr><th scope="col">${esc(t('name'))}</th><th scope="col">${esc(t('title'))}</th><th scope="col">${esc(t('email'))}</th>
@@ -809,6 +876,7 @@ async function renderAccess() {
     }));
   };
   rebind();
+  $('#needEmail').addEventListener('click', () => { accessView.filter = 'noemail'; $('#rf').value = 'noemail'; tbody.innerHTML = rows(); rebind(); $('#rf').scrollIntoView({ behavior: 'smooth', block: 'center' }); });
   $('#rq').addEventListener('input', (e) => { accessView.q = e.target.value; tbody.innerHTML = rows(); rebind(); });
   $('#rf').addEventListener('change', (e) => { accessView.filter = e.target.value; tbody.innerHTML = rows(); rebind(); });
   $$('[data-approve]').forEach((b) => b.addEventListener('click', async () => {
