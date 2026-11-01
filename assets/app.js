@@ -26,7 +26,7 @@ const T = {
     declinedTitle: '접근 권한 없음', declinedLede: '이 계정은 이 작업 공간에 접근할 수 없습니다. 관리자에게 문의하세요.',
     otherOrgTitle: '다른 회사 계정', otherOrgLede: '이 계정은 다른 회사의 작업 공간에 속해 있습니다.',
     signOut: '로그아웃',
-    warTitle: '주간 현황 보고', warLede: '매일 갱신되는 이번 주 WAR와 지난 주 기록.',
+    boardTitle: '주간 현황 보드', weeksNav: '주 선택', backBoard: '보드로 돌아가기', newerWeek: '더 최신 주가 있습니다:', itemNo: (n) => `항목 ${n}`, thisWeek: '이번 주 현황', bothLangs: '한국어·영어 함께 보기', krimaText: 'Krima 현황 시트 문구', otherWeeks: '다른 주', warTitle: '주간 현황 보고', warLede: '매일 갱신되는 이번 주 WAR와 지난 주 기록.',
     accessTitle: '팀 접근 권한', accessLede: '조직도(10_GNC_ORG)에서 불러온 명단입니다. 접근이 필요한 사람에 체크하고 이메일과 역할을 정하세요.',
     reviewTitle: '검토 데스크', reviewLede: '팀원이 한국어로 답하면 영어로 정리됩니다.',
     krimaTitle: 'Krima 현황 시트', krimaLede: 'Krima 과업만 해당. 주간 확정 시 생성됩니다.',
@@ -66,7 +66,7 @@ const T = {
     declinedTitle: 'No access', declinedLede: 'This account cannot open this workspace. Contact your admin.',
     otherOrgTitle: 'Account belongs to another company', otherOrgLede: 'This account is set up for another company workspace.',
     signOut: 'Sign out',
-    warTitle: 'Weekly Action Report', warLede: 'This week’s WAR, updated through the day, and every past week.',
+    boardTitle: 'Weekly Status Board', weeksNav: 'Choose a week', backBoard: 'Back to the board', newerWeek: 'A newer week is available:', itemNo: (n) => `Item ${n}`, thisWeek: 'This week', bothLangs: 'Show Korean and English', krimaText: 'Krima sheet status text', otherWeeks: 'Other weeks', warTitle: 'Weekly Action Report', warLede: 'This week’s WAR, updated through the day, and every past week.',
     accessTitle: 'Team access', accessLede: 'People from the org chart (10_GNC_ORG). Tick who needs access, then set their email and role.',
     reviewTitle: 'Review Desk', reviewLede: 'The team answers in Korean; answers are put into English for you.',
     krimaTitle: 'Krima status sheet', krimaLede: 'Krima task orders only. Generated when the week is final.',
@@ -327,51 +327,97 @@ async function renderHome() {
 }
 
 // ---------------------------------------------------------------- WAR
-const warView = { showInternal: false, q: '' };
+const warView = { q: '', both: false };
+const STAGES = [
+  { k: 'construction', en: 'Construction', ko: '시공', den: 'NTP issued, work on site', dko: '착공 후 현장 작업', c: '#1F6B3A' },
+  { k: 'pre-ntp', en: 'Pre-NTP', ko: '착공 전', den: 'Submittals and permits before start', dko: '착공 전 제출물·허가', c: '#2A4FA3' },
+  { k: 'closeout', en: 'Closeout', ko: '준공 정산', den: 'Work done, payment open', dko: '작업 완료, 기성 진행', c: '#8A6A12' },
+  { k: 'bid', en: 'Bid', ko: '입찰', den: 'Quoted, awaiting award', dko: '견적 제출, 낙찰 대기', c: '#1D6E6E' },
+  { k: 'warranty', en: 'Warranty', ko: '하자보수', den: 'Warranty clocks running', dko: '하자 기간 진행 중', c: '#8E1F3F' },
+  { k: 'other', en: 'Other', ko: '기타', den: 'Stage not set yet', dko: '단계 미지정', c: '#5B6775' },
+];
+const PRIMES = { krima: 'KRIMA', livart: 'LIVART', gnc: 'GNC' };
+function stageOf(p, f) {
+  const s = String(p?.stage || f?.stage || '').toLowerCase();
+  if (s.includes('warrant')) return 'warranty';
+  if (s.includes('pre')) return 'pre-ntp';
+  if (s.includes('close')) return 'closeout';
+  if (s.includes('bid')) return 'bid';
+  if (s.includes('constr')) return 'construction';
+  return 'other';
+}
+const primeOf = (p, f) => String(p?.prime || f?.prime || '').toLowerCase();
+const keyLabel = (k) => (/^\d{2}-\d{4}$/.test(k || '') ? `SMYU ${k}` : (k || ''));
+const primeTag = (pr) => (pr ? `<span class="prime prime-${esc(pr)}">${esc(PRIMES[pr] || pr.toUpperCase())}</span>` : '');
+function factsBox(facts) {
+  if (!facts?.length) return '';
+  return `<dl class="facts">${facts.map((x) => `<dt>${esc(lang === 'ko' ? (x.ko || x.en) : x.en)}</dt><dd>${esc(x.v)}</dd>`).join('')}</dl>`;
+}
+function upcoming(kd, warDate, n = 2) {
+  return (kd || []).filter((r) => r.date_text && (!r.date || r.date >= warDate)).sort((a, b) => String(a.date || '9').localeCompare(String(b.date || '9'))).slice(0, n);
+}
+function bullets(list) {
+  return `<ul>${(list || []).map((x) => x.startsWith('· ') ? `<li class="sub">${esc(x)}</li>` : `<li>${esc(x)}</li>`).join('')}</ul>`;
+}
+const latestSnap = (it) => it.snapshots?.[0] || {};
+
+async function loadWeeks() {
+  const { data, error } = await sb.from('weeks').select('id,war_date,status,rev,final_at,review_at').order('war_date', { ascending: false }).order('rev', { ascending: false });
+  if (error) throw error;
+  return data;
+}
+function weekNav(weeks, current, suffix = '') {
+  return `<nav class="weeks" aria-label="${esc(t('weeksNav'))}">${weeks.map((w) => `
+    <a href="#/war/${w.war_date}${suffix}" ${w.id === current.id ? 'aria-current="page"' : ''}>
+      <span class="d">${esc(fmtDate(w.war_date))}</span><span class="chip ${w.status}">${esc(t(w.status))}</span></a>`).join('')}</nav>`;
+}
+
 async function renderWar(dateParam) {
   shell('WAR', `<div id="war"><p class="empty">…</p></div>`);
-  const { data: weeks, error } = await sb.from('weeks').select('id,war_date,status,rev,final_at,review_at').order('war_date', { ascending: false }).order('rev', { ascending: false });
   const box = $('#war');
-  if (error) { box.innerHTML = `<div class="msg err">${esc(t('errGeneric'))}</div>`; return; }
+  let weeks;
+  try { weeks = await loadWeeks(); } catch { box.innerHTML = `<div class="msg err">${esc(t('errGeneric'))}</div>`; return; }
   if (!weeks.length) { box.innerHTML = `<h1>${esc(t('warTitle'))}</h1><p class="lede">${esc(t('noWeeks'))}</p>`; return; }
   const wk = weeks.find((w) => w.war_date === dateParam) || weeks[0];
 
-  const sel = 'id,item_no,source_title,projects(project_key,title_ko,title_en,prime),' +
-    'snapshots(id,captured_at,source_modified_at,fields,ko,en,key_dates' + (isAdmin() ? ',snapshots_internal(internal_notes,open_items)' : '') + ')';
-  const { data: items, error: e2 } = await sb.from('items').select(sel).eq('week_id', wk.id)
+  const { data: items, error } = await sb.from('items')
+    .select('id,item_no,projects(project_key,title_ko,title_en,prime,stage,facts),snapshots(id,captured_at,source_modified_at,fields,ko,en,key_dates)')
+    .eq('week_id', wk.id)
     .order('source_modified_at', { referencedTable: 'snapshots', ascending: false })
     .limit(1, { referencedTable: 'snapshots' });
-  if (e2) { box.innerHTML = `<div class="msg err">${esc(t('errGeneric'))}</div>`; return; }
+  if (error) { box.innerHTML = `<div class="msg err">${esc(t('errGeneric'))}</div>`; return; }
   items.sort((a, b) => (parseInt(a.item_no, 10) || 999) - (parseInt(b.item_no, 10) || 999));
-  const lastUpdate = items.map((i) => i.snapshots?.[0]?.captured_at).filter(Boolean).sort().pop();
+  const lastUpdate = items.map((i) => latestSnap(i).captured_at).filter(Boolean).sort().pop();
 
   const adminActions = isAdmin() && wk.status !== 'final'
     ? `${wk.status === 'live' ? `<button class="btn quiet" id="toReview">${esc(t('startReview'))}</button>` : ''}
        <button class="btn" id="toFinal">${esc(t('finalize'))}</button>` : '';
   box.innerHTML = `
     <div class="war-head">
-      <div class="title"><h1>${esc(t('week', fmtDate(wk.war_date)))}</h1>
-        <p class="lede" style="margin:0"><span class="chip ${wk.status}">${esc(t(wk.status))}</span>
+      <div class="title"><h1>${esc(t('boardTitle'))}</h1>
+        <p class="lede" style="margin:0">${esc(fmtDate(wk.war_date))} <span class="chip ${wk.status}">${esc(t(wk.status))}</span>
         ${esc(t('projects', items.length))}${lastUpdate ? ` <span class="item-key">${esc(t('updated', fmtTime(lastUpdate)))}</span>` : ''}</p></div>
       <div class="actions">${adminActions}<button class="btn quiet" id="print">${esc(t('print'))}</button></div>
     </div>
-    <nav class="weeks" aria-label="weeks">${weeks.map((w) => `
-      <a href="#/war/${w.war_date}" ${w.id === wk.id ? 'aria-current="page"' : ''}>
-        <span class="d">${esc(fmtDate(w.war_date))}</span><span class="chip ${w.status}">${esc(t(w.status))}</span></a>`).join('')}</nav>
+    ${weekNav(weeks, wk)}
     <div class="war-tools">
       <input type="search" id="q" placeholder="${esc(t('search'))}" value="${esc(warView.q)}" aria-label="${esc(t('search'))}">
-      ${isAdmin() ? `<label class="toggle"><input type="checkbox" id="ti" ${warView.showInternal ? 'checked' : ''}> ${esc(t('showInternal'))}</label>` : ''}
+      <span class="legend">${STAGES.filter((s) => s.k !== 'other').map((s) => `<span><i style="background:${s.c}"></i>${esc(lang === 'ko' ? s.ko : s.en)}</span>`).join('')}</span>
     </div>
-    <div class="items" id="items"></div>`;
+    <div id="board"></div>`;
 
   const draw = () => {
     const q = warView.q.toLowerCase();
-    const list = items.filter((it) => !q || JSON.stringify([it.projects, it.snapshots?.[0]?.ko, it.snapshots?.[0]?.en]).toLowerCase().includes(q));
-    $('#items').innerHTML = list.length ? list.map(itemCard).join('') : `<p class="empty">${esc(t('noMatch'))}</p>`;
+    const list = items.filter((it) => !q || JSON.stringify([it.projects, latestSnap(it).ko, latestSnap(it).en]).toLowerCase().includes(q));
+    const groups = STAGES.map((s) => ({ s, cards: list.filter((it) => stageOf(it.projects, latestSnap(it).fields) === s.k) })).filter((g) => g.cards.length);
+    $('#board').innerHTML = groups.length ? groups.map(({ s, cards }) => `
+      <section class="stage" style="--stage:${s.c}">
+        <h2>${esc(lang === 'ko' ? s.ko : s.en)} <span>${esc(lang === 'ko' ? s.dko : s.den)}</span></h2>
+        <div class="board">${cards.map((it) => boardCard(it, wk, s)).join('')}</div>
+      </section>`).join('') : `<p class="empty">${esc(t('noMatch'))}</p>`;
   };
   draw();
   $('#q').addEventListener('input', (e) => { warView.q = e.target.value; draw(); });
-  $('#ti')?.addEventListener('change', (e) => { warView.showInternal = e.target.checked; draw(); });
   $('#print').addEventListener('click', () => window.print());
   $('#toReview')?.addEventListener('click', async () => {
     if (!confirm(t('confirmReview'))) return;
@@ -383,39 +429,80 @@ async function renderWar(dateParam) {
   });
 }
 
-function bullets(list) {
-  return `<ul>${(list || []).map((x) => x.startsWith('· ') ? `<li class="sub">${esc(x)}</li>` : `<li>${esc(x)}</li>`).join('')}</ul>`;
-}
-function itemCard(it) {
-  const s = it.snapshots?.[0] || {};
-  const p = it.projects || {};
-  const f = s.fields || {};
+function boardCard(it, wk, s) {
+  const sn = latestSnap(it); const p = it.projects || {}; const f = sn.fields || {};
   const title = pick(f.title_ko || p.title_ko, f.title_en || p.title_en);
-  const body = lang === 'ko' ? (s.ko?.length ? s.ko : s.en) : (s.en?.length ? s.en : s.ko);
-  const fallback = lang === 'en' && !s.en?.length && s.ko?.length;
-  const carried = f.status === 'carried';
-  const kd = (s.key_dates || []).filter((r) => r.date_text);
-  const intl = Array.isArray(s.snapshots_internal) ? s.snapshots_internal[0] : s.snapshots_internal;
-  const showIntl = isAdmin() && warView.showInternal && intl && ((intl.internal_notes || []).length || (intl.open_items || []).length);
+  const body = lang === 'ko' ? (sn.ko?.length ? sn.ko : sn.en) : (sn.en?.length ? sn.en : sn.ko);
+  const dates = upcoming(sn.key_dates, wk.war_date);
   return `
-    <article class="item">
-      <div class="item-head">
-        <span class="item-no">${esc(it.item_no || '–')}</span>
-        <div><span class="item-key">${esc(p.project_key || '')}${p.prime ? ` · ${esc(p.prime)}` : ''}</span>
-          <h2 class="item-title">${esc(title)}</h2></div>
-        ${carried ? `<span class="chip muted">${esc(t('carried'))}</span>` : ''}
-      </div>
-      <div class="item-body">
-        ${fallback ? `<p class="alt">${esc(t('koOnly'))}</p>` : ''}${bullets(body)}
-        ${kd.length ? `<table class="kd"><caption class="sr">${esc(t('keyDates'))}</caption>
-          <thead><tr><th scope="col">${esc(t('date'))}</th><th scope="col">${esc(t('keyDates'))}</th></tr></thead>
-          <tbody>${kd.map((r) => `<tr><td>${esc(r.date_text)}</td><td>${esc(pick(r.ko, r.en))}</td></tr>`).join('')}</tbody></table>` : ''}
-      </div>
-      ${showIntl ? `<aside class="internal no-print">
-        ${(intl.internal_notes || []).length ? `<h3>${esc(t('internal'))}</h3>${bullets(intl.internal_notes)}` : ''}
-        ${(intl.open_items || []).length ? `<h3>${esc(t('open'))}</h3><ul>${intl.open_items.map((o) => `<li class="${o.done ? 'done' : ''}">${esc(o.text)}</li>`).join('')}</ul>` : ''}
-      </aside>` : ''}
+    <a class="bcard" href="#/war/${wk.war_date}/${encodeURIComponent(p.project_key)}">
+      <div class="bc-top"><span class="bc-key">${esc(keyLabel(p.project_key))}</span>${primeTag(primeOf(p, f))}
+        <span class="bc-stage">${esc(lang === 'ko' ? s.ko : s.en)}</span></div>
+      <h3>${esc(title)}</h3>
+      ${factsBox(p.facts)}
+      <ul class="clamp">${(body || []).filter((x) => !x.startsWith('· ')).slice(0, 4).map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+      ${dates.length ? `<div class="bc-dates">${dates.map((r) => `<div><b>${esc(r.date_text.replace(/\s*\(.+\)$/, ''))}</b><span>${esc(pick(r.ko, r.en))}</span></div>`).join('')}</div>` : ''}
+      ${f.status === 'carried' ? `<span class="chip muted bc-carried">${esc(t('carried'))}</span>` : ''}
+    </a>`;
+}
+
+async function renderProject(dateParam, keyParam) {
+  const key = decodeURIComponent(keyParam);
+  shell('WAR', `<div id="proj"><p class="empty">…</p></div>`);
+  const box = $('#proj');
+  let weeks;
+  try { weeks = await loadWeeks(); } catch { box.innerHTML = `<div class="msg err">${esc(t('errGeneric'))}</div>`; return; }
+  const wk = weeks.find((w) => w.war_date === dateParam) || weeks[0];
+  const intl = isAdmin() ? ',snapshots_internal(internal_notes,open_items)' : '';
+  const { data: rows, error } = await sb.from('items')
+    .select(`id,item_no,week_id,projects!inner(project_key,title_ko,title_en,prime,stage,facts),snapshots(id,captured_at,source_modified_at,fields,ko,en,krima_ko,krima_en,key_dates,payments${intl})`)
+    .eq('projects.project_key', key)
+    .order('source_modified_at', { referencedTable: 'snapshots', ascending: false });
+  if (error) { box.innerHTML = `<div class="msg err">${esc(t('errGeneric'))}</div>`; return; }
+  const weekById = new Map(weeks.map((w) => [w.id, w]));
+  const appearances = rows.map((r) => ({ r, w: weekById.get(r.week_id) })).filter((x) => x.w).sort((a, b) => b.w.war_date.localeCompare(a.w.war_date));
+  const here = appearances.find((x) => x.w.id === wk.id) || appearances[0];
+  if (!here) { box.innerHTML = `<p class="empty">${esc(t('noMatch'))}</p><a class="btn quiet" href="#/war/${wk.war_date}">${esc(t('backBoard'))}</a>`; return; }
+  const it = here.r; const w = here.w; const p = it.projects || {}; const sn = latestSnap(it); const f = sn.fields || {};
+  const st = STAGES.find((s) => s.k === stageOf(p, f));
+  const newest = appearances[0];
+  const ko = sn.ko || []; const en = sn.en || [];
+  const main = lang === 'ko' ? (ko.length ? ko : en) : (en.length ? en : ko);
+  const alt = lang === 'ko' ? en : ko;
+  const krima = lang === 'ko' ? (sn.krima_ko?.length ? sn.krima_ko : sn.krima_en) : (sn.krima_en?.length ? sn.krima_en : sn.krima_ko);
+  const si = Array.isArray(sn.snapshots_internal) ? sn.snapshots_internal[0] : sn.snapshots_internal;
+  const kd = (sn.key_dates || []).filter((r) => r.date_text);
+
+  box.innerHTML = `
+    <p class="no-print"><a href="#/war/${w.war_date}">← ${esc(t('backBoard'))} (${esc(fmtDate(w.war_date))})</a></p>
+    ${newest.w.id !== w.id ? `<div class="msg ok no-print">${esc(t('newerWeek'))} <a href="#/war/${newest.w.war_date}/${encodeURIComponent(key)}">${esc(fmtDate(newest.w.war_date))}</a></div>` : ''}
+    <article class="detail" style="--stage:${st.c}">
+      <div class="bc-top"><span class="bc-key">${esc(keyLabel(p.project_key))}</span>${primeTag(primeOf(p, f))}
+        <span class="bc-stage">${esc(lang === 'ko' ? st.ko : st.en)}</span>
+        <span class="spacer"></span><span class="item-key">${esc(t('itemNo', it.item_no || '–'))}</span></div>
+      <h1>${esc(pick(f.title_ko || p.title_ko, f.title_en || p.title_en))}</h1>
+      <p class="alt">${esc(lang === 'ko' ? (f.title_en || p.title_en || '') : (f.title_ko || p.title_ko || ''))}</p>
+      <p class="item-key">${esc(fmtDate(w.war_date))} <span class="chip ${w.status}">${esc(t(w.status))}</span>
+        ${sn.captured_at ? esc(t('updated', fmtTime(sn.captured_at))) : ''}${f.status === 'carried' ? ` <span class="chip muted">${esc(t('carried'))}</span>` : ''}</p>
+      ${factsBox(p.facts)}
+      <section><div class="sec-head"><h2>${esc(t('thisWeek'))}</h2>
+        ${alt.length ? `<label class="toggle no-print"><input type="checkbox" id="both" ${warView.both ? 'checked' : ''}> ${esc(t('bothLangs'))}</label>` : ''}</div>
+        <div class="${warView.both && alt.length ? 'two' : ''}">
+          <div>${!en.length && lang === 'en' && ko.length ? `<p class="alt">${esc(t('koOnly'))}</p>` : ''}${bullets(main)}</div>
+          ${warView.both && alt.length ? `<div class="altcol" lang="${lang === 'ko' ? 'en' : 'ko'}">${bullets(alt)}</div>` : ''}
+        </div></section>
+      ${kd.length ? `<section><h2>${esc(t('keyDates'))}</h2><table class="kd">
+        <thead><tr><th scope="col">${esc(t('date'))}</th><th scope="col">${esc(t('item'))}</th></tr></thead>
+        <tbody>${kd.map((r) => `<tr><td>${esc(r.date_text)}</td><td>${esc(pick(r.ko, r.en))}${warView.both ? `<div class="alt">${esc(lang === 'ko' ? r.en : r.ko)}</div>` : ''}</td></tr>`).join('')}</tbody></table></section>` : ''}
+      ${krima?.length ? `<section><h2>${esc(t('krimaText'))}</h2>${bullets(krima)}</section>` : ''}
+      ${si && ((si.internal_notes || []).length || (si.open_items || []).length) ? `<section class="internal no-print">
+        ${(si.internal_notes || []).length ? `<h3>${esc(t('internal'))}</h3>${bullets(si.internal_notes)}` : ''}
+        ${(si.open_items || []).length ? `<h3>${esc(t('open'))}</h3><ul>${si.open_items.map((o) => `<li class="${o.done ? 'done' : ''}">${esc(o.text)}</li>`).join('')}</ul>` : ''}
+      </section>` : ''}
+      ${appearances.length > 1 ? `<section class="no-print"><h2>${esc(t('otherWeeks'))}</h2><nav class="weeks">${appearances.map(({ w: aw }) => `
+        <a href="#/war/${aw.war_date}/${encodeURIComponent(key)}" ${aw.id === w.id ? 'aria-current="page"' : ''}><span class="d">${esc(fmtDate(aw.war_date))}</span><span class="chip ${aw.status}">${esc(t(aw.status))}</span></a>`).join('')}</nav></section>` : ''}
     </article>`;
+  $('#both')?.addEventListener('change', (e) => { warView.both = e.target.checked; renderProject(dateParam, keyParam); });
 }
 
 // ---------------------------------------------------------------- Team access
@@ -598,6 +685,8 @@ async function route() {
   if (!state.orgId || p.org_id !== state.orgId) return renderNotice('otherOrgTitle', 'otherOrgLede', false);
 
   const [, page, arg] = (location.hash || '#/').split('/');
+  const sub = (location.hash || '').split('/')[3];
+  if (page === 'war' && arg && sub) return renderProject(arg, sub);
   if (page === 'war') return renderWar(arg);
   if (page === 'access') return renderAccess();
   return renderHome();
