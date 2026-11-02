@@ -161,11 +161,24 @@ function tenantSlug() {
   const host = location.hostname.toLowerCase();
   if (host.endsWith('.' + ROOT_DOMAIN)) {
     const sub = host.slice(0, -(ROOT_DOMAIN.length + 1));
-    if (sub && sub !== 'www') return sub;
+    if (sub && sub !== 'www' && sub !== 'preview') return sub;
   }
   return null;
 }
-const orgUrl = (slug) => (location.hostname.endsWith(ROOT_DOMAIN) ? `https://${slug}.${ROOT_DOMAIN}/` : `?org=${slug}`);
+// preview.gyeoldesk.com runs the next build against the live database; companies are picked with ?org=<slug>.
+const PREVIEW = location.hostname.toLowerCase() === 'preview.' + ROOT_DOMAIN;
+const LIVE_HOST = location.hostname.endsWith(ROOT_DOMAIN) && !PREVIEW;
+const orgUrl = (slug) => (LIVE_HOST ? `https://${slug}.${ROOT_DOMAIN}/` : `?org=${slug}`);
+function previewBar() {
+  if (!PREVIEW || document.getElementById('previewBar')) return;
+  const build = document.querySelector('meta[name="gd-build"]')?.content || '';
+  const bar = document.createElement('div');
+  bar.id = 'previewBar'; bar.className = 'preview-bar'; bar.setAttribute('role', 'status');
+  bar.textContent = `PREVIEW 미리보기${build ? ' · ' + build : ''} · live data`;
+  bar.title = 'Test build. It uses the live database: anything you save here is real. / 테스트 빌드 — 실제 데이터에 저장됩니다.';
+  document.body.prepend(bar);
+}
+previewBar();
 
 const state = { slug: tenantSlug(), org: null, orgId: null, user: null, profile: null };
 const isAdmin = () => state.profile?.status === 'approved' && state.profile?.role === 'admin';

@@ -518,3 +518,8 @@ a.rec.empty-rec { color: var(--ink-3); }
 }
 @media print { .site-foot { border-top: 1px solid #ccc; padding: 8px 0; background: none; } }
 .gate { min-height: calc(100dvh - 180px); }
+
+/* preview.gyeoldesk.com only */
+.preview-bar { position: sticky; top: 0; z-index: 50; height: 28px; line-height: 28px; background: #F0B445; color: #14243A; font: 700 12.5px var(--font); text-align: center; padding: 0 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.preview-bar ~ #app .top { top: 28px; }
+@media print { .preview-bar { display: none; } }

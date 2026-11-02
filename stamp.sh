@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 # Give the CSS/JS links a version tag so browsers load new files right after each update.
+# ./stamp.sh          update index.html
+# ./stamp.sh --check  exit 1 if index.html is not stamped for the current CSS/JS (used by the deploy scripts)
 set -euo pipefail
 cd "$(dirname "$0")"
 v=$(cat assets/app.js assets/app.css | md5sum | cut -c1-8)
+if [[ "${1:-}" == "--check" ]]; then
+  grep -q "assets/app.js?v=$v" index.html && grep -q "assets/app.css?v=$v" index.html && exit 0
+  echo "index.html is not stamped for the current CSS/JS. Run ./stamp.sh and commit." >&2; exit 1
+fi
 sed -i -E "s#assets/app\.css(\?v=[a-z0-9]+)?#assets/app.css?v=$v#; s#assets/app\.js(\?v=[a-z0-9]+)?#assets/app.js?v=$v#" index.html
 echo "stamped $v"
