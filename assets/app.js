@@ -33,13 +33,13 @@ const T = {
     count: (n) => `${n}건`, none: '없음', noDrafts: '작성 중인 제안이 없습니다.', stageNotSet: '단계 미지정', openQuestions: '건의 질문이 답변을 기다리고 있습니다', menu: '메뉴', teamMenu: '사용자 및 권한', settings: '설정',
     latestStatus: '최신 현황', openInWar: (d) => `WAR에서 보기 (${d})`, noStatus: '아직 WAR 현황이 없습니다.', records: '과업 기록', askTitle: '질문하기', askPh: '이 과업에 대한 질문을 한국어나 영어로 적어 주세요.', askSend: '질문 보내기', askSent: '질문을 보냈습니다',
     qOpen: '답변 대기', qAnswered: '답변 완료', answerPh: '답변을 입력하세요', qAskedBy: '질문', qDelete: '삭제', qDeleteConfirm: '이 질문을 삭제할까요? 팀 화면에서 사라집니다.', qDeleted: '삭제했습니다', qAnsweredBy: '답변', qYourAnswer: '내 답변', qWaitNote: '관리자 답변을 기다리고 있습니다. 답변이 등록되면 이메일로 알려 드립니다.', answer: '답변', questionsTitle: '질문', questionsLede: '과업 페이지에서 올라온 질문. 관리자가 답변합니다.', noQuestions: '질문이 없습니다.', projectPage: '과업 페이지 열기',
-    recCount: (n, a) => `${n}건 · 승인 ${a}`, recFiles: (n) => `${n}건`, recNone: '없음', recOpen: '열기', recNoFile: '파일 없음', recNotes: '메모', recNotMade: 'AF 3000 미작성 (미제출 항목)', recEmpty: '아직 등록된 기록이 없습니다. 드라이브 과업 폴더와 PCES 제출물 대장에서 매시간 갱신됩니다.', recLede: '드라이브 과업 폴더와 PCES 제출물 대장에서 매시간 갱신. 파일은 구글 드라이브에서 열립니다.', printEyebrow: '주간 현황 — 전체 과업', printPrimeNote: '과업 번호 옆에 원도급사 표시', cont: '계속', printFoot: '금액 단위 원(KRW) · 상세 내용은 주간 현황 보고(WAR) 참조', boardTitle: '주간 현황 보드', weeksNav: '주 선택', backBoard: '보드로 돌아가기', toTop: '맨 위로', newerWeek: '더 최신 주가 있습니다:', itemNo: (n) => `항목 ${n}`, thisWeek: '이번 주 현황', bothLangs: '한국어·영어 함께 보기', krimaText: 'Krima 보고 문구', otherWeeks: '다른 주', warTitle: '주간 현황 보고', warLede: '매일 갱신되는 이번 주 WAR와 지난 주 기록.',
+    recCount: (n, a) => `${n}건 · 승인 ${a}`, recFiles: (n) => `${n}건`, recNone: '없음', recOpen: '열기', recNoFile: '파일 없음', recNotes: '메모', recNotMade: 'AF 3000 미작성 (미제출 항목)', recEmpty: '아직 등록된 기록이 없습니다. 드라이브 과업 폴더와 PCES 제출물 대장에서 매시간 갱신됩니다.', recLede: '드라이브 과업 폴더와 PCES 제출물 대장에서 매시간 갱신. 파일은 구글 드라이브에서 열립니다.', printEyebrow: '주간 현황 — 전체 과업', printPrimeNote: '과업 번호 옆에 원도급사 표시', cont: '계속', printFoot: '금액 단위 원(KRW) · 상세 내용은 주간 현황 보고(WAR) 참조', boardTitle: '주간 현황 보드', weeksNav: '주 선택', backBoard: '보드로 돌아가기', toTop: '맨 위로', allStages: '전체', viewList: '목록', viewCards: '카드', sortBy: '정렬', sortStage: '단계별', sortStart: '착공일 (오래된 순)', sortPrime: '원도급사별', stageNav: '단계별 보기', openCard: '상세 카드 열기', recentEvents: '최근 진행', recentRecords: '최근 기록', noRecords: '등록된 기록이 없습니다.', updatedOn: (d) => `${d} 갱신`, timeUsed: (p, d) => `공기 ${p}% 경과 · 남은 기간 ${d}일`, timeOver: (d) => `공기 종료 후 ${d}일 경과`, timeNote: '기간 기준이며 공정률이 아닙니다', startLabel: '착공', endLabel: '준공', newerWeek: '더 최신 주가 있습니다:', itemNo: (n) => `항목 ${n}`, thisWeek: '이번 주 현황', bothLangs: '한국어·영어 함께 보기', krimaText: 'Krima 보고 문구', otherWeeks: '다른 주', warTitle: '주간 현황 보고', warLede: '매일 갱신되는 이번 주 WAR와 지난 주 기록.',
     accessTitle: '사용자 및 권한', accessLede: '조직도(10_GNC_ORG)에서 불러온 명단입니다. 접근이 필요한 사람에 체크하고 이메일과 역할을 정하세요.',
     reviewTitle: '검토 데스크', reviewLede: '팀원이 한국어로 답하면 영어로 정리됩니다.',
     krimaTitle: 'Krima 현황 시트', krimaLede: 'Krima 과업만 해당. 주간 확정 시 생성됩니다.',
     soon: '준비 중',
     projects: (n) => `과업 ${n}건`, week: (d) => `${d} 주`,
-    live: '작성 중', review: '검토 중', final: '확정', comingSoon: '준비 중', comingSoonLede: '이 기능은 준비 중입니다. 지금은 WAR부터 사용합니다.', draftNote: '작성 중인 주간 보고입니다. 확정 전까지 하루 동안 계속 갱신됩니다.', draftPrint: '작성 중 (확정 전)', printFrom: (d) => `${d} 기준`,
+    live: '작성 중', review: '검토 중', final: '확정', comingSoon: '준비 중', comingSoonLede: '이 기능은 준비 중입니다. 지금은 WAR부터 사용합니다.', draftNote: '작성 중인 주간 보고입니다. 확정 전까지 한 주 동안 계속 갱신됩니다.', draftPrint: '작성 중 (확정 전)', printFrom: (d) => `${d} 기준`,
     carried: '금주 변동 없음', updated: (t) => `갱신 ${t}`,
     startReview: '검토 시작', finalize: '확정 및 잠금', print: '인쇄 / PDF',
     confirmReview: '이번 주를 검토 단계로 넘길까요? 팀원이 확인 표시를 할 수 있습니다.',
@@ -78,7 +78,7 @@ const T = {
     count: (n) => `${n}`, none: 'None', noDrafts: 'No proposals in draft.', stageNotSet: 'Stage not set', openQuestions: 'question(s) waiting for an answer', menu: 'Menu', teamMenu: 'Users & access', settings: 'Settings',
     latestStatus: 'Latest status', openInWar: (d) => `Open in WAR (${d})`, noStatus: 'No WAR status for this project yet.', records: 'Project records', askTitle: 'Ask a question', askPh: 'Write your question about this project in Korean or English.', askSend: 'Send question', askSent: 'Question sent',
     qOpen: 'Waiting for an answer', qAnswered: 'Answered', answerPh: 'Write your answer', qAskedBy: 'Question from', qDelete: 'Delete', qDeleteConfirm: 'Delete this question? It disappears for everyone.', qDeleted: 'Deleted', qAnsweredBy: 'Answer from', qYourAnswer: 'Your answer', qWaitNote: 'Waiting for an admin to answer. You will get an email when they do.', answer: 'Answer', questionsTitle: 'Questions', questionsLede: 'Questions asked from project pages. Admins answer them here.', noQuestions: 'No questions yet.', projectPage: 'Open the project page',
-    recCount: (n, a) => `${n} · ${a} approved`, recFiles: (n) => `${n}`, recNone: 'None yet', recOpen: 'Open', recNoFile: 'No file', recNotes: 'Notes', recNotMade: 'AF 3000 not yet made (items not submitted)', recEmpty: 'Nothing here yet. This list updates every hour from the project folder in Drive and the PCES submittal register.', recLede: 'Updated every hour from the project folder in Drive and the PCES submittal register. Files open in Google Drive.', printEyebrow: 'Weekly status — all projects', printPrimeNote: 'Prime shown next to each project no.', cont: 'continued', printFoot: 'Values in KRW · full details in the Weekly Action Report', boardTitle: 'Weekly Status Board', weeksNav: 'Choose a week', backBoard: 'Back to the board', toTop: 'Back to top', newerWeek: 'A newer week is available:', itemNo: (n) => `Item ${n}`, thisWeek: 'This week', bothLangs: 'Show Korean and English', krimaText: 'Status for Krima', otherWeeks: 'Other weeks', warTitle: 'Weekly Action Report', warLede: 'This week’s WAR, updated through the day, and every past week.',
+    recCount: (n, a) => `${n} · ${a} approved`, recFiles: (n) => `${n}`, recNone: 'None yet', recOpen: 'Open', recNoFile: 'No file', recNotes: 'Notes', recNotMade: 'AF 3000 not yet made (items not submitted)', recEmpty: 'Nothing here yet. This list updates every hour from the project folder in Drive and the PCES submittal register.', recLede: 'Updated every hour from the project folder in Drive and the PCES submittal register. Files open in Google Drive.', printEyebrow: 'Weekly status — all projects', printPrimeNote: 'Prime shown next to each project no.', cont: 'continued', printFoot: 'Values in KRW · full details in the Weekly Action Report', boardTitle: 'Weekly Status Board', weeksNav: 'Choose a week', backBoard: 'Back to the board', toTop: 'Back to top', allStages: 'All', viewList: 'List', viewCards: 'Cards', sortBy: 'Sort', sortStage: 'By stage', sortStart: 'Start date (oldest first)', sortPrime: 'By prime contractor', stageNav: 'Filter by stage', openCard: 'Open the full card', recentEvents: 'Recent activity', recentRecords: 'Recent records', noRecords: 'No records yet.', updatedOn: (d) => `Updated ${d}`, timeUsed: (p, d) => `${p}% of time used · ${d} days left`, timeOver: (d) => `${d} days past the completion date`, timeNote: 'Based on time, not work complete', startLabel: 'NTP', endLabel: 'Completion', newerWeek: 'A newer week is available:', itemNo: (n) => `Item ${n}`, thisWeek: 'This week', bothLangs: 'Show Korean and English', krimaText: 'Status for Krima', otherWeeks: 'Other weeks', warTitle: 'Weekly Action Report', warLede: 'This week’s WAR, updated through the day, and every past week.',
     accessTitle: 'Users & access', accessLede: 'People from the org chart (10_GNC_ORG). Tick who needs access, then set their email and role.',
     reviewTitle: 'Review Desk', reviewLede: 'The team answers in Korean; answers are put into English for you.',
     krimaTitle: 'Krima status sheet', krimaLede: 'Krima task orders only. Generated when the week is final.',
@@ -389,7 +389,27 @@ function renderNotice(titleKey, ledeKey, withRefresh) {
 
 // ---------------------------------------------------------------- home
 // ---------------------------------------------------------------- WAR
-const warView = { q: '', both: false };
+const warView = { q: '', both: false, stage: 'all', sort: 'start', mode: 'list' };
+try { const v = JSON.parse(localStorage.getItem('gd.warView') || '{}'); if (v.sort) warView.sort = v.sort; if (v.mode) warView.mode = v.mode; } catch {}
+const saveWarView = () => { try { localStorage.setItem('gd.warView', JSON.stringify({ sort: warView.sort, mode: warView.mode })); } catch {} };
+// Lifecycle order for the stage stepper (the card groups keep their own order).
+const LIFECYCLE = ['bid', 'pre-ntp', 'construction', 'closeout', 'warranty'];
+const ymd = (y, m, d) => `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+// NTP and completion come from the project's own facts ("2026/10/10 → 2027/4/30"), so the stage bar needs no hand-kept list.
+function ntpSpan(p) {
+  const f = (p?.facts || []).find((x) => /^(NTP|착공)/i.test(x.en || '') || /착공/.test(x.ko || ''));
+  const m = [...String(f?.v || '').matchAll(/(\d{4})[\/.-](\d{1,2})[\/.-](\d{1,2})/g)].map((x) => ymd(x[1], x[2], x[3]));
+  return m.length ? { start: m[0], end: m[1] || null } : null;
+}
+function timeUsed(span, today) {
+  if (!span?.start || !span?.end) return null;
+  const a = Date.parse(span.start), b = Date.parse(span.end), n = Date.parse(today);
+  if (!(b > a)) return null;
+  const pct = Math.max(0, Math.min(100, Math.round(((n - a) / (b - a)) * 100)));
+  return { pct, left: Math.ceil((b - n) / 86400000) };
+}
+const kstToday = () => new Date(Date.now() + 9 * 3600000).toISOString().slice(0, 10);
+const dated = (x) => /^\s*\d{1,2}\/\d{1,2}\b/.test(x || '');
 const STAGES = [
   { k: 'construction', en: 'Construction', ko: '시공', den: 'NTP issued, work on site', dko: '착공 후 현장 작업', c: '#1F6B3A' },
   { k: 'pre-ntp', en: 'Pre-NTP', ko: '착공 전', den: 'Submittals and permits before start', dko: '착공 전 제출물·허가', c: '#2A4FA3' },
@@ -443,7 +463,7 @@ async function renderWar(dateParam) {
   const wk = weeks.find((w) => w.war_date === dateParam) || weeks[0];
 
   const { data: items, error } = await sb.from('items')
-    .select('id,item_no,projects(project_key,pid,title_ko,title_en,prime,stage,facts,installation),snapshots(id,captured_at,source_modified_at,fields,ko,en,key_dates)')
+    .select('id,item_no,projects(id,project_key,pid,title_ko,title_en,prime,stage,facts,installation),snapshots(id,captured_at,source_modified_at,fields,ko,en,key_dates)')
     .eq('week_id', wk.id)
     .order('source_modified_at', { referencedTable: 'snapshots', ascending: false })
     .limit(1, { referencedTable: 'snapshots' });
@@ -463,24 +483,74 @@ async function renderWar(dateParam) {
     </div>
     ${wk.status !== 'final' ? `<p class="draft-note" role="status">${esc(t('draftNote'))}</p>` : ''}
     ${weekNav(weeks, wk)}
+    <nav class="stepper" id="stepper" aria-label="${esc(t('stageNav'))}"></nav>
     <div class="war-tools">
       <input type="search" id="q" placeholder="${esc(t('search'))}" value="${esc(warView.q)}" aria-label="${esc(t('search'))}">
-      <span class="legend">${STAGES.filter((s) => s.k !== 'other').map((s) => `<span><i style="background:${s.c}"></i>${esc(lang === 'ko' ? s.ko : s.en)}</span>`).join('')}</span>
+      <label class="sortsel"><span>${esc(t('sortBy'))}</span><select id="sort">
+        ${[['start', 'sortStart'], ['prime', 'sortPrime'], ['stage', 'sortStage']].map(([v, k]) => `<option value="${v}" ${warView.sort === v ? 'selected' : ''}>${esc(t(k))}</option>`).join('')}</select></label>
+      <div class="seg" role="group" aria-label="${esc(t('viewList'))} / ${esc(t('viewCards'))}">
+        <button type="button" data-mode="list" aria-pressed="${warView.mode === 'list'}">${esc(t('viewList'))}</button>
+        <button type="button" data-mode="cards" aria-pressed="${warView.mode === 'cards'}">${esc(t('viewCards'))}</button></div>
     </div>
     <div id="board"></div>`;
 
+  const stageKey = (it) => stageOf(it.projects, latestSnap(it).fields);
+  const startKey = (it) => ntpSpan(it.projects)?.start || '9999';
+  const today = kstToday();
+  let recs = null;   // records per project id, loaded once on first panel open
+  const loadRecs = async () => {
+    if (recs) return recs;
+    const ids = items.map((i) => i.projects?.id).filter(Boolean);
+    const { data } = ids.length ? await sb.from('records').select('project_id,title,category,status,status_date,file_url')
+      .in('project_id', ids).not('status_date', 'is', null).order('status_date', { ascending: false }).limit(400) : { data: [] };
+    recs = {}; for (const r of data || []) (recs[r.project_id] ||= []).push(r);
+    return recs;
+  };
+  const drawStepper = () => {
+    const n = (k) => items.filter((it) => stageKey(it) === k).length;
+    const keys = [...LIFECYCLE, ...(n('other') ? ['other'] : [])];
+    $('#stepper').innerHTML = `<button type="button" class="st-all" data-stage="all" aria-pressed="${warView.stage === 'all'}">${esc(t('allStages'))} <b>${items.length}</b></button>
+      <ol>${keys.map((k) => { const s = STAGES.find((x) => x.k === k); const c = n(k);
+        return `<li style="--stage:${s.c}"><button type="button" data-stage="${k}" aria-pressed="${warView.stage === k}" ${c ? '' : 'disabled'}>
+          <i aria-hidden="true"></i><span>${esc(lang === 'ko' ? s.ko : s.en)}</span><b>${c}</b></button></li>`; }).join('')}</ol>`;
+    $$('#stepper [data-stage]').forEach((b) => b.addEventListener('click', () => { warView.stage = b.dataset.stage; drawStepper(); draw(); }));
+  };
+  const sorted = (list) => {
+    const byStart = (a, b) => startKey(a).localeCompare(startKey(b)) || (parseInt(a.item_no, 10) || 999) - (parseInt(b.item_no, 10) || 999);
+    if (warView.sort === 'prime') return [...list].sort((a, b) => primeOf(a.projects, latestSnap(a).fields).localeCompare(primeOf(b.projects, latestSnap(b).fields)) || byStart(a, b));
+    if (warView.sort === 'stage') return [...list].sort((a, b) => LIFECYCLE.indexOf(stageKey(a)) - LIFECYCLE.indexOf(stageKey(b)) || byStart(a, b));
+    return [...list].sort(byStart);
+  };
   const draw = () => {
     const q = warView.q.toLowerCase();
-    const list = items.filter((it) => !q || JSON.stringify([it.projects, latestSnap(it).ko, latestSnap(it).en]).toLowerCase().includes(q));
-    const groups = STAGES.map((s) => ({ s, cards: list.filter((it) => stageOf(it.projects, latestSnap(it).fields) === s.k) })).filter((g) => g.cards.length);
-    $('#board').innerHTML = groups.length ? groups.map(({ s, cards }) => `
+    const list = items.filter((it) => (warView.stage === 'all' || stageKey(it) === warView.stage) &&
+      (!q || JSON.stringify([it.projects, latestSnap(it).ko, latestSnap(it).en]).toLowerCase().includes(q)));
+    if (!list.length) { $('#board').innerHTML = `<p class="empty">${esc(t('noMatch'))}</p>`; return; }
+    if (warView.mode === 'cards') {
+      const groups = STAGES.map((s) => ({ s, cards: sorted(list).filter((it) => stageKey(it) === s.k) })).filter((g) => g.cards.length);
+      $('#board').innerHTML = groups.map(({ s, cards }) => `
       <section class="stage" style="--stage:${s.c}">
         <h2>${esc(lang === 'ko' ? s.ko : s.en)} <span>${esc(lang === 'ko' ? s.dko : s.den)}</span></h2>
         <div class="board">${cards.map((it) => boardCard(it, wk, s)).join('')}</div>
-      </section>`).join('') : `<p class="empty">${esc(t('noMatch'))}</p>`;
+      </section>`).join('');
+      return;
+    }
+    $('#board').innerHTML = `<div class="plist">${sorted(list).map((it) => projectRow(it, wk, today)).join('')}</div>`;
+    $$('#board details.prow').forEach((d) => d.addEventListener('toggle', async () => {
+      if (!d.open || d.dataset.loaded) return; d.dataset.loaded = '1';
+      const box = d.querySelector('.pp-recs'); if (!box) return;
+      const all = await loadRecs(); const mine = (all[d.dataset.pid] || []).slice(0, 4);
+      box.innerHTML = mine.length ? mine.map((r) => `<a class="pp-rec" href="${esc(r.file_url || '#')}" target="_blank" rel="noopener noreferrer">
+        <span class="pp-rec-t">${esc(r.title || '')}</span><span class="pp-rec-d">${esc(fmtDate(r.status_date))}</span></a>`).join('') : `<p class="empty">${esc(t('noRecords'))}</p>`;
+    }));
   };
+  drawStepper();
   draw();
   $('#q').addEventListener('input', (e) => { warView.q = e.target.value; draw(); });
+  $('#sort').addEventListener('change', (e) => { warView.sort = e.target.value; saveWarView(); draw(); });
+  $$('.seg [data-mode]').forEach((b) => b.addEventListener('click', () => {
+    warView.mode = b.dataset.mode; saveWarView(); $$('.seg [data-mode]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); draw();
+  }));
   warView.printData = { wk, items };
   $('#print').addEventListener('click', () => printBoard());
   $('#toReview')?.addEventListener('click', async () => {
@@ -491,6 +561,44 @@ async function renderWar(dateParam) {
     if (!confirm(t('confirmFinal'))) return;
     const { error: er } = await sb.rpc('finalize_week', { w: wk.id }); if (er) return toast(errText(er)); renderWar(wk.war_date);
   });
+}
+
+// One line per project; opening it shows details, the time bar, recent dated activity and recent records.
+function projectRow(it, wk, today) {
+  const sn = latestSnap(it); const p = it.projects || {}; const f = sn.fields || {};
+  const s = STAGES.find((x) => x.k === stageOf(p, f)) || STAGES[STAGES.length - 1];
+  const title = pick(f.title_ko || p.title_ko, f.title_en || p.title_en);
+  const body = (lang === 'ko' ? (sn.ko?.length ? sn.ko : sn.en) : (sn.en?.length ? sn.en : sn.ko)) || [];
+  const next = upcoming(sn.key_dates, wk.war_date, 1)[0];
+  const span = ntpSpan(p); const tu = timeUsed(span, today);
+  const events = body.filter(dated); const recent = (events.length ? events.slice(-3) : body.slice(0, 2));
+  const st = LIFECYCLE.indexOf(s.k);
+  return `<details class="prow" style="--stage:${s.c}" data-pid="${esc(p.id || '')}">
+    <summary>
+      <span class="pr-key">${esc(keyLabel(p.project_key))}</span>${primeTag(primeOf(p, f))}
+      <span class="pr-title">${esc(title)}</span>
+      <span class="pr-stage">${esc(lang === 'ko' ? s.ko : s.en)}</span>
+      ${next ? `<span class="pr-next"><b>${esc(next.date_text.replace(/\s*\(.+\)$/, ''))}</b> ${esc(pick(next.ko, next.en))}</span>` : '<span class="pr-next"></span>'}
+      ${f.status === 'carried' ? `<span class="chip muted">${esc(t('carried'))}</span>` : `<span class="chip live">${esc(t('updatedOn', fmtDate((sn.captured_at || '').slice(0, 10))))}</span>`}
+    </summary>
+    <div class="ppanel">
+      ${st >= 0 ? `<ol class="pp-steps" aria-label="${esc(t('stageNav'))}">${LIFECYCLE.map((k, i) => { const x = STAGES.find((y) => y.k === k);
+        return `<li class="${i < st ? 'done' : i === st ? 'now' : ''}"${i === st ? ' aria-current="step"' : ''}><i aria-hidden="true"></i><span>${esc(lang === 'ko' ? x.ko : x.en)}</span></li>`; }).join('')}</ol>` : ''}
+      <div class="pp-grid">
+        <div>
+          ${factsBox(p.facts)}
+          ${tu ? `<div class="tbar" role="img" aria-label="${esc(t('timeUsed', tu.pct, Math.max(0, tu.left)))}"><div class="tbar-track"><span style="width:${tu.pct}%"></span></div>
+            <div class="tbar-lbl"><span>${esc(t('startLabel'))} ${esc(span.start)}</span><b>${esc(tu.left >= 0 ? t('timeUsed', tu.pct, tu.left) : t('timeOver', -tu.left))}</b><span>${esc(t('endLabel'))} ${esc(span.end)}</span></div>
+            <small>${esc(t('timeNote'))}</small></div>` : ''}
+        </div>
+        <div>
+          <h4>${esc(t('recentEvents'))}</h4><ul class="pp-events">${recent.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>
+          <h4>${esc(t('recentRecords'))}</h4><div class="pp-recs"><p class="empty">…</p></div>
+        </div>
+      </div>
+      <a class="btn quiet small" href="#/war/${wk.war_date}/${encodeURIComponent(p.project_key)}">${esc(t('openCard'))} →</a>
+    </div>
+  </details>`;
 }
 
 function boardCard(it, wk, s) {
