@@ -58,3 +58,16 @@ release-approved images available; it does not mean no photos were captured.
   allow-list written by the last `photos()` run.
 - The full-image link opens the same members-only copy. "Open original in Drive" opens the Drive file; Drive's own
   sharing decides who can see it.
+
+## Loading reliability and report selection
+
+- The default candidate set must be the actual frames in the report transmitted to the customer, with its source
+  report ID and page/frame order. Folder inventory and disclosure approval do not themselves select an image for
+  the weekly gallery. Current manifest/report mapping must be reconciled by the project preparer before claiming
+  that the gallery is reduced. Do not invent mappings or revoke prior approvals to achieve a smaller count.
+- The loader uses three workers instead of launching every request against the Apps Script relay at once. A 401
+  gets one session refresh/retry; 403 is never bypassed. Responses must be non-empty JPEG/PNG/WebP blobs.
+- Count actual decoded images separately from approved records. Failed requests log only a status code (no token,
+  photo ID, response body or relay URL), and show a sign-in/access/fallback message.
+- These changes do not establish the cause of a server-side error. Inspect the authenticated request status before
+  changing backend authentication or relay settings. Never make the Drive file public as a workaround.

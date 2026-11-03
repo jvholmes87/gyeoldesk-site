@@ -41,7 +41,7 @@ test('status counts explain withheld photos without exposing them',()=>{
   const set={total:22,in_window:18,date_pending:4,historical:2,verified:0,excluded:0,approved_public:0,withheld:22,approved:[]};
   const html=photoGallery([],'DEMO','2026-11-05','en',false,set);
   assert.ok(html.includes('22 photos recorded for this period'));
-  assert.ok(html.includes('22 not shown'));
+  assert.ok(html.includes('22 not in the gallery selection'));
   assert.ok(html.includes('2 probable earlier captures kept as historical references'));
   assert.ok(html.includes('4 with capture date unconfirmed'));
   assert.ok(!html.includes('<img'));
@@ -54,7 +54,7 @@ test('approved photos show with a count of the rest; no set keeps the honest def
   const set={total:3,historical:0,date_pending:0};
   const html=photoGallery([base],'DEMO','2026-11-05','en',false,set);
   assert.ok(html.includes('Work photos (1)'));
-  assert.ok(html.includes('1 released and shown; 2 not shown'));
+  assert.ok(html.includes('1 approved gallery records; 2 not in the gallery selection'));
   assert.equal(photoStatus({total:1},1,'en'),'');
   assert.ok(photoStatus(null,0,'en').includes('Collection status is unconfirmed'));
   assert.ok(photoGallery([],'DEMO','2026-11-05','en',false,'error').includes('could not be loaded'));
@@ -80,4 +80,10 @@ test('Drive loader swaps in the blob and falls back to readable text on failure'
   await new Promise((r)=>setTimeout(r,10));
   assert.equal(ok.img.src,'blob:x'); assert.equal(ok.a.href,'blob:x');
   assert.match(bad.img.replaced.textContent,/드라이브 링크/);
+});
+test('Drive loader limits concurrent relay calls and counts decoded images',async()=>{
+  let active=0,max=0;
+  const imgs=Array.from({length:8},(_,i)=>({dataset:{photoId:String(i)},addEventListener(){},closest:()=>({}),decode:async()=>{}}));
+  const result=await loadDrivePhotos({querySelectorAll:()=>imgs},async()=>{active++;max=Math.max(max,active);await new Promise(r=>setTimeout(r,2));active--;return {type:'image/jpeg',size:1};});
+  assert.equal(max,3);assert.deepEqual(result,{loaded:8,failed:0});
 });
