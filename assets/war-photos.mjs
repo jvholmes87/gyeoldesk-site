@@ -30,26 +30,39 @@ export function releasedPhotos(records, projectKey, period) {
 // It never carries captions, links or images of unreleased photos; it only lets the card say what exists and why
 // nothing is shown, instead of implying that no photos were taken.
 const n = (v) => (Number.isInteger(v) && v > 0 ? v : 0);
-export function photoStatus(set, shown, lang = 'en') {
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function weekRange(period, ko) {
+  if (!validDate(period)) return '';
+  const end = new Date(period + 'T00:00:00Z'), start = new Date(end.getTime() - 6 * 86400000);
+  return ko ? `${start.getUTCMonth() + 1}/${start.getUTCDate()}~${end.getUTCMonth() + 1}/${end.getUTCDate()}`
+    : `${start.getUTCDate()} ${MON[start.getUTCMonth()]}–${end.getUTCDate()} ${MON[end.getUTCMonth()]}`;
+}
+const pl = (k, one, many) => (k === 1 ? one : many);
+// Status line under the photos, in progress-photo-log terms: how many of this week's photos are shown, why the rest are
+// not, and what else is on record. Buckets do not overlap: this week = shown + not shown; everything else is "other".
+export function photoStatus(set, shown, lang = 'en', period = '') {
   const ko = lang === 'ko';
+  const foot = ko ? '사진은 현장 상태 기록용이며 완료·검수를 확인하지 않습니다. 원본은 과업 구글 드라이브에 보관됩니다.'
+    : 'Photos record site conditions only; they do not confirm completion or acceptance. Originals stay in the project\'s Google Drive.';
   if (set === 'error') return ko ? '사진 현황을 불러오지 못했습니다. 새로 고침하세요.' : 'Photo status could not be loaded. Refresh to try again.';
-  if (!set || !n(set.total)) return shown ? '' : (ko ? '이 기간에 승인된 사진이 없습니다. 사진 수집 여부는 확인되지 않았습니다.' : 'No released photos for this period. Collection status is unconfirmed.');
-  const held = Math.max(0, n(set.total) - shown);
-  if (!held) return '';
-  const parts = [];
-  if (n(set.historical)) parts.push(ko ? `이전 촬영 추정 ${n(set.historical)}장 — 이력 참고, 금주 작업 아님` : `${n(set.historical)} probable earlier capture${n(set.historical) > 1 ? 's' : ''} kept as historical reference${n(set.historical) > 1 ? 's' : ''}, not this week's work`);
-  if (n(set.date_pending)) parts.push(ko ? `촬영일 미확정 ${n(set.date_pending)}장` : `${n(set.date_pending)} with capture date unconfirmed`);
-  const head = ko
-    ? `이 기간 사진 ${n(set.total)}장 기록됨. ${shown ? `승인된 갤러리 기록 ${shown}장, ` : ''}${held}장은 갤러리 선택에 포함되지 않습니다`
-    : `${n(set.total)} photo${n(set.total) > 1 ? 's' : ''} recorded for this period. ${shown ? `${shown} approved gallery records; ` : ''}${held} not in the gallery selection`;
-  const tail = ko ? ' 사진은 과업 구글 드라이브에 보관되며, 사진만으로 완료·승인을 판단하지 않습니다.' : ' Photos stay in the project\'s Google Drive. A photo alone does not establish completion or approval.';
-  return head + (parts.length ? ' (' + parts.join(ko ? ', ' : '; ') + ')' : '') + '.' + tail;
+  if (!set || !n(set.total)) return shown ? foot : (ko ? '이번 주 표시할 공사 사진이 없습니다. 촬영 여부는 확인되지 않았습니다.' : 'No progress photos to show for this week. Whether photos were taken has not been confirmed.');
+  const range = weekRange(period, ko), wk = ko ? `이번 주${range ? `(${range})` : ''}` : `this week${range ? ` (${range})` : ''}`;
+  const week = Math.max(n(set.in_window), shown), waiting = week - shown, other = Math.max(0, n(set.total) - week);
+  const out = [];
+  if (!week) out.push(ko ? `${wk} 촬영으로 확인된 사진이 없습니다.` : `No photos dated ${wk}.`);
+  else if (!shown) out.push(ko ? `${wk} 촬영 사진 ${week}장, 아직 표시 없음: 보고서 미선정 또는 검토 대기.` : `${week} ${pl(week, 'photo', 'photos')} taken ${wk}; none shown yet: not selected for the report or awaiting review.`);
+  else if (!waiting) out.push(ko ? `${wk} 촬영 사진 ${shown}장 모두 표시.` : `Showing ${shown === 1 ? 'the 1 photo' : `all ${shown} photos`} taken ${wk}.`);
+  else out.push(ko ? `${wk} 촬영 사진 ${week}장 중 ${shown}장 표시.` : `Showing ${shown} of ${week} photos taken ${wk}.`);
+  if (waiting && shown) out.push(ko ? `${waiting}장 미표시: 보고서 미선정 또는 검토 대기.` : `${waiting} not shown: not selected for the report or awaiting review.`);
+  if (other) out.push(ko ? `그 외 ${other}건은 이번 주 집계 제외 (이전 촬영, 촬영일 미확인 또는 제외 처리).`
+    : `${other} other ${pl(other, 'file', 'files')} on record ${pl(other, 'is', 'are')} not counted for this week (taken earlier, date not confirmed, or excluded).`);
+  return out.join(' ') + '\n' + foot;   // counts first; the evidence note on its own line
 }
 export function photoGallery(records, projectKey, period, lang = 'en', both = false, set = null) {
   const ko = lang === 'ko';
   const photos = releasedPhotos(records, projectKey, period);
-  const title = ko ? '작업 사진' : 'Work photos';
-  const note = photoStatus(set, photos.length, lang);
+  const title = ko ? '공사 사진' : 'Progress photos';
+  const note = photoStatus(set, photos.length, lang, period);
   const noteHtml = note ? `<p class="${set === 'error' ? 'msg err' : 'empty'} photo-status">${escape(note)}</p>` : '';
   if (!photos.length) return `<section class="war-photos"><h2>${title}</h2>${noteHtml}</section>`;
   return renderGallery(photos, title, lang, both).replace('</h2>', `</h2>${noteHtml}`);

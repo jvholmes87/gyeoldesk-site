@@ -26,8 +26,8 @@ test('renders escaped captions, bilingual text, date and safe links',()=>{
   assert.ok(html.includes(base.caption_ko));
   assert.ok(html.includes('2026-11-02 (KST)'));
   assert.ok(html.includes('noopener noreferrer'));
-  assert.ok(photoGallery([],'DEMO','2026-11-05').includes('Collection status is unconfirmed'));
-  assert.ok(photoGallery([base],'DEMO','2026-11-05','ko').includes('작업 사진'));
+  assert.ok(photoGallery([],'DEMO','2026-11-05').includes('Whether photos were taken has not been confirmed'));
+  assert.ok(photoGallery([base],'DEMO','2026-11-05','ko').includes('공사 사진'));
 });
 test('failed images retain caption/evidence and show a readable fallback',()=>{
   const original=globalThis.document;
@@ -38,25 +38,26 @@ test('failed images retain caption/evidence and show a readable fallback',()=>{
   finally { globalThis.document=original; }
 });
 test('status counts explain withheld photos without exposing them',()=>{
-  const set={total:22,in_window:18,date_pending:4,historical:2,verified:0,excluded:0,approved_public:0,withheld:22,approved:[]};
+  const set={total:22,in_window:18,date_pending:4,historical:2,verified:0,excluded:0,approved:[]};
   const html=photoGallery([],'DEMO','2026-11-05','en',false,set);
-  assert.ok(html.includes('22 photos recorded for this period'));
-  assert.ok(html.includes('22 not in the gallery selection'));
-  assert.ok(html.includes('2 probable earlier captures kept as historical references'));
-  assert.ok(html.includes('4 with capture date unconfirmed'));
+  assert.ok(html.includes('18 photos taken this week (30 Oct–5 Nov); none shown yet: not selected for the report or awaiting review.'));
+  assert.ok(!html.includes('18 not shown'));
+  assert.ok(html.includes('4 other files on record are not counted for this week'));
+  assert.ok(html.includes('do not confirm completion or acceptance'));
   assert.ok(!html.includes('<img'));
-  assert.ok(!html.includes('Collection status is unconfirmed'));
   const ko=photoGallery([],'DEMO','2026-11-05','ko',false,set);
-  assert.ok(ko.includes('이 기간 사진 22장 기록됨'));
-  assert.ok(ko.includes('촬영일 미확정 4장'));
+  assert.ok(ko.includes('이번 주(10/30~11/5) 촬영 사진 18장, 아직 표시 없음: 보고서 미선정 또는 검토 대기.'));
+  assert.ok(ko.includes('그 외 4건은 이번 주 집계 제외'));
 });
-test('approved photos show with a count of the rest; no set keeps the honest default; errors are visible',()=>{
-  const set={total:3,historical:0,date_pending:0};
+test('approved photos show with non-overlapping counts; no set keeps the honest default; errors are visible',()=>{
+  const set={total:31,in_window:22,date_pending:9,historical:4};
   const html=photoGallery([base],'DEMO','2026-11-05','en',false,set);
-  assert.ok(html.includes('Work photos (1)'));
-  assert.ok(html.includes('1 approved gallery records; 2 not in the gallery selection'));
-  assert.equal(photoStatus({total:1},1,'en'),'');
-  assert.ok(photoStatus(null,0,'en').includes('Collection status is unconfirmed'));
+  assert.ok(html.includes('Progress photos (1)'));
+  assert.ok(html.includes('Showing 1 of 22 photos taken this week (30 Oct–5 Nov). 21 not shown: not selected for the report or awaiting review. 9 other files on record are not counted for this week'));
+  assert.equal(photoStatus({total:1,in_window:1},1,'en','2026-11-05'),'Showing the 1 photo taken this week (30 Oct–5 Nov).\nPhotos record site conditions only; they do not confirm completion or acceptance. Originals stay in the project\'s Google Drive.');
+  assert.ok(photoStatus({total:2,in_window:0},0,'en','2026-11-05').startsWith('No photos dated this week (30 Oct–5 Nov). 2 other files'));
+  assert.ok(photoStatus({total:1,in_window:0},0,'en','2026-11-05').includes('1 other file on record is not counted'));
+  assert.ok(photoStatus(null,0,'en').includes('Whether photos were taken has not been confirmed'));
   assert.ok(photoGallery([],'DEMO','2026-11-05','en',false,'error').includes('could not be loaded'));
   assert.ok(photoGallery([],'DEMO','2026-11-05','en',false,'error').includes('msg err'));
 });

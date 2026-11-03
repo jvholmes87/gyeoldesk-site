@@ -613,3 +613,4 @@ a.rec.empty-rec { color: var(--ink-3); }
 @media (prefers-reduced-motion: reduce) { .to-top { transition: none; } }
 @media print { .to-top { display: none !important; } }
 @media (max-width: 640px) { .site-foot { padding-bottom: 76px; } }
+.war-photos .photo-status { white-space: pre-line; }

@@ -3,7 +3,7 @@
 //   <company>.gyeoldesk.com  -> that company's workspace (sign-in, WAR, team access)
 // Local testing: ?org=gnc opens a workspace on any host.
 import { createClient } from './vendor/supabase.mjs';
-import { photoGallery, bindPhotoErrors, loadDrivePhotos } from './war-photos.mjs?v=569986b7';
+import { photoGallery, bindPhotoErrors, loadDrivePhotos } from './war-photos.mjs?v=ac21aa37';
 import { requestPhoto } from './photo-request.mjs?v=9238a66e';
 
 const SUPABASE_URL = 'https://wltuwsplrkrsfthkthxc.supabase.co';
@@ -603,7 +603,7 @@ async function renderProject(dateParam, keyParam) {
   const krima = lang === 'ko' ? (sn.krima_ko?.length ? sn.krima_ko : sn.krima_en) : (sn.krima_en?.length ? sn.krima_en : sn.krima_ko);
   const si = Array.isArray(sn.snapshots_internal) ? sn.snapshots_internal[0] : sn.snapshots_internal;
   const kd = (sn.key_dates || []).filter((r) => r.date_text);
-  // Photo status for this card: counts plus release-approved records only (see war-photos.mjs?v=569986b7).
+  // Photo status for this card: counts plus release-approved records only (see war-photos.mjs?v=ac21aa37).
   const { data: ps, error: psErr } = await sb.from('war_photo_sets')
     .select('total,in_window,date_pending,historical,verified,excluded,approved_public,withheld,approved,updated_at')
     .eq('project_key', p.project_key).eq('war_date', w.war_date).maybeSingle();
@@ -648,7 +648,7 @@ async function renderProject(dateParam, keyParam) {
       throw error;
     }
   }, lang).then(({loaded,failed}) => {
-    if (!box.isConnected || !loaded && !failed) return;
+    if (!box.isConnected || !failed) return;   // only report problems; the heading already gives the count
     const status = document.createElement('p'); status.className = failed ? 'msg err' : 'empty';
     status.textContent = lang === 'ko' ? `사진 ${loaded}장 표시${failed ? `, ${failed}장 불러오기 실패` : ''}` : `${loaded} photos loaded${failed ? `; ${failed} could not be loaded` : ''}.`;
     box.querySelector('.war-photos h2')?.after(status);
