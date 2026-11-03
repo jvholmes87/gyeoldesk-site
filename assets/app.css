@@ -689,3 +689,13 @@ a.rec.empty-rec { color: var(--ink-3); }
 .tbar-lbl b { color: var(--ink); font-weight: 700; }
 .tbar small { font-size: 11.5px; color: var(--ink-3); }
 @media print { .stepper, .seg, .sortsel { display: none !important; } }
+
+/* Demo company (?org=demo): banner on every page, demo card on the portal, demo prime tags */
+.demo-bar { position: relative; z-index: 50; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 14px;
+  background: #1E5A5A; color: #fff; font: 500 13px/1.4 var(--font); padding: 7px 14px; text-align: center; }
+.demo-bar b { background: #F0B445; color: #14243A; border-radius: 4px; padding: 1px 7px; font-size: 12px; letter-spacing: .04em; }
+.demo-bar a { color: #fff; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; white-space: nowrap; }
+.org-card.demo-card { border-style: dashed; }
+.prime-tallis { background: #FBEFE2; color: #8A4A12; }
+.prime-hwc { background: #1E5A5A; color: #fff; }
+@media print { .demo-bar { display: none; } }

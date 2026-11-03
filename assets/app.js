@@ -5,12 +5,17 @@
 import { createClient } from './vendor/supabase.mjs';
 import { photoGallery, bindPhotoErrors, loadDrivePhotos } from './war-photos.mjs?v=5eae6af2';
 import { requestPhoto } from './photo-request.mjs?v=9238a66e';
+import { demoFetch, demoAuth, demoPhoto, demoPhotoLinks, DEMO_TEXT } from './demo.mjs?v=23525af5';
 
 const SUPABASE_URL = 'https://wltuwsplrkrsfthkthxc.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_N8CLXOt4Sh01hSqJu8O9Rg_q8_V1LXh'; // publishable key: safe in the browser, data is protected by row-level security
 const ROOT_DOMAIN = 'gyeoldesk.com';
 
-const sb = createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true } });
+// ?org=demo is the fictional demo company: same code, bundled data, no database (see the demo module).
+const DEMO = tenantSlug() === 'demo';
+const sb = DEMO
+  ? createClient(SUPABASE_URL, SUPABASE_KEY, { auth: demoAuth, global: { fetch: demoFetch } })
+  : createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true } });
 const app = document.getElementById('app');
 
 // ---------------------------------------------------------------- text
@@ -134,6 +139,7 @@ Object.assign(T.en, {
   gKO: 'Contracting Officer — the only one who can change price, scope or schedule', gCS: 'Contracting office', gCOR: 'COR — technical only, no contract changes',
   gAP: 'Approvals (named items only)', gUS: 'User unit — controls the site', gIN: 'Copied for information', gPR: 'Prime contractor', gGN: 'GNC', gOT: 'Other',
 });
+if (DEMO) { Object.assign(T.en, DEMO_TEXT.en); Object.assign(T.ko, DEMO_TEXT.ko); }
 const t = (k, ...a) => { const v = T[lang][k] ?? T.en[k] ?? k; return typeof v === 'function' ? v(...a) : v; };
 const pick = (ko, en) => (lang === 'ko' ? (ko || en) : (en || ko)) || '';
 
@@ -178,6 +184,7 @@ function errText(e) {
   if (/rate|too many|seconds/i.test(m)) return t('errRate');
   if (/expired|invalid|token/i.test(m)) return t('errCode');
   if (/own admin/i.test(m)) return m;
+  if (e?.code === 'DEMO') return t('demoBlocked');
   return t('errGeneric');
 }
 
@@ -195,7 +202,7 @@ function tenantSlug() {
 // preview.gyeoldesk.com runs the next build against the live database; companies are picked with ?org=<slug>.
 const PREVIEW = location.hostname.toLowerCase() === 'preview.' + ROOT_DOMAIN;
 const LIVE_HOST = location.hostname.endsWith(ROOT_DOMAIN) && !PREVIEW;
-const orgUrl = (slug) => (LIVE_HOST ? `https://${slug}.${ROOT_DOMAIN}/` : `?org=${slug}`);
+const orgUrl = (slug) => (slug === 'demo' ? (LIVE_HOST ? `https://${ROOT_DOMAIN}/?org=demo` : '?org=demo') : LIVE_HOST ? `https://${slug}.${ROOT_DOMAIN}/` : `?org=${slug}`);
 function previewBar() {
   if (!PREVIEW || document.getElementById('previewBar')) return;
   const build = document.querySelector('meta[name="gd-build"]')?.content || '';
@@ -206,6 +213,18 @@ function previewBar() {
   document.body.prepend(bar);
 }
 previewBar();
+// Demo banner on every demo page: says the company is fictional and links to the game it comes from.
+function demoBar() {
+  if (!DEMO) return;
+  let bar = document.getElementById('demoBar');
+  if (!bar) { bar = document.createElement('div'); bar.id = 'demoBar'; bar.className = 'demo-bar no-print'; bar.setAttribute('role', 'note'); document.body.prepend(bar); }
+  bar.innerHTML = `<b>DEMO</b><span>${esc(t('demoBar'))}</span>
+    <a href="https://playforkline.com/" target="_blank" rel="noopener">${esc(t('demoPlay'))} ↗</a><a href="https://${ROOT_DOMAIN}/">${esc(t('demoBack'))}</a>`;
+}
+if (DEMO) {
+  const m = document.createElement('meta'); m.name = 'robots'; m.content = 'noindex, follow';
+  document.querySelector('meta[name="robots"]')?.remove(); document.head.append(m);
+}
 
 const state = { slug: tenantSlug(), org: null, orgId: null, user: null, profile: null };
 const isAdmin = () => state.profile?.status === 'approved' && state.profile?.role === 'admin';
@@ -240,13 +259,19 @@ async function renderPortal() {
   bindLang();
   const { data, error } = await sb.rpc('org_directory');
   const box = $('#orgs');
-  if (error || !data?.length) { box.innerHTML = '<p class="empty">—</p>'; return; }
-  box.innerHTML = data.map((o) => `
+  const demoCard = `
+    <a class="org-card demo-card" href="${esc(orgUrl('demo'))}">
+      <img class="org-img mark" src="assets/demo/hwc-mark.svg" alt="">
+      <span><span class="name">${esc(lang === 'ko' ? '핼야드 웍스 건설' : 'Halyard Works Contractors')}</span><br>
+      <span class="sub">${esc(lang === 'ko' ? '데모 · 가상 회사 · 로그인 없이 보기' : 'Demo · fictional company · no sign-in')}</span></span>
+    </a>`;
+  if (error || !data?.length) { box.innerHTML = demoCard; return; }
+  box.innerHTML = data.filter((o) => o.slug !== 'demo').map((o) => `
     <a class="org-card${o.logo_wide_url ? ' has-logo' : ''}" href="${esc(orgUrl(o.slug))}">
       ${o.logo_wide_url ? logoHtml(o, 'wide') : logoHtml(o)}
       <span>${o.logo_wide_url ? '' : `<span class="name">${esc(pick(o.name_ko, o.name))}</span><br>`}
       <span class="sub">${esc(o.slug)}.${ROOT_DOMAIN}</span></span>
-    </a>`).join('');
+    </a>`).join('') + demoCard;
 }
 
 // ---------------------------------------------------------------- workspace shell
@@ -289,7 +314,7 @@ function shell(crumb, inner) {
     <main class="page" id="main">${inner}</main>
     ${siteFoot()}`;
   bindLang();
-  const out = async () => { await sb.auth.signOut(); state.user = null; state.profile = null; route(); };
+  const out = async () => { if (DEMO) { location.href = `https://${ROOT_DOMAIN}/`; return; } await sb.auth.signOut(); state.user = null; state.profile = null; route(); };
   $('#signout')?.addEventListener('click', out);
   $('#signout2')?.addEventListener('click', out);
   const mb = $('#menuBtn'); const ml = $('#menuList');
@@ -418,7 +443,7 @@ const STAGES = [
   { k: 'warranty', en: 'Warranty', ko: '하자보수', den: 'Warranty clocks running', dko: '하자 기간 진행 중', c: '#8E1F3F' },
   { k: 'other', en: 'Other', ko: '기타', den: 'Stage not set yet', dko: '단계 미지정', c: '#5B6775' },
 ];
-const PRIMES = { krima: 'KRIMA', livart: 'LIVART', gnc: 'GNC', geumjang: 'GEUMJANG' };
+const PRIMES = { krima: 'KRIMA', livart: 'LIVART', gnc: 'GNC', geumjang: 'GEUMJANG', tallis: 'TALLIS', hwc: 'HWC' };
 function stageOf(p, f) {
   const s = String(p?.stage || f?.stage || '').toLowerCase();
   if (s.includes('warrant')) return 'warranty';
@@ -747,8 +772,9 @@ async function renderProject(dateParam, keyParam) {
         <a href="#/war/${aw.war_date}/${encodeURIComponent(key)}" ${aw.id === w.id ? 'aria-current="page"' : ''}><span class="d">${esc(fmtDate(aw.war_date))}</span><span class="chip ${aw.status}">${esc(t(aw.status))}</span></a>`).join('')}</nav></section>` : ''}
     </article>`;
   bindPhotoErrors(box, lang);
+  if (DEMO) demoPhotoLinks(box, t('demoFull'));
   loadDrivePhotos(box, async (id) => {
-    try { return await requestPhoto(`${SUPABASE_URL}/functions/v1/photo?id=${encodeURIComponent(id)}&w=1600`,SUPABASE_KEY,sb.auth); }
+    try { return DEMO ? await demoPhoto(id) : await requestPhoto(`${SUPABASE_URL}/functions/v1/photo?id=${encodeURIComponent(id)}&w=1600`,SUPABASE_KEY,sb.auth); }
     catch (error) {
       // Safe diagnostic only. No IDs, bearer tokens, relay URLs or response bodies.
       console.warn('WAR photo request failed', {status:error.status || 'network'});
@@ -802,7 +828,7 @@ async function renderHome() {
   void qs; // questions come back with the project pages
   sb.from('contact_assignments').select('pid,project_no,contact_key,status').then(({ data }) => {
     const el = $('#ctStat'); if (!el || !data?.length) return;
-    const ppl = new Set(data.filter((a) => a.status !== 'Ended' && !/^GNC-/.test(a.contact_key)).map((a) => a.contact_key)).size;
+    const ppl = new Set(data.filter((a) => a.status !== 'Ended' && !/^(GNC|HWC)-/.test(a.contact_key)).map((a) => a.contact_key)).size;
     const pj = new Set(data.filter((a) => /^P-\d/.test(a.pid || '')).map((a) => a.pid)).size;
     el.innerHTML = `<span class="num"><b>${ppl}</b>${esc(t('statPeople'))}</span><span class="num"><b>${pj}</b>${esc(t('statProjects'))}</span>`;
   });
@@ -1124,7 +1150,7 @@ async function renderAccess() {
             <button class="btn small" data-approve="${p.user_id}">${esc(t('approve'))}</button>
             <button class="btn small quiet" data-decline="${p.user_id}">${esc(t('decline'))}</button></div></div>`).join('')
         : `<p class="empty">${esc(t('noPending'))}</p>`}
-      <p class="empty" style="font-size:13px;border-top:1px solid var(--line-2)">${esc(t('shareHelp'))} <b>https://${esc(state.slug)}.${ROOT_DOMAIN}</b></p>
+      <p class="empty" style="font-size:13px;border-top:1px solid var(--line-2)">${esc(t('shareHelp'))} <b>${DEMO ? `https://${ROOT_DOMAIN}/?org=demo` : `https://${esc(state.slug)}.${ROOT_DOMAIN}`}</b></p>
     </section>
     <section class="panel">
       <header><h2>${esc(t('roster'))}</h2>
@@ -1220,7 +1246,7 @@ async function renderAccess() {
 // ---------------------------------------------------------------- Contacts (read-only copy of tracker 09A/09B/09C)
 const AUTH_GROUPS = [
   ['KO', /^KO/], ['CS', /^Contract specialist/], ['COR', /^COR/], ['AP', /^Approval/], ['US', /^User unit/],
-  ['IN', /^Info/], ['PR', /^Prime/], ['GN', /^GNC/],
+  ['IN', /^Info/], ['PR', /^Prime/], ['GN', /^(GNC|Contractor)/],
 ];
 const groupOf = (a) => (AUTH_GROUPS.find(([, re]) => re.test(a || '')) || ['OT'])[0];
 const contactsView = { q: '' };
@@ -1351,6 +1377,7 @@ async function renderContacts(arg) {
 async function route() {
   document.documentElement.lang = lang;
   syncTopBtn();
+  demoBar();
   if (!state.slug) return renderPortal();
   if (!state.org) {
     const { data } = await sb.rpc('org_directory');
@@ -1360,7 +1387,7 @@ async function route() {
         <a class="btn" href="https://${ROOT_DOMAIN}/">${esc(t('back'))}</a></div></div>${siteFoot()}`;
       return;
     }
-    document.title = document.querySelector('meta[name="application-name"]')?.content || `${state.org.name} · Gyeoldesk`;
+    document.title = DEMO ? `${state.org.name} (demo) · Gyeoldesk` : document.querySelector('meta[name="application-name"]')?.content || `${state.org.name} · Gyeoldesk`;
   }
   if (!state.user) return renderEmailStep();
   if (!state.profile) await loadProfile();

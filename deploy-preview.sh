@@ -9,7 +9,7 @@ git diff --quiet && git diff --cached --quiet || { echo "Commit your changes fir
 ./stamp.sh --check
 commit="$(git rev-parse --short HEAD)"; branch="$(git rev-parse --abbrev-ref HEAD)"
 cd "$dest" && git fetch -q origin main && git rebase -q origin/main
-rm -rf assets index.html site.webmanifest sitemap.xml && cp -r "$src/index.html" "$src/assets" "$src/site.webmanifest" .
+rm -rf assets demo index.html site.webmanifest sitemap.xml && cp -r "$src/index.html" "$src/assets" "$src/demo" "$src/site.webmanifest" .
 python3 - "$commit" <<'PY'
 import re, sys
 c = sys.argv[1]; p = 'index.html'; s = open(p, encoding='utf-8').read()
@@ -22,4 +22,4 @@ PY
 printf 'User-agent: *\nDisallow: /\n' > robots.txt
 printf '{"commit":"%s","branch":"%s","at":"%s"}\n' "$commit" "$branch" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > preview.json
 git add -A && git commit -q -m "Preview $commit ($branch)" && git push -q origin main || echo "nothing new to preview"
-echo "Preview: https://preview.gyeoldesk.com/  (company desk: https://preview.gyeoldesk.com/?org=gnc)  build $commit"
+echo "Preview: https://preview.gyeoldesk.com/  (company desk: https://preview.gyeoldesk.com/?org=gnc, demo: ?org=demo)  build $commit"
