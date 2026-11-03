@@ -34,7 +34,7 @@ export function photoStatus(set, shown, lang = 'en') {
   const held = Math.max(0, n(set.total) - shown);
   if (!held) return '';
   const parts = [];
-  if (n(set.historical)) parts.push(ko ? `이전 촬영 추정 ${n(set.historical)}장 (금주 작업 아님)` : `${n(set.historical)} probable earlier capture${n(set.historical) > 1 ? 's' : ''} (historical, not this week's work)`);
+  if (n(set.historical)) parts.push(ko ? `이전 촬영 추정 ${n(set.historical)}장 — 이력 참고, 금주 작업 아님` : `${n(set.historical)} probable earlier capture${n(set.historical) > 1 ? 's' : ''} kept as historical reference${n(set.historical) > 1 ? 's' : ''}, not this week's work`);
   if (n(set.date_pending)) parts.push(ko ? `촬영일 미확정 ${n(set.date_pending)}장` : `${n(set.date_pending)} with capture date unconfirmed`);
   const head = ko
     ? `이 기간 사진 ${n(set.total)}장 기록됨. ${shown ? `공개 승인 ${shown}장 표시, ` : ''}${held}장은 검증·공개 검토 전이라 표시하지 않습니다`

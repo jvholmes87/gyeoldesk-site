@@ -1,4 +1,4 @@
-# WAR photo gallery integration (candidate)
+# WAR photo gallery integration
 
 This change renders an optional `snapshots.fields.photo_evidence` array on each
 project WAR detail page. It does not ingest Drive photos, approve release, or
@@ -30,3 +30,19 @@ then live promotion of the same commit to company mirrors. Review database impor
 changes separately. Before declaring deployed, verify the live card and record
 deployment revision, sync time and actual image/link behavior. Empty UI means no
 release-approved images available; it does not mean no photos were captured.
+
+## Importer (added 3 Nov 2026)
+
+- The hourly collector (repo `gyeoldesk`, `apps-script/Code.gs`, `sendPhotos_`) reads every Google Sheet titled
+  `*Photo_Manifest*` (photo spec v1.0 schema) and sends per project/week **counts** (total, in-window, date pending,
+  historical, verified, excluded) plus only rows that are `verification=verified`, `disclosure_status=approved_public`,
+  reviewed (reviewer, review_time, approval_evidence) and have a reviewed derivative. Restricted captions, links and
+  file IDs never leave Google.
+- `records-intake` (`kind: "photo_sets"`) re-checks the browser contract server-side and stores the result in
+  `war_photo_sets` (migration 0017, members read, service-role write).
+- The card merges `war_photo_sets.approved` with `snapshots.fields.photo_evidence` and shows a status line: how many
+  photos exist for the week and why they are not shown. No set means "collection status unconfirmed".
+- An approved record's `image_path` is `/assets/war-photos/<first 16 hex of derivative_sha256>.jpg`. The derivative
+  file itself is published by a reviewed commit to this repository (public), never automatically. Until it is
+  committed the card shows "Photo unavailable" with the evidence link.
+- The fictional AI-generated samples and the `#/photo-gallery-demo` route were removed before production.

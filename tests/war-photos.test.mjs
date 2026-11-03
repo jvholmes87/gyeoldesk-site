@@ -42,7 +42,7 @@ test('status counts explain withheld photos without exposing them',()=>{
   const html=photoGallery([],'DEMO','2026-11-05','en',false,set);
   assert.ok(html.includes('22 photos recorded for this period'));
   assert.ok(html.includes('22 not shown'));
-  assert.ok(html.includes('2 probable earlier captures (historical'));
+  assert.ok(html.includes('2 probable earlier captures kept as historical references'));
   assert.ok(html.includes('4 with capture date unconfirmed'));
   assert.ok(!html.includes('<img'));
   assert.ok(!html.includes('Collection status is unconfirmed'));
