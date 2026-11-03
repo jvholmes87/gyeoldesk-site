@@ -539,7 +539,8 @@ function printBoard() {
   // Measure at landscape page width. If the board is only a little taller than one sheet, shrink it to fit;
   // otherwise let rows continue on further landscape sheets.
   root.style.zoom = ''; root.classList.add('measure');
-  const PAGE_H = 720; const h = root.scrollHeight;
+  // A4 landscape inside 12 mm / 14 mm margins: 269 x 186 mm = 1017 x 703 px.
+  const PAGE_H = 700; const h = root.scrollHeight;
   root.classList.remove('measure');
   if (h > PAGE_H && h <= PAGE_H * 1.45) root.style.zoom = String(Math.floor((PAGE_H / h) * 100) / 100);
   document.body.classList.add('printing-board');
