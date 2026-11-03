@@ -104,6 +104,9 @@ export async function loadDrivePhotos(container, fetcher, lang = 'en') {
         const blob = await fetcher(img.dataset.photoId);
         if (!blob || !/^image\//.test(blob.type || '') || blob.size === 0) throw new Error('not an image');
         url = URL.createObjectURL(blob);
+        // Blob bytes are already fetched; lazy loading can stall decode off screen
+        // and block the worker queue from reaching the remaining photos.
+        img.loading = 'eager';
         img.src = url;
         if (typeof img.decode === 'function') await img.decode();
         else img.addEventListener('error', () => fail(img), { once: true });
