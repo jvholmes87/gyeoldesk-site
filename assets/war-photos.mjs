@@ -40,8 +40,8 @@ export function photoStatus(set, shown, lang = 'en') {
   if (n(set.historical)) parts.push(ko ? `이전 촬영 추정 ${n(set.historical)}장 — 이력 참고, 금주 작업 아님` : `${n(set.historical)} probable earlier capture${n(set.historical) > 1 ? 's' : ''} kept as historical reference${n(set.historical) > 1 ? 's' : ''}, not this week's work`);
   if (n(set.date_pending)) parts.push(ko ? `촬영일 미확정 ${n(set.date_pending)}장` : `${n(set.date_pending)} with capture date unconfirmed`);
   const head = ko
-    ? `이 기간 사진 ${n(set.total)}장 기록됨. ${shown ? `승인 ${shown}장 표시, ` : ''}${held}장은 검증·승인 전이라 표시하지 않습니다`
-    : `${n(set.total)} photo${n(set.total) > 1 ? 's' : ''} recorded for this period. ${shown ? `${shown} released and shown; ` : ''}${held} not shown: awaiting verification and release by the photo reviewer`;
+    ? `이 기간 사진 ${n(set.total)}장 기록됨. ${shown ? `승인된 갤러리 기록 ${shown}장, ` : ''}${held}장은 갤러리 선택에 포함되지 않습니다`
+    : `${n(set.total)} photo${n(set.total) > 1 ? 's' : ''} recorded for this period. ${shown ? `${shown} approved gallery records; ` : ''}${held} not in the gallery selection`;
   const tail = ko ? ' 사진은 과업 구글 드라이브에 보관되며, 사진만으로 완료·승인을 판단하지 않습니다.' : ' Photos stay in the project\'s Google Drive. A photo alone does not establish completion or approval.';
   return head + (parts.length ? ' (' + parts.join(ko ? ', ' : '; ') + ')' : '') + '.' + tail;
 }
@@ -83,21 +83,39 @@ export function bindPhotoErrors(container, lang = 'en') {
 // Load Drive photos for signed-in members. fetcher(photoId) must resolve to an image Blob (see app.js).
 // The full-size link opens the same members-only copy; on failure the image is replaced by a readable message and the
 // Drive link stays (Drive itself enforces who may open the original).
-export function loadDrivePhotos(container, fetcher, lang = 'en') {
-  const fail = (img) => {
+export async function loadDrivePhotos(container, fetcher, lang = 'en') {
+  const images = [...container.querySelectorAll('.war-photos img[data-photo-id]')];
+  let next = 0, loaded = 0, failed = 0;
+  const fail = (img, error) => {
     const message = document.createElement('p');
     message.className = 'photo-unavailable';
-    message.textContent = lang === 'ko' ? '사진을 불러올 수 없습니다. 드라이브 링크를 이용하세요.' : 'Photo could not be loaded. Use the Drive link.';
+    message.textContent = error?.status === 401
+      ? (lang === 'ko' ? '사진을 보려면 다시 로그인하세요.' : 'Sign in again to load this photo.')
+      : error?.status === 403
+        ? (lang === 'ko' ? '이 계정으로 사진에 접근할 수 없습니다. 드라이브 링크를 확인하세요.' : 'This account cannot access the photo. Check the Drive link.')
+        : (lang === 'ko' ? '사진을 불러올 수 없습니다. 드라이브 링크를 이용하세요.' : 'Photo could not be loaded. Use the Drive link.');
     img.replaceWith(message);
   };
-  container.querySelectorAll('.war-photos img[data-photo-id]').forEach(async (img) => {
-    try {
-      const blob = await fetcher(img.dataset.photoId);
-      if (!blob || !/^image\//.test(blob.type || '')) throw new Error('not an image');
-      const url = URL.createObjectURL(blob);
-      img.addEventListener('error', () => fail(img), { once: true });
-      img.src = url;
-      const a = img.closest('a'); if (a) a.href = url;
-    } catch { fail(img); }
-  });
+  async function worker() {
+    while (next < images.length) {
+      const img = images[next++];
+      let url;
+      try {
+        const blob = await fetcher(img.dataset.photoId);
+        if (!blob || !/^image\//.test(blob.type || '') || blob.size === 0) throw new Error('not an image');
+        url = URL.createObjectURL(blob);
+        img.src = url;
+        if (typeof img.decode === 'function') await img.decode();
+        else img.addEventListener('error', () => fail(img), { once: true });
+        const a = img.closest('a'); if (a) a.href = url;
+        loaded++;
+      } catch (error) {
+        if (url) URL.revokeObjectURL(url);
+        failed++; fail(img, error);
+      }
+    }
+  }
+  // Apps Script is a relay, not an image CDN. Avoid launching every photo at once.
+  await Promise.all(Array.from({length:Math.min(3,images.length)},worker));
+  return {loaded,failed};
 }
