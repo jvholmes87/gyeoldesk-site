@@ -37,7 +37,7 @@ const T = {
     krimaTitle: 'Krima 현황 시트', krimaLede: 'Krima 과업만 해당. 주간 확정 시 생성됩니다.',
     soon: '준비 중',
     projects: (n) => `과업 ${n}건`, week: (d) => `${d} 주`,
-    live: '진행 중', review: '검토 중', final: '확정',
+    live: '작성 중', review: '검토 중', final: '확정', comingSoon: '준비 중', comingSoonLede: '이 기능은 준비 중입니다. 지금은 WAR부터 사용합니다.', draftNote: '작성 중인 주간 보고입니다. 확정 전까지 하루 동안 계속 갱신됩니다.', draftPrint: '작성 중 (확정 전)', printFrom: (d) => `${d} 기준`,
     carried: '지난주 이월', updated: (t) => `갱신 ${t}`,
     startReview: '검토 시작', finalize: '확정하고 잠그기', print: '인쇄 / PDF',
     confirmReview: '이번 주를 검토 단계로 넘길까요? 팀원이 확인 표시를 할 수 있습니다.',
@@ -82,7 +82,7 @@ const T = {
     krimaTitle: 'Krima status sheet', krimaLede: 'Krima task orders only. Generated when the week is final.',
     soon: 'Coming next',
     projects: (n) => `${n} projects`, week: (d) => `Week of ${d}`,
-    live: 'Live', review: 'In review', final: 'Final',
+    live: 'Working draft', review: 'In review', final: 'Final', comingSoon: 'Coming soon', comingSoonLede: 'This part is being built. For now, Gyeoldesk starts with the WAR.', draftNote: 'Working draft. It keeps updating through the week until it is finalized.', draftPrint: 'WORKING DRAFT (not final)', printFrom: (d) => `As of ${d}`,
     carried: 'Carried from last week', updated: (t) => `Updated ${t}`,
     startReview: 'Start review', finalize: 'Finalize and lock', print: 'Print / PDF',
     confirmReview: 'Move this week to review? The team can then mark items as checked.',
@@ -254,7 +254,6 @@ function shell(crumb, inner) {
       ${state.profile?.status === 'approved' ? `<div class="menu"><button type="button" id="menuBtn" aria-expanded="false" aria-controls="menuList" aria-label="${esc(t('menu'))}">☰</button>
         <nav id="menuList" hidden>
           <a href="#/">${esc(t('home'))}</a>
-          <a href="#/questions">${esc(t('questionsTitle'))}</a>
           ${isAdmin() ? `<a href="#/access">${esc(t('teamMenu'))}</a>` : ''}
           <span class="soon-item">${esc(t('settings'))} <span class="chip muted">${esc(t('soon'))}</span></span>
           <button type="button" class="menu-out" id="signout2">${esc(t('signOut'))}<small>${esc(state.user?.email || '')}</small></button>
@@ -435,6 +434,7 @@ async function renderWar(dateParam) {
         ${esc(t('projects', items.length))}${lastUpdate ? ` <span class="item-key">${esc(t('updated', fmtTime(lastUpdate)))}</span>` : ''}</p></div>
       <div class="actions">${adminActions}<button class="btn quiet" id="print">${esc(t('print'))}</button></div>
     </div>
+    ${wk.status !== 'final' ? `<p class="draft-note" role="status">${esc(t('draftNote'))}</p>` : ''}
     ${weekNav(weeks, wk)}
     <div class="war-tools">
       <input type="search" id="q" placeholder="${esc(t('search'))}" value="${esc(warView.q)}" aria-label="${esc(t('search'))}">
@@ -520,9 +520,11 @@ function printBoard() {
   const big = date.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Asia/Seoul' }).toUpperCase().replace(',', '');
   const html = `
     <header class="pb-head">
-      <div><div class="pb-eyebrow">${esc(org.slug.toUpperCase())} · ${esc(t('printEyebrow'))}</div>
-        <h1>[WAR] ${esc(t('boardTitle'))}</h1></div>
-      <div class="pb-date"><b>${esc(big)}</b><span>${esc(t(wk.status))} · ${esc(t('projects', items.length))}</span></div>
+      <div class="pb-brand">${org.logo_wide_url || org.logo_url ? `<img class="pb-logo" src="${esc((lang === 'en' && org.logo_wide_en_url) || org.logo_wide_url || org.logo_url)}" alt="${esc(org.name)}">` : ''}
+        <div><div class="pb-eyebrow">${esc(org.slug.toUpperCase())} · ${esc(t('printEyebrow'))}</div>
+        <h1>[WAR] ${esc(t('boardTitle'))}</h1></div></div>
+      <div class="pb-date"><b>${esc(big)}</b><span>${esc(t(wk.status))} · ${esc(t('projects', items.length))}</span>
+        ${wk.status !== 'final' ? `<span class="pb-draft">${esc(t('draftPrint'))} · ${esc(t('printFrom', fmtTime(new Date().toISOString())))}</span>` : ''}</div>
     </header>
     <div class="pb-legend">${STAGES.filter((s) => s.k !== 'other').map((s) => `<span><i style="background:${s.c}"></i>${esc(lang === 'ko' ? s.ko : s.en)}</span>`).join('')}<span class="pb-note">${esc(t('printPrimeNote'))}</span></div>
     ${rows.map((row) => `<div class="pb-row">${row.map((c) => `
@@ -580,7 +582,7 @@ async function renderProject(dateParam, keyParam) {
       <div class="bc-top"><span class="bc-key">${esc(keyLabel(p.project_key))}</span>${primeTag(primeOf(p, f))}
         <span class="bc-stage">${esc(lang === 'ko' ? st.ko : st.en)}</span>
         <span class="spacer"></span>${instTag(p)}<span class="item-key">${esc(t('itemNo', it.item_no || '–'))}</span></div>
-      <p class="no-print" style="margin:6px 0 0"><a href="#/p/${encodeURIComponent(key)}">${esc(t('projectPage'))}</a></p>
+
       <h1>${esc(pick(f.title_ko || p.title_ko, f.title_en || p.title_en))}</h1>
       <p class="alt">${esc(lang === 'ko' ? (f.title_en || p.title_en || '') : (f.title_ko || p.title_ko || ''))}</p>
       <p class="item-key">${esc(fmtDate(w.war_date))} <span class="chip ${w.status}">${esc(t(w.status))}</span>
@@ -606,16 +608,20 @@ async function renderProject(dateParam, keyParam) {
   $('#both')?.addEventListener('change', (e) => { warView.both = e.target.checked; renderProject(dateParam, keyParam); });
 }
 
+// Projects, Proposals, Warranties and project pages are switched off until they are ready (WAR first).
+function renderSoon() {
+  shell(t('comingSoon'), `<div class="soon-page"><span class="chip muted">${esc(t('comingSoon'))}</span>
+    <h1>${esc(t('comingSoon'))}</h1><p class="lede">${esc(t('comingSoonLede'))}</p>
+    <p><a class="btn" href="#/war">WAR</a> <a class="btn quiet" href="#/">${esc(t('home'))}</a></p></div>`);
+}
 async function renderHome() {
   shell('', `<h1 class="sr">${esc(t('home'))}</h1><div class="desk" id="tiles"><p class="empty">…</p></div><div id="qstrip"></div>`);
   const [{ data: projects }, { data: weeks }, { data: qs }] = await Promise.all([
-    sb.from('projects').select('id,stage,proposal_status,warranty_status'),
+    Promise.resolve({ data: null }),
     sb.from('weeks').select('id,war_date,status,rev').order('war_date', { ascending: false }).order('rev', { ascending: false }).limit(1),
     sb.from('questions').select('id,status').eq('status', 'open'),
   ]);
-  const ps = projects || [];
   const wk = weeks?.[0];
-  const n = (f) => ps.filter(f).length;
 
   const tile = (href, title, lede, stats, main = false) => `
     <a class="dtile${main ? ' main' : ''}" href="${href}">
@@ -623,19 +629,21 @@ async function renderHome() {
       <h2>${esc(title)}</h2><p>${esc(lede)}</p>
       <span class="stat">${stats}</span>
     </a>`;
+  // Not open yet: shown so people see what is coming, but not clickable.
+  const soonTile = (title, lede) => `
+    <div class="dtile soon" aria-disabled="true">
+      <h2>${esc(title)}</h2><p>${esc(lede)}</p>
+      <span class="stat"><span class="chip muted">${esc(t('comingSoon'))}</span></span>
+    </div>`;
   const stat = (num, label) => `<span class="num"><b>${num}</b>${esc(label)}</span>`;
   $('#tiles').innerHTML =
-    tile('#/projects', t('projectsTitle'), t('projectsLede'),
-      stat(n((p) => stageKey(p) === 'pre-ntp'), t('stPreNtp')) + stat(n((p) => stageKey(p) === 'construction'), t('stConstruction')) + stat(n((p) => stageKey(p) === 'closeout'), t('stCloseout')), true) +
-    tile('#/proposals', t('proposalsTitle'), t('proposalsLede'),
-      stat(n((p) => p.proposal_status === 'submitted' || (!p.proposal_status && stageKey(p) === 'bid')), t('submitted')) + stat(n((p) => p.proposal_status === 'draft'), t('drafts'))) +
     tile(wk ? `#/war/${wk.war_date}` : '#/war', 'WAR', t('warLede'),
-      wk ? `<span class="chip ${wk.status}">${esc(t(wk.status))}</span> <span>${esc(fmtDate(wk.war_date))}</span>` : esc(t('noWeeks'))) +
-    tile('#/warranties', t('warrantiesTitle'), t('warrantiesLede'),
-      stat(n((p) => p.warranty_status === 'active' || (!p.warranty_status && stageKey(p) === 'warranty')), t('active')) + stat(n((p) => p.warranty_status === 'closed'), t('closedOut')));
+      wk ? `<span class="chip ${wk.status}">${esc(t(wk.status))}</span> <span>${esc(fmtDate(wk.war_date))}</span>` : esc(t('noWeeks')), true) +
+    soonTile(t('projectsTitle'), t('projectsLede')) +
+    soonTile(t('proposalsTitle'), t('proposalsLede')) +
+    soonTile(t('warrantiesTitle'), t('warrantiesLede'));
 
-  const open = qs?.length || 0;
-  $('#qstrip').innerHTML = open ? `<a class="qstrip" href="#/questions"><b>${open}</b> ${esc(t('openQuestions'))}</a>` : '';
+  void qs; // questions come back with the project pages
 }
 
 // ---------------------------------------------------------------- Desk lists
@@ -1074,10 +1082,7 @@ async function route() {
   if (page === 'war' && arg && sub) return renderProject(arg, sub);
   if (page === 'war') return renderWar(arg);
   if (page === 'access') return renderAccess();
-  if (page === 'projects') return renderProjects();
-  if (page === 'proposals') return renderProposals();
-  if (page === 'warranties') return renderWarranties();
-  if (page === 'questions') return renderQuestions();
+  if (['projects', 'proposals', 'warranties', 'questions', 'p'].includes(page)) return renderSoon();
   const sub2 = (location.hash || '').split('/')[3];
   if (page === 'p' && arg && sub2) return renderRecords(arg, sub2);
   if (page === 'p' && arg) return renderProjectPage(arg);
