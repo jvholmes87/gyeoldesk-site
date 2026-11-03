@@ -7,6 +7,7 @@ set -euo pipefail
 src="$(cd "$(dirname "$0")" && pwd)"; cd "$src"
 live=false; [[ "${1:-}" == "--live" ]] && live=true
 git diff --quiet && git diff --cached --quiet || { echo "Uncommitted changes. Stop." >&2; exit 1; }
+! git grep -n -E '^(<<<<<<<|>>>>>>>)( |$)' -- index.html assets || { echo "Merge conflict markers found. Stop." >&2; exit 1; }
 ./stamp.sh --check
 head="$(git rev-parse --short HEAD)"
 git -C ../gyeoldesk-preview fetch -q origin main && git -C ../gyeoldesk-preview rebase -q origin/main

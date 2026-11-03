@@ -5,6 +5,7 @@ set -euo pipefail
 src="$(cd "$(dirname "$0")" && pwd)"; dest="${1:-$src/../gyeoldesk-preview}"
 cd "$src"
 git diff --quiet && git diff --cached --quiet || { echo "Commit your changes first: the preview must be a commit." >&2; exit 1; }
+! git grep -n -E '^(<<<<<<<|>>>>>>>)( |$)' -- index.html assets || { echo "Merge conflict markers found. Stop." >&2; exit 1; }
 ./stamp.sh --check
 commit="$(git rev-parse --short HEAD)"; branch="$(git rev-parse --abbrev-ref HEAD)"
 cd "$dest" && git fetch -q origin main && git rebase -q origin/main
