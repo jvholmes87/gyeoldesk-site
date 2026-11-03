@@ -3,6 +3,7 @@
 //   <company>.gyeoldesk.com  -> that company's workspace (sign-in, WAR, team access)
 // Local testing: ?org=gnc opens a workspace on any host.
 import { createClient } from './vendor/supabase.mjs';
+import { photoGallery, bindPhotoErrors } from './war-photos.mjs?v=076c093d';
 
 const SUPABASE_URL = 'https://wltuwsplrkrsfthkthxc.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_N8CLXOt4Sh01hSqJu8O9Rg_q8_V1LXh'; // publishable key: safe in the browser, data is protected by row-level security
@@ -598,6 +599,7 @@ async function renderProject(dateParam, keyParam) {
       ${kd.length ? `<section><h2>${esc(t('keyDates'))}</h2><table class="kd">
         <thead><tr><th scope="col">${esc(t('date'))}</th><th scope="col">${esc(t('item'))}</th></tr></thead>
         <tbody>${kd.map((r) => `<tr><td>${esc(r.date_text)}</td><td>${esc(pick(r.ko, r.en))}${warView.both ? `<div class="alt">${esc(lang === 'ko' ? r.en : r.ko)}</div>` : ''}</td></tr>`).join('')}</tbody></table></section>` : ''}
+      ${photoGallery(f.photo_evidence, p.project_key, w.war_date, lang, warView.both)}
       ${krima?.length ? `<section><h2>${esc(t('krimaText'))}</h2>${bullets(krima)}</section>` : ''}
       ${si && ((si.internal_notes || []).length || (si.open_items || []).length) ? `<section class="internal no-print">
         ${(si.internal_notes || []).length ? `<h3>${esc(t('internal'))}</h3>${bullets(si.internal_notes)}` : ''}
@@ -606,6 +608,7 @@ async function renderProject(dateParam, keyParam) {
       ${appearances.length > 1 ? `<section class="no-print"><h2>${esc(t('otherWeeks'))}</h2><nav class="weeks">${appearances.map(({ w: aw }) => `
         <a href="#/war/${aw.war_date}/${encodeURIComponent(key)}" ${aw.id === w.id ? 'aria-current="page"' : ''}><span class="d">${esc(fmtDate(aw.war_date))}</span><span class="chip ${aw.status}">${esc(t(aw.status))}</span></a>`).join('')}</nav></section>` : ''}
     </article>`;
+  bindPhotoErrors(box, lang);
   $('#both')?.addEventListener('change', (e) => { warView.both = e.target.checked; renderProject(dateParam, keyParam); });
 }
 

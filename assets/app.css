@@ -538,3 +538,11 @@ a.rec.empty-rec { color: var(--ink-3); }
 .pb-brand { display: flex; align-items: center; gap: 14px; }
 .pb-logo { height: 40px; width: auto; display: block; }
 .pb-draft { display: block; margin-top: 3px; font-weight: 800; color: #9A5B0F; letter-spacing: .02em; }
+.photo-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,260px),1fr)); gap: 18px; }
+.photo-grid figure { margin: 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; break-inside: avoid; }
+.photo-grid img { display: block; width: 100%; height: 210px; object-fit: contain; background: #f4f5f7; }
+.photo-grid figcaption { padding: 12px; overflow-wrap: anywhere; }
+.photo-grid time { font-size: 13px; color: var(--ink-2); }
+.photo-grid p { margin: 8px 0; }
+.photo-unavailable { padding: 20px; }
+@media print { .photo-grid { grid-template-columns: repeat(2,1fr); } .photo-grid img { height: 160px; } }
