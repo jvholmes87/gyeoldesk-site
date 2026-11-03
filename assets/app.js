@@ -107,6 +107,31 @@ const T = {
 // English by default. Each person's choice is kept on this device and, once signed in, on their account.
 let lang = 'en';
 try { lang = localStorage.getItem('gd.lang') || 'en'; } catch { lang = 'en'; }
+// Contacts page text (kept apart so the main dictionaries stay readable).
+Object.assign(T.ko, {
+  contactsTitle: '연락처', contactsLede: 'PCES 트래커(09A·09B·09C)에서 매시간 갱신됩니다. 수정은 트래커에서 하세요.',
+  contactsHome: '과업별 계약관·감독관·원도급사 연락처와 권한.', byProject: '과업별', directory: '전체 명단',
+  searchContacts: '이름, 이메일, 기관 검색', toLine: '받는 사람', ccLine: '참조', sendFrom: '보내는 계정', copy: '복사', copied: '복사했습니다',
+  noEmail: '이메일 없음', verify: '확인 필요', escalate: '상위 보고', earlier: '이전 담당', mobile: '휴대폰', otherCh: '기타 연락',
+  adminOnly: '관리자만', allProjects: '전체 공통', noProjectId: 'PID 없음', noContacts: '아직 연락처가 없습니다. 트래커 09 탭이 동기화되면 표시됩니다.',
+  verifiedOn: (d) => `확인 ${d}`, nPeople: (n) => `${n}명`, nProjects: (n) => `과업 ${n}건`, roleChanged: '역할 변경', left: '이동·퇴직',
+  dTo: '받는 사람', dCc: '참조', dBcc: '숨은 참조', dReq: '요청 시', thru: (d) => `${d}까지`, emailLists: '메일 수신자',
+  statPeople: '명', statProjects: '과업', aKO: '정부 구속', aCOR: '변경 권한 없음', aSite: '출입 조율 가능',
+  gKO: '계약관(KO) — 금액·범위·공기 변경은 계약관만 가능', gCS: '계약 사무소', gCOR: '감독관(COR) — 기술 감독, 계약 변경 권한 없음',
+  gAP: '승인 담당 (해당 항목만)', gUS: '사용 부대 — 현장 통제', gIN: '참고 수신', gPR: '원도급사', gGN: 'GNC', gOT: '기타',
+});
+Object.assign(T.en, {
+  contactsTitle: 'Contacts', contactsLede: 'From the PCES tracker (09A–09C), updated hourly. Make changes in the tracker, not here.',
+  contactsHome: 'Who to contact on each project, and what they can approve.', byProject: 'By project', directory: 'Directory',
+  searchContacts: 'Search name, email or office', toLine: 'To', ccLine: 'cc', sendFrom: 'Send from', copy: 'Copy', copied: 'Copied',
+  noEmail: 'No email on file', verify: 'Verify', escalate: 'Escalate to', earlier: 'Earlier on this project', mobile: 'Mobile', otherCh: 'Other',
+  adminOnly: 'Admin only', allProjects: 'All projects', noProjectId: 'No PID', noContacts: 'No contacts yet. They appear after the tracker 09 tabs sync.',
+  verifiedOn: (d) => `Verified ${d}`, nPeople: (n) => `${n} people`, nProjects: (n) => `${n} projects`, roleChanged: 'Role changed', left: 'Left',
+  dTo: 'To', dCc: 'cc', dBcc: 'bcc', dReq: 'On request', thru: (d) => `thru ${d}`, emailLists: 'Who gets the email',
+  statPeople: 'people', statProjects: 'projects', aKO: 'Binds Government', aCOR: 'No contract changes', aSite: 'Site entry',
+  gKO: 'Contracting Officer — the only one who can change price, scope or schedule', gCS: 'Contracting office', gCOR: 'COR — technical only, no contract changes',
+  gAP: 'Approvals (named items only)', gUS: 'User unit — controls the site', gIN: 'Copied for information', gPR: 'Prime contractor', gGN: 'GNC', gOT: 'Other',
+});
 const t = (k, ...a) => { const v = T[lang][k] ?? T.en[k] ?? k; return typeof v === 'function' ? v(...a) : v; };
 const pick = (ko, en) => (lang === 'ko' ? (ko || en) : (en || ko)) || '';
 
@@ -254,6 +279,7 @@ function shell(crumb, inner) {
       ${state.profile?.status === 'approved' ? `<div class="menu"><button type="button" id="menuBtn" aria-expanded="false" aria-controls="menuList" aria-label="${esc(t('menu'))}">☰</button>
         <nav id="menuList" hidden>
           <a href="#/">${esc(t('home'))}</a>
+          <a href="#/contacts">${esc(t('contactsTitle'))}</a>
           ${isAdmin() ? `<a href="#/access">${esc(t('teamMenu'))}</a>` : ''}
           <span class="soon-item">${esc(t('settings'))} <span class="chip muted">${esc(t('soon'))}</span></span>
           <button type="button" class="menu-out" id="signout2">${esc(t('signOut'))}<small>${esc(state.user?.email || '')}</small></button>
@@ -640,11 +666,18 @@ async function renderHome() {
   $('#tiles').innerHTML =
     tile(wk ? `#/war/${wk.war_date}` : '#/war', 'WAR', t('warLede'),
       wk ? `<span class="chip ${wk.status}">${esc(t(wk.status))}</span> <span>${esc(fmtDate(wk.war_date))}</span>` : esc(t('noWeeks')), true) +
+    tile('#/contacts', t('contactsTitle'), t('contactsHome'), '<span id="ctStat"></span>') +
     soonTile(t('projectsTitle'), t('projectsLede')) +
     soonTile(t('proposalsTitle'), t('proposalsLede')) +
     soonTile(t('warrantiesTitle'), t('warrantiesLede'));
 
   void qs; // questions come back with the project pages
+  sb.from('contact_assignments').select('pid,project_no,contact_key,status').then(({ data }) => {
+    const el = $('#ctStat'); if (!el || !data?.length) return;
+    const ppl = new Set(data.filter((a) => a.status !== 'Ended' && !/^GNC-/.test(a.contact_key)).map((a) => a.contact_key)).size;
+    const pj = new Set(data.filter((a) => /^P-\d/.test(a.pid || '')).map((a) => a.pid)).size;
+    el.innerHTML = `<span class="num"><b>${ppl}</b>${esc(t('statPeople'))}</span><span class="num"><b>${pj}</b>${esc(t('statProjects'))}</span>`;
+  });
 }
 
 // ---------------------------------------------------------------- Desk lists
@@ -1056,6 +1089,136 @@ async function renderAccess() {
   });
 }
 
+// ---------------------------------------------------------------- Contacts (read-only copy of tracker 09A/09B/09C)
+const AUTH_GROUPS = [
+  ['KO', /^KO/], ['CS', /^Contract specialist/], ['COR', /^COR/], ['AP', /^Approval/], ['US', /^User unit/],
+  ['IN', /^Info/], ['PR', /^Prime/], ['GN', /^GNC/],
+];
+const groupOf = (a) => (AUTH_GROUPS.find(([, re]) => re.test(a || '')) || ['OT'])[0];
+const contactsView = { q: '' };
+let contactsCache = null;
+async function loadContacts() {
+  if (contactsCache) return contactsCache;
+  const [o, p, a, pr, pj] = await Promise.all([
+    sb.from('contact_orgs').select('*').order('org_key'),
+    sb.from('contacts').select('*').order('contact_key'),
+    sb.from('contact_assignments').select('*').order('sort'),
+    isAdmin() ? sb.from('contacts_private').select('contact_key,mobile,other_channel') : Promise.resolve({ data: [] }),
+    sb.from('projects').select('pid,project_key,title_en,title_ko'),
+  ]);
+  if (o.error || p.error || a.error) return null;
+  contactsCache = { orgs: o.data || [], people: p.data || [], asg: a.data || [], priv: new Map((pr.data || []).map((x) => [x.contact_key, x])), projects: pj.data || [] };
+  setTimeout(() => { contactsCache = null; }, 5 * 60 * 1000);
+  return contactsCache;
+}
+// Link only a single dialable number. DSN and notes like "(SF 1442) / ..." stay plain text.
+const telHref = (v) => { const s = String(v || '').trim(); return /^\+?[\d\s()-]{7,}$/.test(s) && !/^\s*DSN/i.test(s) ? 'tel:' + s.replace(/[^\d+]/g, '') : null; };
+const phoneHtml = (label, v) => { if (!v) return ''; const h = telHref(v); return `<div class="ct-ph"><span>${esc(label)}</span>${h ? `<a href="${h}">${esc(v)}</a>` : esc(v)}</div>`; };
+function projectSlots(asg) {
+  const seen = new Map();
+  for (const a of asg) {
+    const id = a.pid === 'NO PID' ? a.project_no : a.pid;
+    if (id && !seen.has(id)) seen.set(id, { id, pid: a.pid, no: a.project_no });
+  }
+  const rank = (x) => (/^P-\d/.test(x.pid) ? 0 : x.pid === 'ALL' ? 2 : 1);
+  return [...seen.values()].sort((a, b) => rank(a) - rank(b) || String(a.id).localeCompare(String(b.id)));
+}
+const slotLabel = (x) => (x.pid === 'ALL' ? t('allProjects') : /^P-\d/.test(x.pid) ? x.pid : String(x.no || x.id).replace(/^SMYU\s*/, '').replace(/\s*\(.*\)$/, ''));
+function personMatches(p, a, q) {
+  if (!q) return true;
+  const hay = [p?.name_en, p?.name_ko, p?.work_email, p?.rank_title, p?.office_symbol, p?.notes, a?.role, a?.notes].join(' ').toLowerCase();
+  return q.toLowerCase().split(/\s+/).every((w) => hay.includes(w));
+}
+function contactCard(p, a, c) {
+  const priv = c.priv.get(p?.contact_key || a?.contact_key);
+  const name = p ? pick(p.name_ko, p.name_en) : (a?.contact_key || '').replace(/^GNC-/, 'GNC · ');
+  const alt = p && p.name_ko && p.name_en ? (lang === 'ko' ? p.name_en : p.name_ko) : '';
+  const g = a ? groupOf(a.authority) : null;
+  const badge = a ? (g === 'KO' ? `<span class="chip auth-ko">${esc(t('aKO'))}</span>` : /site entry/i.test(a.authority || '') ? `<span class="chip auth-site">${esc(t('aSite'))}</span>` : g === 'COR' ? `<span class="chip auth-cor">${esc(t('aCOR'))}</span>` : '') : '';
+  const dist = a && { To: 'dTo', cc: 'dCc', bcc: 'dBcc', 'on request': 'dReq' }[a.distribution];
+  const esc2 = a?.escalation_key ? c.people.find((x) => x.contact_key === a.escalation_key) : null;
+  const flags = [
+    (a?.status === 'Verify' || p?.status === 'Verify') ? `<span class="chip warn">${esc(t('verify'))}</span>` : '',
+    p?.status === 'Role changed' ? `<span class="chip muted">${esc(t('roleChanged'))}</span>` : '',
+    p?.status === 'Left' ? `<span class="chip muted">${esc(t('left'))}</span>` : '',
+  ].join('');
+  return `<article class="ct-card">
+    <div class="ct-head"><h3>${esc(name)}${alt ? ` <span class="alt">${esc(alt)}</span>` : ''}</h3>${dist ? `<span class="chip dist">${esc(t(dist))}</span>` : ''}</div>
+    <p class="ct-title">${esc([p?.rank_title, p?.office_symbol].filter(Boolean).join(' · '))}</p>
+    ${a?.role ? `<p class="ct-role">${esc(a.role)}${a.effective_thru ? ` · ${esc(t('thru', fmtDate(a.effective_thru)))}` : ''}</p>` : ''}
+    ${badge || flags ? `<div class="ct-badges">${badge}${flags}</div>` : ''}
+    <div class="ct-lines">
+      ${p ? (p.work_email ? `<div class="ct-mail"><a href="mailto:${esc(p.work_email)}">${esc(p.work_email)}</a></div>` : `<div class="ct-mail none">${esc(t('noEmail'))}</div>`) : ''}
+      ${phoneHtml('DSN/Office', p?.office_phone)}${phoneHtml('Comm', p?.comm_phone)}
+      ${priv ? `<div class="ct-priv" title="${esc(t('adminOnly'))}">${phoneHtml(t('mobile'), priv.mobile)}${priv.other_channel ? `<div class="ct-ph"><span>${esc(t('otherCh'))}</span>${esc(priv.other_channel)}</div>` : ''}</div>` : ''}
+    </div>
+    ${a?.designation ? `<p class="ct-note">${esc(a.designation)}</p>` : ''}
+    ${a?.notes ? `<p class="ct-note">${esc(a.notes)}</p>` : ''}
+    ${!a && p?.notes ? `<p class="ct-note">${esc(p.notes)}</p>` : ''}
+    ${esc2 ? `<p class="ct-esc">${esc(t('escalate'))}: ${esc(pick(esc2.name_ko, esc2.name_en))}</p>` : ''}
+    ${p?.verified_on ? `<p class="ct-ver">${esc(t('verifiedOn', fmtDate(p.verified_on)))}${p.source ? ` · ${esc(p.source)}` : ''}</p>` : ''}
+  </article>`;
+}
+async function renderContacts(arg) {
+  const crumb = t('contactsTitle');
+  shell(crumb, `<h1>${esc(crumb)}</h1><p class="lede">${esc(t('contactsLede'))}</p><div id="ct"><p class="empty">…</p></div>`);
+  const c = await loadContacts();
+  const box = $('#ct');
+  if (!c) { box.innerHTML = `<div class="msg err">${esc(t('errGeneric'))}</div>`; return; }
+  if (!c.people.length) { box.innerHTML = `<p class="empty">${esc(t('noContacts'))}</p>`; return; }
+  const byKey = new Map(c.people.map((p) => [p.contact_key, p]));
+  const slots = projectSlots(c.asg);
+  const dirMode = arg === 'all';
+  const sel = dirMode ? null : (slots.find((x) => x.id === decodeURIComponent(arg || '')) || slots[0]);
+  const tabs = `<nav class="ct-tabs" aria-label="${esc(t('contactsTitle'))}">
+      <a href="#/contacts/${encodeURIComponent(sel?.id || slots[0].id)}" ${!dirMode ? 'aria-current="page"' : ''}>${esc(t('byProject'))}</a>
+      <a href="#/contacts/all" ${dirMode ? 'aria-current="page"' : ''}>${esc(t('directory'))}</a></nav>
+    <input type="search" id="cq" placeholder="${esc(t('searchContacts'))}" aria-label="${esc(t('searchContacts'))}" value="${esc(contactsView.q)}">`;
+
+  const draw = () => {
+    const q = contactsView.q.trim();
+    if (dirMode) {
+      const groups = c.orgs.map((o) => ({ o, ps: c.people.filter((p) => p.contact_org_key === o.org_key && personMatches(p, null, q)) })).filter((g) => g.ps.length);
+      $('#ctBody').innerHTML = groups.length ? groups.map(({ o, ps }) => `<section class="ct-group">
+        <h2>${esc(pick(o.name_ko, o.name_en))} <span>${esc(t('nPeople', ps.length))}</span></h2>
+        ${o.mailbox ? `<p class="ct-org-mail"><a href="mailto:${esc(o.mailbox)}">${esc(o.mailbox)}</a></p>` : ''}
+        <div class="ct-grid">${ps.map((p) => contactCard(p, null, c)).join('')}</div></section>`).join('') : `<p class="empty">${esc(t('noMatch'))}</p>`;
+      return;
+    }
+    const rows = c.asg.filter((a) => (sel.pid === 'NO PID' ? a.project_no === sel.no : a.pid === sel.pid));
+    const active = rows.filter((a) => a.status !== 'Ended');
+    const ended = rows.filter((a) => a.status === 'Ended');
+    const mails = (d) => [...new Set(active.filter((a) => a.distribution === d).map((a) => byKey.get(a.contact_key)?.work_email).filter(Boolean))];
+    const to = mails('To'), cc = mails('cc');
+    const from = [...new Set(active.map((a) => a.send_from).filter(Boolean))];
+    const pj = c.projects.find((x) => x.pid && x.pid === sel.pid) || c.projects.find((x) => sel.no && String(sel.no).includes(x.project_key));
+    const shown = active.filter((a) => personMatches(byKey.get(a.contact_key), a, q));
+    const groups = [...AUTH_GROUPS.map(([k]) => k), 'OT'].map((k) => ({ k, rows: shown.filter((a) => groupOf(a.authority) === k) })).filter((g) => g.rows.length);
+    $('#ctBody').innerHTML = `
+      <header class="ct-proj">
+        <h2>${esc(sel.pid === 'ALL' ? t('allProjects') : [sel.pid !== 'NO PID' ? sel.pid : '', sel.no].filter(Boolean).join(' · '))}</h2>
+        ${pj ? `<p>${esc(pick(pj.title_ko, pj.title_en))}</p>` : ''}
+      </header>
+      ${to.length || cc.length || from.length ? `<section class="ct-lists"><h3>${esc(t('emailLists'))}</h3>
+        ${to.length ? `<div class="ct-list"><b>${esc(t('toLine'))}</b><code id="lTo">${esc(to.join('; '))}</code><button type="button" class="btn quiet sm" data-copy="lTo">${esc(t('copy'))}</button></div>` : ''}
+        ${cc.length ? `<div class="ct-list"><b>${esc(t('ccLine'))}</b><code id="lCc">${esc(cc.join('; '))}</code><button type="button" class="btn quiet sm" data-copy="lCc">${esc(t('copy'))}</button></div>` : ''}
+        ${from.length ? `<div class="ct-list"><b>${esc(t('sendFrom'))}</b><span>${esc(from.join(' · '))}</span></div>` : ''}
+      </section>` : ''}
+      ${groups.length ? groups.map((g) => `<section class="ct-group"><h2>${esc(t('g' + g.k))}</h2>
+        <div class="ct-grid">${g.rows.map((a) => contactCard(byKey.get(a.contact_key), a, c)).join('')}</div></section>`).join('') : `<p class="empty">${esc(t('noMatch'))}</p>`}
+      ${ended.length ? `<details class="ct-ended"><summary>${esc(t('earlier'))} (${ended.length})</summary>
+        <div class="ct-grid">${ended.map((a) => contactCard(byKey.get(a.contact_key), a, c)).join('')}</div></details>` : ''}`;
+    $('#ctBody').querySelectorAll('[data-copy]').forEach((b) => b.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText($('#' + b.dataset.copy).textContent); toast(t('copied')); } catch { /* clipboard blocked: text stays selectable */ }
+    }));
+  };
+  box.innerHTML = `<div class="ct-bar">${tabs}</div>
+    ${dirMode ? '' : `<nav class="ct-chips" aria-label="${esc(t('byProject'))}">${slots.map((x) => `<a href="#/contacts/${encodeURIComponent(x.id)}" ${x.id === sel.id ? 'aria-current="page"' : ''}>${esc(slotLabel(x))}</a>`).join('')}</nav>`}
+    <div id="ctBody"></div>`;
+  $('#cq').addEventListener('input', (e) => { contactsView.q = e.target.value; draw(); });
+  draw();
+}
+
 // ---------------------------------------------------------------- router
 async function route() {
   document.documentElement.lang = lang;
@@ -1083,6 +1246,7 @@ async function route() {
   if (page === 'war' && arg && sub) return renderProject(arg, sub);
   if (page === 'war') return renderWar(arg);
   if (page === 'access') return renderAccess();
+  if (page === 'contacts') return renderContacts(arg);
   if (['projects', 'proposals', 'warranties', 'questions', 'p'].includes(page)) return renderSoon();
   const sub2 = (location.hash || '').split('/')[3];
   if (page === 'p' && arg && sub2) return renderRecords(arg, sub2);
