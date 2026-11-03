@@ -23,29 +23,41 @@ export function releasedPhotos(records, projectKey, period) {
     seen.add(p.photo_id); return true;
   }).sort((a,b) => a.capture_date.localeCompare(b.capture_date) || a.photo_id.localeCompare(b.photo_id));
 }
-export function photoGallery(records, projectKey, period, lang = 'en', both = false) {
+// set: optional photo-status row for this project/week (counts only, from the restricted manifest via the collector).
+// It never carries captions, links or images of unreleased photos; it only lets the card say what exists and why
+// nothing is shown, instead of implying that no photos were taken.
+const n = (v) => (Number.isInteger(v) && v > 0 ? v : 0);
+export function photoStatus(set, shown, lang = 'en') {
+  const ko = lang === 'ko';
+  if (set === 'error') return ko ? '사진 현황을 불러오지 못했습니다. 새로 고침하세요.' : 'Photo status could not be loaded. Refresh to try again.';
+  if (!set || !n(set.total)) return shown ? '' : (ko ? '이 기간에 공개 승인된 사진이 없습니다. 사진 수집 여부는 확인되지 않았습니다.' : 'No release-approved photos available for this period. Collection status is unconfirmed.');
+  const held = Math.max(0, n(set.total) - shown);
+  if (!held) return '';
+  const parts = [];
+  if (n(set.historical)) parts.push(ko ? `이전 촬영 추정 ${n(set.historical)}장 (금주 작업 아님)` : `${n(set.historical)} probable earlier capture${n(set.historical) > 1 ? 's' : ''} (historical, not this week's work)`);
+  if (n(set.date_pending)) parts.push(ko ? `촬영일 미확정 ${n(set.date_pending)}장` : `${n(set.date_pending)} with capture date unconfirmed`);
+  const head = ko
+    ? `이 기간 사진 ${n(set.total)}장 기록됨. ${shown ? `공개 승인 ${shown}장 표시, ` : ''}${held}장은 검증·공개 검토 전이라 표시하지 않습니다`
+    : `${n(set.total)} photo${n(set.total) > 1 ? 's' : ''} recorded for this period. ${shown ? `${shown} release-approved shown; ` : ''}${held} not shown: awaiting verification and release review`;
+  const tail = ko ? ' 원본은 제한 열람 보관이며, 사진만으로 완료·승인을 판단하지 않습니다.' : ' Originals stay in restricted project storage. A photo alone does not establish completion or approval.';
+  return head + (parts.length ? ' (' + parts.join(ko ? ', ' : '; ') + ')' : '') + '.' + tail;
+}
+export function photoGallery(records, projectKey, period, lang = 'en', both = false, set = null) {
   const ko = lang === 'ko';
   const photos = releasedPhotos(records, projectKey, period);
   const title = ko ? '작업 사진' : 'Work photos';
-  if (!photos.length) return `<section class="war-photos"><h2>${title}</h2><p class="empty">${ko ? '이 기간에 공개 승인된 사진이 없습니다. 사진 수집 여부는 확인되지 않았습니다.' : 'No release-approved photos available for this period. Collection status is unconfirmed.'}</p></section>`;
-  return renderGallery(photos, title, lang, both);
+  const note = photoStatus(set, photos.length, lang);
+  const noteHtml = note ? `<p class="${set === 'error' ? 'msg err' : 'empty'} photo-status">${escape(note)}</p>` : '';
+  if (!photos.length) return `<section class="war-photos"><h2>${title}</h2>${noteHtml}</section>`;
+  return renderGallery(photos, title, lang, both).replace('</h2>', `</h2>${noteHtml}`);
 }
-function renderGallery(photos, title, lang, both, sample = false) {
+function renderGallery(photos, title, lang, both) {
   const ko = lang === 'ko';
-  return `<section class="war-photos${sample ? ' photo-samples' : ''}"><h2>${escape(title)} (${photos.length})</h2>${sample ? `<p class="msg">${ko ? 'AI 생성 예시입니다. 실제 과업 사진이나 작업·검수 증거가 아닙니다. 날짜와 설명도 화면 확인용 예시입니다.' : 'AI-generated examples. Not actual project photos or evidence of work or acceptance. Dates and captions are illustrative.'}</p>` : ''}<div class="photo-grid">${photos.map((p) => {
+  return `<section class="war-photos"><h2>${escape(title)} (${photos.length})</h2><div class="photo-grid">${photos.map((p) => {
     const caption = (ko ? p.caption_ko : p.caption_en) || p.caption_en || p.caption_ko;
     const alt = ko ? p.caption_en : p.caption_ko;
-    return `<figure><a href="${escape(p.image_path)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer"><img loading="lazy" decoding="async" src="${escape(p.image_path)}" alt="${escape(caption)}"></a><figcaption>${sample ? `<span class="chip muted">${ko ? 'AI 생성 예시' : 'AI-GENERATED SAMPLE'}</span><br>` : ''}<time datetime="${p.capture_date}">${sample ? (ko ? '예시 날짜: ' : 'Example date: ') : ''}${p.capture_date} (KST)</time><p>${escape(caption)}</p>${both && alt && alt !== caption ? `<p class="alt" lang="${ko ? 'en' : 'ko'}">${escape(alt)}</p>` : ''}<a href="${escape(sample ? p.image_path : p.evidence_url)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">${sample ? (ko ? '예시 이미지 열기' : 'Open sample image') : (ko ? '승인된 사진 근거 열기' : 'Open approved photo evidence')}</a></figcaption></figure>`;
+    return `<figure><a href="${escape(p.image_path)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer"><img loading="lazy" decoding="async" src="${escape(p.image_path)}" alt="${escape(caption)}"></a><figcaption><time datetime="${p.capture_date}">${p.capture_date} (KST)</time><p>${escape(caption)}</p>${both && alt && alt !== caption ? `<p class="alt" lang="${ko ? 'en' : 'ko'}">${escape(alt)}</p>` : ''}<a href="${escape(p.evidence_url)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">${ko ? '승인된 사진 근거 열기' : 'Open approved photo evidence'}</a></figcaption></figure>`;
   }).join('')}</div></section>`;
-}
-// Separate static fixtures: never stored as verified project evidence or database rows.
-export function samplePhotoGallery(lang = 'en', both = true) {
-  const captions = [
-    ['Before-work example — drain inlet and gravel surface before finishing.','작업 전 예시 — 마감 전 배수구와 자갈 표면.'],
-    ['Progress example — concrete curb and inlet beside the prepared subbase.','시공 중 예시 — 준비된 기층 옆 콘크리트 연석과 배수구.'],
-    ['Restoration example — finished-looking asphalt around the inlet; no acceptance claim.','복구 예시 — 배수구 주변 아스팔트 마감 모습; 검수 완료를 의미하지 않음.'],
-  ];
-  return renderGallery(captions.map(([en,ko],i)=>({capture_date:`2026-11-0${i+1}`,caption_en:en,caption_ko:ko,image_path:`/assets/war-photo-samples/sample-${i+1}.webp`})),lang === 'ko' ? '갤러리 미리보기 — 가상 예시' : 'Gallery preview — fictional examples',lang,both,true);
 }
 export function bindPhotoErrors(container, lang = 'en') {
   container.querySelectorAll('.war-photos img').forEach((img) => {
