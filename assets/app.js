@@ -33,7 +33,7 @@ const T = {
     count: (n) => `${n}건`, none: '없음', noDrafts: '작성 중인 제안이 없습니다.', stageNotSet: '단계 미지정', openQuestions: '건의 질문이 답변을 기다리고 있습니다', menu: '메뉴', teamMenu: '팀 접근 권한', settings: '설정',
     latestStatus: '최신 현황', openInWar: (d) => `WAR에서 보기 (${d})`, noStatus: '아직 WAR 현황이 없습니다.', records: '과업 기록', askTitle: '질문하기', askPh: '이 과업에 대한 질문을 한국어나 영어로 적어 주세요.', askSend: '질문 보내기', askSent: '질문을 보냈습니다',
     qOpen: '답변 대기', qAnswered: '답변 완료', answerPh: '답변을 입력하세요', qAskedBy: '질문', qDelete: '삭제', qDeleteConfirm: '이 질문을 삭제할까요? 팀 화면에서 사라집니다.', qDeleted: '삭제했습니다', qAnsweredBy: '답변', qYourAnswer: '내 답변', qWaitNote: '관리자 답변을 기다리고 있습니다. 답변이 등록되면 이메일로 알려 드립니다.', answer: '답변', questionsTitle: '질문', questionsLede: '과업 페이지에서 올라온 질문. 관리자가 답변합니다.', noQuestions: '질문이 없습니다.', projectPage: '과업 페이지 열기',
-    recCount: (n, a) => `${n}건 · 승인 ${a}`, recFiles: (n) => `${n}건`, recNone: '없음', recOpen: '열기', recNoFile: '파일 없음', recNotes: '메모', recNotMade: 'AF 3000 미작성 (미제출 항목)', recEmpty: '아직 등록된 기록이 없습니다. 드라이브 과업 폴더와 PCES 제출물 대장에서 매시간 갱신됩니다.', recLede: '드라이브 과업 폴더와 PCES 제출물 대장에서 매시간 갱신. 파일은 구글 드라이브에서 열립니다.', printEyebrow: '주간 현황 — 전체 과업', printPrimeNote: '과업 번호 옆에 원도급사 표시', cont: '계속', printFoot: '금액 단위 원(KRW) · 상세 내용은 주간 현황 보고(WAR) 참조', boardTitle: '주간 현황 보드', weeksNav: '주 선택', backBoard: '보드로 돌아가기', newerWeek: '더 최신 주가 있습니다:', itemNo: (n) => `항목 ${n}`, thisWeek: '이번 주 현황', bothLangs: '한국어·영어 함께 보기', krimaText: 'Krima 현황 시트 문구', otherWeeks: '다른 주', warTitle: '주간 현황 보고', warLede: '매일 갱신되는 이번 주 WAR와 지난 주 기록.',
+    recCount: (n, a) => `${n}건 · 승인 ${a}`, recFiles: (n) => `${n}건`, recNone: '없음', recOpen: '열기', recNoFile: '파일 없음', recNotes: '메모', recNotMade: 'AF 3000 미작성 (미제출 항목)', recEmpty: '아직 등록된 기록이 없습니다. 드라이브 과업 폴더와 PCES 제출물 대장에서 매시간 갱신됩니다.', recLede: '드라이브 과업 폴더와 PCES 제출물 대장에서 매시간 갱신. 파일은 구글 드라이브에서 열립니다.', printEyebrow: '주간 현황 — 전체 과업', printPrimeNote: '과업 번호 옆에 원도급사 표시', cont: '계속', printFoot: '금액 단위 원(KRW) · 상세 내용은 주간 현황 보고(WAR) 참조', boardTitle: '주간 현황 보드', weeksNav: '주 선택', backBoard: '보드로 돌아가기', toTop: '맨 위로', newerWeek: '더 최신 주가 있습니다:', itemNo: (n) => `항목 ${n}`, thisWeek: '이번 주 현황', bothLangs: '한국어·영어 함께 보기', krimaText: 'Krima 현황 시트 문구', otherWeeks: '다른 주', warTitle: '주간 현황 보고', warLede: '매일 갱신되는 이번 주 WAR와 지난 주 기록.',
     accessTitle: '팀 접근 권한', accessLede: '조직도(10_GNC_ORG)에서 불러온 명단입니다. 접근이 필요한 사람에 체크하고 이메일과 역할을 정하세요.',
     reviewTitle: '검토 데스크', reviewLede: '팀원이 한국어로 답하면 영어로 정리됩니다.',
     krimaTitle: 'Krima 현황 시트', krimaLede: 'Krima 과업만 해당. 주간 확정 시 생성됩니다.',
@@ -78,7 +78,7 @@ const T = {
     count: (n) => `${n}`, none: 'None', noDrafts: 'No proposals in draft.', stageNotSet: 'Stage not set', openQuestions: 'question(s) waiting for an answer', menu: 'Menu', teamMenu: 'Team and access', settings: 'Settings',
     latestStatus: 'Latest status', openInWar: (d) => `Open in WAR (${d})`, noStatus: 'No WAR status for this project yet.', records: 'Project records', askTitle: 'Ask a question', askPh: 'Write your question about this project in Korean or English.', askSend: 'Send question', askSent: 'Question sent',
     qOpen: 'Waiting for an answer', qAnswered: 'Answered', answerPh: 'Write your answer', qAskedBy: 'Question from', qDelete: 'Delete', qDeleteConfirm: 'Delete this question? It disappears for everyone.', qDeleted: 'Deleted', qAnsweredBy: 'Answer from', qYourAnswer: 'Your answer', qWaitNote: 'Waiting for an admin to answer. You will get an email when they do.', answer: 'Answer', questionsTitle: 'Questions', questionsLede: 'Questions asked from project pages. Admins answer them here.', noQuestions: 'No questions yet.', projectPage: 'Open the project page',
-    recCount: (n, a) => `${n} · ${a} approved`, recFiles: (n) => `${n}`, recNone: 'None yet', recOpen: 'Open', recNoFile: 'No file', recNotes: 'Notes', recNotMade: 'AF 3000 not yet made (items not submitted)', recEmpty: 'Nothing here yet. This list updates every hour from the project folder in Drive and the PCES submittal register.', recLede: 'Updated every hour from the project folder in Drive and the PCES submittal register. Files open in Google Drive.', printEyebrow: 'Weekly status — all projects', printPrimeNote: 'Prime shown next to each project no.', cont: 'continued', printFoot: 'Values in KRW · full details in the Weekly Action Report', boardTitle: 'Weekly Status Board', weeksNav: 'Choose a week', backBoard: 'Back to the board', newerWeek: 'A newer week is available:', itemNo: (n) => `Item ${n}`, thisWeek: 'This week', bothLangs: 'Show Korean and English', krimaText: 'Krima sheet status text', otherWeeks: 'Other weeks', warTitle: 'Weekly Action Report', warLede: 'This week’s WAR, updated through the day, and every past week.',
+    recCount: (n, a) => `${n} · ${a} approved`, recFiles: (n) => `${n}`, recNone: 'None yet', recOpen: 'Open', recNoFile: 'No file', recNotes: 'Notes', recNotMade: 'AF 3000 not yet made (items not submitted)', recEmpty: 'Nothing here yet. This list updates every hour from the project folder in Drive and the PCES submittal register.', recLede: 'Updated every hour from the project folder in Drive and the PCES submittal register. Files open in Google Drive.', printEyebrow: 'Weekly status — all projects', printPrimeNote: 'Prime shown next to each project no.', cont: 'continued', printFoot: 'Values in KRW · full details in the Weekly Action Report', boardTitle: 'Weekly Status Board', weeksNav: 'Choose a week', backBoard: 'Back to the board', toTop: 'Back to top', newerWeek: 'A newer week is available:', itemNo: (n) => `Item ${n}`, thisWeek: 'This week', bothLangs: 'Show Korean and English', krimaText: 'Krima sheet status text', otherWeeks: 'Other weeks', warTitle: 'Weekly Action Report', warLede: 'This week’s WAR, updated through the day, and every past week.',
     accessTitle: 'Team access', accessLede: 'People from the org chart (10_GNC_ORG). Tick who needs access, then set their email and role.',
     reviewTitle: 'Review Desk', reviewLede: 'The team answers in Korean; answers are put into English for you.',
     krimaTitle: 'Krima status sheet', krimaLede: 'Krima task orders only. Generated when the week is final.',
@@ -1243,6 +1243,7 @@ async function renderContacts(arg) {
 // ---------------------------------------------------------------- router
 async function route() {
   document.documentElement.lang = lang;
+  syncTopBtn();
   if (!state.slug) return renderPortal();
   if (!state.org) {
     const { data } = await sb.rpc('org_directory');
@@ -1275,7 +1276,40 @@ async function route() {
   return renderHome();
 }
 
-window.addEventListener('hashchange', route);
+// Scroll: a new page opens at the top; going back to a page you came from
+// (the board after a card) returns to where you were on it.
+try { history.scrollRestoration = 'manual'; } catch {}
+const scrollMemo = new Map();
+let lastHash = location.hash;
+window.addEventListener('hashchange', async () => {
+  scrollMemo.set(lastHash, window.scrollY);
+  lastHash = location.hash;
+  const y = scrollMemo.get(location.hash) || 0;
+  window.scrollTo(0, 0);
+  await route();
+  if (y) requestAnimationFrame(() => window.scrollTo(0, y));
+});
+
+// Back-to-top arrow: appears after scrolling down one screen.
+const topBtn = document.createElement('button');
+topBtn.type = 'button';
+topBtn.className = 'to-top no-print';
+topBtn.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+topBtn.addEventListener('click', () => {
+  const smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' });
+});
+document.body.appendChild(topBtn);
+function syncTopBtn() {
+  const b = document.querySelector('.to-top');
+  if (!b) return;
+  b.setAttribute('aria-label', t('toTop'));
+  b.title = t('toTop');
+  b.classList.toggle('show', window.scrollY > window.innerHeight * 0.8);
+}
+window.addEventListener('scroll', syncTopBtn, { passive: true });
+window.addEventListener('resize', syncTopBtn);
+syncTopBtn();
 (async () => {
   const { data } = await sb.auth.getSession();
   state.user = data.session?.user || null;
