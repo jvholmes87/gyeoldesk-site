@@ -3,6 +3,12 @@ import assert from 'node:assert/strict';
 import {releasedPhotos,photoGallery,photoStatus,bindPhotoErrors,loadDrivePhotos} from '../assets/war-photos.mjs';
 const base = {photo_id:'demo_1',project_key:'DEMO',war_date:'2026-11-05',capture_date:'2026-11-02',caption_en:'Surface restoration; acceptance pending.',caption_ko:'표면 복구; 검수 대기.',verification:'verified',release_status:'approved_public',release_reviewed_on:'2026-11-03',release_reference:'DEMO-REVIEW',image_path:'/assets/war-photos/demo.jpg',evidence_url:'https://drive.google.com/file/d/DEMO_NOT_REAL/view'};
 const select = (records) => releasedPhotos(records,'DEMO','2026-11-05');
+test('source category stays explicit in English and Korean',()=>{
+  const daily={...base,evidence_category:'project daily-report evidence'};
+  assert.match(photoGallery([daily],'DEMO','2026-11-05','en'),/Project daily-report evidence · CE transmission not implied/);
+  assert.match(photoGallery([daily],'DEMO','2026-11-05','ko'),/CE 전송 여부를 의미하지 않음/);
+  assert.match(photoGallery([{...base,evidence_category:'CE-transmitted report evidence'}],'DEMO','2026-11-05','en'),/CE-transmitted report evidence/);
+});
 test('exact project/week scope and inclusive capture boundaries',()=>{
   assert.equal(select([base]).length,1);
   for(const patch of [{project_key:'OTHER'},{war_date:'2026-10-29'},{capture_date:'2026-10-29'},{capture_date:'2026-11-06'},{capture_date:'2026-02-30'},{capture_date:null}]) assert.equal(select([{...base,...patch}]).length,0);
