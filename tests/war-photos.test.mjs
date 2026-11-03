@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {releasedPhotos,photoGallery,photoStatus,bindPhotoErrors} from '../assets/war-photos.mjs';
+import {releasedPhotos,photoGallery,photoStatus,bindPhotoErrors,loadDrivePhotos} from '../assets/war-photos.mjs';
 const base = {photo_id:'demo_1',project_key:'DEMO',war_date:'2026-11-05',capture_date:'2026-11-02',caption_en:'Surface restoration; acceptance pending.',caption_ko:'표면 복구; 검수 대기.',verification:'verified',release_status:'approved_public',release_reviewed_on:'2026-11-03',release_reference:'DEMO-REVIEW',image_path:'/assets/war-photos/demo.jpg',evidence_url:'https://drive.google.com/file/d/DEMO_NOT_REAL/view'};
 const select = (records) => releasedPhotos(records,'DEMO','2026-11-05');
 test('exact project/week scope and inclusive capture boundaries',()=>{
@@ -54,9 +54,30 @@ test('approved photos show with a count of the rest; no set keeps the honest def
   const set={total:3,historical:0,date_pending:0};
   const html=photoGallery([base],'DEMO','2026-11-05','en',false,set);
   assert.ok(html.includes('Work photos (1)'));
-  assert.ok(html.includes('1 release-approved shown; 2 not shown'));
+  assert.ok(html.includes('1 released and shown; 2 not shown'));
   assert.equal(photoStatus({total:1},1,'en'),'');
   assert.ok(photoStatus(null,0,'en').includes('Collection status is unconfirmed'));
   assert.ok(photoGallery([],'DEMO','2026-11-05','en',false,'error').includes('could not be loaded'));
   assert.ok(photoGallery([],'DEMO','2026-11-05','en',false,'error').includes('msg err'));
+});
+const drive = {...base, image_path: undefined, release_status:'approved_internal', drive_file_id:'1AbCdEfGhIjKlMnOpQrStUvWx', evidence_url:'https://drive.google.com/file/d/1AbCdEfGhIjKlMnOpQrStUvWx/view'};
+test('Drive photos: team release is enough; image has no src until the members-only loader fills it',()=>{
+  assert.equal(select([drive]).length,1);
+  for(const patch of [{drive_file_id:'short'},{drive_file_id:'../x/../aaaaaaaaaaaaaaaaaaaa'},{release_status:'restricted'},{release_status:'pending_review'},{verification:'pending'}]) assert.equal(select([{...drive,...patch}]).length,0);
+  const html=photoGallery([drive],'DEMO','2026-11-05','en',true);
+  assert.ok(html.includes('data-photo-id="demo_1"'));
+  assert.ok(!/<img[^>]*src=/.test(html));
+  assert.ok(html.includes('Open original in Drive'));
+  assert.ok(html.includes(drive.evidence_url));
+});
+test('Drive loader swaps in the blob and falls back to readable text on failure',async()=>{
+  const made=[]; globalThis.document={createElement:()=>{const o={};made.push(o);return o;}};
+  globalThis.URL.createObjectURL=()=>'blob:x';
+  const mk=()=>{const a={href:'d'};const img={dataset:{photoId:'demo_1'},closest:()=>a,addEventListener:()=>{},replaceWith:(p)=>{img.replaced=p;}};return {img,a};};
+  const ok=mk(), bad=mk();
+  loadDrivePhotos({querySelectorAll:()=>[ok.img]}, async()=>({type:'image/jpeg'}), 'en');
+  loadDrivePhotos({querySelectorAll:()=>[bad.img]}, async()=>{throw new Error('403');}, 'ko');
+  await new Promise((r)=>setTimeout(r,10));
+  assert.equal(ok.img.src,'blob:x'); assert.equal(ok.a.href,'blob:x');
+  assert.match(bad.img.replaced.textContent,/드라이브 링크/);
 });

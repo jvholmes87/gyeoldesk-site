@@ -46,3 +46,15 @@ release-approved images available; it does not mean no photos were captured.
   file itself is published by a reviewed commit to this repository (public), never automatically. Until it is
   committed the card shows "Photo unavailable" with the evidence link.
 - The fictional AI-generated samples and the `#/photo-gallery-demo` route were removed before production.
+
+## Drive-served photos (added 3 Nov 2026, Jason: "Photos should be pulled from the G-Drive that's not public")
+
+- Photos stay in the project Google Drive. Nothing is copied to the public site repositories.
+- Released = manifest row `verification=verified`, `disclosure_status` approved_internal / approved_prime / approved_public,
+  a named reviewer, review_time, approval_evidence, and a Drive file ID (derivative or original).
+- The card shows a released Drive photo by calling the `photo` edge function with the member's session. Row-level
+  security on `war_photo_sets` decides access. The function asks the collector's Apps Script web-app relay (signed with
+  INTAKE_SECRET) for Drive's resized thumbnail, which is re-encoded (no EXIF/GPS). The relay serves only files on the
+  allow-list written by the last `photos()` run.
+- The full-image link opens the same members-only copy. "Open original in Drive" opens the Drive file; Drive's own
+  sharing decides who can see it.

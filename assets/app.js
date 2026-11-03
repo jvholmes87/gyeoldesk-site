@@ -3,7 +3,7 @@
 //   <company>.gyeoldesk.com  -> that company's workspace (sign-in, WAR, team access)
 // Local testing: ?org=gnc opens a workspace on any host.
 import { createClient } from './vendor/supabase.mjs';
-import { photoGallery, bindPhotoErrors } from './war-photos.mjs?v=1f56b7ad';
+import { photoGallery, bindPhotoErrors, loadDrivePhotos } from './war-photos.mjs?v=55bccfb6';
 
 const SUPABASE_URL = 'https://wltuwsplrkrsfthkthxc.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_N8CLXOt4Sh01hSqJu8O9Rg_q8_V1LXh'; // publishable key: safe in the browser, data is protected by row-level security
@@ -602,7 +602,7 @@ async function renderProject(dateParam, keyParam) {
   const krima = lang === 'ko' ? (sn.krima_ko?.length ? sn.krima_ko : sn.krima_en) : (sn.krima_en?.length ? sn.krima_en : sn.krima_ko);
   const si = Array.isArray(sn.snapshots_internal) ? sn.snapshots_internal[0] : sn.snapshots_internal;
   const kd = (sn.key_dates || []).filter((r) => r.date_text);
-  // Photo status for this card: counts plus release-approved records only (see war-photos.mjs?v=1f56b7ad).
+  // Photo status for this card: counts plus release-approved records only (see war-photos.mjs?v=55bccfb6).
   const { data: ps, error: psErr } = await sb.from('war_photo_sets')
     .select('total,in_window,date_pending,historical,verified,excluded,approved_public,withheld,approved,updated_at')
     .eq('project_key', p.project_key).eq('war_date', w.war_date).maybeSingle();
@@ -639,6 +639,13 @@ async function renderProject(dateParam, keyParam) {
         <a href="#/war/${aw.war_date}/${encodeURIComponent(key)}" ${aw.id === w.id ? 'aria-current="page"' : ''}><span class="d">${esc(fmtDate(aw.war_date))}</span><span class="chip ${aw.status}">${esc(t(aw.status))}</span></a>`).join('')}</nav></section>` : ''}
     </article>`;
   bindPhotoErrors(box, lang);
+  loadDrivePhotos(box, async (id) => {
+    const { data } = await sb.auth.getSession();
+    const r = await fetch(`${SUPABASE_URL}/functions/v1/photo?id=${encodeURIComponent(id)}&w=1600`,
+      { headers: { Authorization: `Bearer ${data.session?.access_token || ''}`, apikey: SUPABASE_KEY } });
+    if (!r.ok) throw new Error(String(r.status));
+    return r.blob();
+  }, lang);
   $('#both')?.addEventListener('change', (e) => { warView.both = e.target.checked; renderProject(dateParam, keyParam); });
 }
 
