@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {releasedPhotos,photoGallery,bindPhotoErrors} from '../assets/war-photos.mjs';
+import {releasedPhotos,photoGallery,samplePhotoGallery,bindPhotoErrors} from '../assets/war-photos.mjs';
 const base = {photo_id:'demo_1',project_key:'DEMO',war_date:'2026-11-05',capture_date:'2026-11-02',caption_en:'Surface restoration; acceptance pending.',caption_ko:'표면 복구; 검수 대기.',verification:'verified',release_status:'approved_public',release_reviewed_on:'2026-11-03',release_reference:'DEMO-REVIEW',image_path:'/assets/war-photos/demo.jpg',evidence_url:'https://drive.google.com/file/d/DEMO_NOT_REAL/view'};
 const select = (records) => releasedPhotos(records,'DEMO','2026-11-05');
 test('exact project/week scope and inclusive capture boundaries',()=>{
@@ -36,4 +36,14 @@ test('failed images retain caption/evidence and show a readable fallback',()=>{
   const img={complete:true,naturalWidth:0,addEventListener:()=>{},replaceWith:(p)=>{replacement=p;}};
   try { bindPhotoErrors({querySelectorAll:()=>[img]}); assert.match(replacement.textContent,/Photo unavailable/); }
   finally { globalThis.document=original; }
+});
+test('fictional preview fixtures never claim verified evidence or real capture dates',()=>{
+  const html=samplePhotoGallery('en',true);
+  assert.equal((html.match(/<figure>/g)||[]).length,3);
+  assert.ok(html.includes('Not actual project photos'));
+  assert.ok(html.includes('Example date:'));
+  assert.ok(html.includes('Open sample image'));
+  assert.ok(!html.includes('Open approved photo evidence'));
+  assert.ok(!html.includes('drive.google.com'));
+  assert.ok(html.includes('작업 전 예시'));
 });

@@ -545,4 +545,8 @@ a.rec.empty-rec { color: var(--ink-3); }
 .photo-grid time { font-size: 13px; color: var(--ink-2); }
 .photo-grid p { margin: 8px 0; }
 .photo-unavailable { padding: 20px; }
+.photo-demo { max-width: 1100px; margin: 24px auto; padding: 20px; }
+.photo-samples { border: 2px dashed #b78b29; padding: 16px; border-radius: 8px; }
+.photo-samples .chip { margin-bottom: 8px; }
+@media print { .photo-samples { display: none; } }
 @media print { .photo-grid { grid-template-columns: repeat(2,1fr); } .photo-grid img { height: 160px; } }

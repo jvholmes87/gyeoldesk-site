@@ -3,7 +3,7 @@
 //   <company>.gyeoldesk.com  -> that company's workspace (sign-in, WAR, team access)
 // Local testing: ?org=gnc opens a workspace on any host.
 import { createClient } from './vendor/supabase.mjs';
-import { photoGallery, bindPhotoErrors } from './war-photos.mjs?v=076c093d';
+import { photoGallery, samplePhotoGallery, bindPhotoErrors } from './war-photos.mjs?v=024586fd';
 
 const SUPABASE_URL = 'https://wltuwsplrkrsfthkthxc.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_N8CLXOt4Sh01hSqJu8O9Rg_q8_V1LXh'; // publishable key: safe in the browser, data is protected by row-level security
@@ -177,6 +177,9 @@ function previewBar() {
   bar.id = 'previewBar'; bar.className = 'preview-bar'; bar.setAttribute('role', 'status');
   bar.textContent = `PREVIEW 미리보기${build ? ' · ' + build : ''} · live data`;
   bar.title = 'Test build. It uses the live database: anything you save here is real. / 테스트 빌드 — 실제 데이터에 저장됩니다.';
+  const demo = document.createElement('a');
+  demo.href = '#/photo-gallery-demo'; demo.textContent = ' · Photo gallery examples / 사진 예시';
+  bar.append(demo);
   document.body.prepend(bar);
 }
 previewBar();
@@ -600,6 +603,7 @@ async function renderProject(dateParam, keyParam) {
         <thead><tr><th scope="col">${esc(t('date'))}</th><th scope="col">${esc(t('item'))}</th></tr></thead>
         <tbody>${kd.map((r) => `<tr><td>${esc(r.date_text)}</td><td>${esc(pick(r.ko, r.en))}${warView.both ? `<div class="alt">${esc(lang === 'ko' ? r.en : r.ko)}</div>` : ''}</td></tr>`).join('')}</tbody></table></section>` : ''}
       ${photoGallery(f.photo_evidence, p.project_key, w.war_date, lang, warView.both)}
+      ${PREVIEW ? samplePhotoGallery(lang, warView.both) : ''}
       ${krima?.length ? `<section><h2>${esc(t('krimaText'))}</h2>${bullets(krima)}</section>` : ''}
       ${si && ((si.internal_notes || []).length || (si.open_items || []).length) ? `<section class="internal no-print">
         ${(si.internal_notes || []).length ? `<h3>${esc(t('internal'))}</h3>${bullets(si.internal_notes)}` : ''}
@@ -1062,6 +1066,11 @@ async function renderAccess() {
 // ---------------------------------------------------------------- router
 async function route() {
   document.documentElement.lang = lang;
+  if (PREVIEW && location.hash === '#/photo-gallery-demo') {
+    document.title = 'Photo gallery examples · PREVIEW';
+    app.innerHTML = `<main class="photo-demo"><p><a href="#/">← ${lang === 'ko' ? '데스크로 돌아가기' : 'Back to desk'}</a></p><div class="sec-head"><h1>${lang === 'ko' ? '사진 갤러리 예시' : 'Photo gallery examples'}</h1><span class="lang">${langButtons()}</span></div><p>${lang === 'ko' ? '미리보기 전용. 실제 과업 데이터는 사용하지 않습니다.' : 'Preview only. No actual project data is used.'}</p>${samplePhotoGallery(lang,true)}</main>${siteFoot()}`;
+    bindLang(); bindPhotoErrors(app,lang); return;
+  }
   if (!state.slug) return renderPortal();
   if (!state.org) {
     const { data } = await sb.rpc('org_directory');
