@@ -28,32 +28,32 @@ const T = {
     declinedTitle: '접근 권한 없음', declinedLede: '이 계정은 이 작업 공간에 접근할 수 없습니다. 관리자에게 문의하세요.',
     otherOrgTitle: '다른 회사 계정', otherOrgLede: '이 계정은 다른 회사의 작업 공간에 속해 있습니다.',
     signOut: '로그아웃',
-    projectsTitle: '프로젝트', projectsLede: '수주한 과업. 착공 전·시공·준공 정산 단계별로 묶었습니다.', proposalsTitle: '입찰·제안', proposalsLede: '제출한 제안과 작성 중인 제안.', warrantiesTitle: '하자보수', warrantiesLede: '진행 중인 하자보수 요청과 종결된 요청.',
+    projectsTitle: '과업', projectsLede: '수주한 과업. 착공 전·시공·준공 정산 단계별로 묶었습니다.', proposalsTitle: '입찰·제안', proposalsLede: '제출한 제안과 작성 중인 제안.', warrantiesTitle: '하자보수', warrantiesLede: '진행 중인 하자보수 요청과 종결된 요청.',
     stPreNtp: '착공 전', stConstruction: '시공', stCloseout: '준공 정산', submitted: '제출 완료', drafts: '작성 중', active: '진행 중', activeRequests: '진행 중인 요청', closedOut: '종결',
-    count: (n) => `${n}건`, none: '없음', noDrafts: '작성 중인 제안이 없습니다.', stageNotSet: '단계 미지정', openQuestions: '건의 질문이 답변을 기다리고 있습니다', menu: '메뉴', teamMenu: '팀 접근 권한', settings: '설정',
+    count: (n) => `${n}건`, none: '없음', noDrafts: '작성 중인 제안이 없습니다.', stageNotSet: '단계 미지정', openQuestions: '건의 질문이 답변을 기다리고 있습니다', menu: '메뉴', teamMenu: '사용자 및 권한', settings: '설정',
     latestStatus: '최신 현황', openInWar: (d) => `WAR에서 보기 (${d})`, noStatus: '아직 WAR 현황이 없습니다.', records: '과업 기록', askTitle: '질문하기', askPh: '이 과업에 대한 질문을 한국어나 영어로 적어 주세요.', askSend: '질문 보내기', askSent: '질문을 보냈습니다',
     qOpen: '답변 대기', qAnswered: '답변 완료', answerPh: '답변을 입력하세요', qAskedBy: '질문', qDelete: '삭제', qDeleteConfirm: '이 질문을 삭제할까요? 팀 화면에서 사라집니다.', qDeleted: '삭제했습니다', qAnsweredBy: '답변', qYourAnswer: '내 답변', qWaitNote: '관리자 답변을 기다리고 있습니다. 답변이 등록되면 이메일로 알려 드립니다.', answer: '답변', questionsTitle: '질문', questionsLede: '과업 페이지에서 올라온 질문. 관리자가 답변합니다.', noQuestions: '질문이 없습니다.', projectPage: '과업 페이지 열기',
-    recCount: (n, a) => `${n}건 · 승인 ${a}`, recFiles: (n) => `${n}건`, recNone: '없음', recOpen: '열기', recNoFile: '파일 없음', recNotes: '메모', recNotMade: 'AF 3000 미작성 (미제출 항목)', recEmpty: '아직 등록된 기록이 없습니다. 드라이브 과업 폴더와 PCES 제출물 대장에서 매시간 갱신됩니다.', recLede: '드라이브 과업 폴더와 PCES 제출물 대장에서 매시간 갱신. 파일은 구글 드라이브에서 열립니다.', printEyebrow: '주간 현황 — 전체 과업', printPrimeNote: '과업 번호 옆에 원도급사 표시', cont: '계속', printFoot: '금액 단위 원(KRW) · 상세 내용은 주간 현황 보고(WAR) 참조', boardTitle: '주간 현황 보드', weeksNav: '주 선택', backBoard: '보드로 돌아가기', toTop: '맨 위로', newerWeek: '더 최신 주가 있습니다:', itemNo: (n) => `항목 ${n}`, thisWeek: '이번 주 현황', bothLangs: '한국어·영어 함께 보기', krimaText: 'Krima 현황 시트 문구', otherWeeks: '다른 주', warTitle: '주간 현황 보고', warLede: '매일 갱신되는 이번 주 WAR와 지난 주 기록.',
-    accessTitle: '팀 접근 권한', accessLede: '조직도(10_GNC_ORG)에서 불러온 명단입니다. 접근이 필요한 사람에 체크하고 이메일과 역할을 정하세요.',
+    recCount: (n, a) => `${n}건 · 승인 ${a}`, recFiles: (n) => `${n}건`, recNone: '없음', recOpen: '열기', recNoFile: '파일 없음', recNotes: '메모', recNotMade: 'AF 3000 미작성 (미제출 항목)', recEmpty: '아직 등록된 기록이 없습니다. 드라이브 과업 폴더와 PCES 제출물 대장에서 매시간 갱신됩니다.', recLede: '드라이브 과업 폴더와 PCES 제출물 대장에서 매시간 갱신. 파일은 구글 드라이브에서 열립니다.', printEyebrow: '주간 현황 — 전체 과업', printPrimeNote: '과업 번호 옆에 원도급사 표시', cont: '계속', printFoot: '금액 단위 원(KRW) · 상세 내용은 주간 현황 보고(WAR) 참조', boardTitle: '주간 현황 보드', weeksNav: '주 선택', backBoard: '보드로 돌아가기', toTop: '맨 위로', newerWeek: '더 최신 주가 있습니다:', itemNo: (n) => `항목 ${n}`, thisWeek: '이번 주 현황', bothLangs: '한국어·영어 함께 보기', krimaText: 'Krima 보고 문구', otherWeeks: '다른 주', warTitle: '주간 현황 보고', warLede: '매일 갱신되는 이번 주 WAR와 지난 주 기록.',
+    accessTitle: '사용자 및 권한', accessLede: '조직도(10_GNC_ORG)에서 불러온 명단입니다. 접근이 필요한 사람에 체크하고 이메일과 역할을 정하세요.',
     reviewTitle: '검토 데스크', reviewLede: '팀원이 한국어로 답하면 영어로 정리됩니다.',
     krimaTitle: 'Krima 현황 시트', krimaLede: 'Krima 과업만 해당. 주간 확정 시 생성됩니다.',
     soon: '준비 중',
     projects: (n) => `과업 ${n}건`, week: (d) => `${d} 주`,
     live: '작성 중', review: '검토 중', final: '확정', comingSoon: '준비 중', comingSoonLede: '이 기능은 준비 중입니다. 지금은 WAR부터 사용합니다.', draftNote: '작성 중인 주간 보고입니다. 확정 전까지 하루 동안 계속 갱신됩니다.', draftPrint: '작성 중 (확정 전)', printFrom: (d) => `${d} 기준`,
-    carried: '지난주 이월', updated: (t) => `갱신 ${t}`,
-    startReview: '검토 시작', finalize: '확정하고 잠그기', print: '인쇄 / PDF',
+    carried: '금주 변동 없음', updated: (t) => `갱신 ${t}`,
+    startReview: '검토 시작', finalize: '확정 및 잠금', print: '인쇄 / PDF',
     confirmReview: '이번 주를 검토 단계로 넘길까요? 팀원이 확인 표시를 할 수 있습니다.',
     confirmFinal: '이번 주를 확정할까요? 확정하면 잠기고 새 주가 시작됩니다.',
-    showInternal: '내부 메모 보기', internal: '내부 메모 (관리자만)', open: '확인 필요',
+    showInternal: '내부 메모 보기', internal: '내부 메모 (관리자만)', open: '미결 사항',
     keyDates: '주요 일정', date: '일자', item: '항목', search: '과업 검색', searchPeople: '이름 검색',
     noWeeks: '아직 WAR가 없습니다. 드라이브 00_WAR 주간 폴더에 문서를 넣으면 15분 안에 나타납니다.',
-    noMatch: '검색 결과가 없습니다.',
+    noMatch: '검색 결과가 없습니다.', noPeople: '일치하는 사람이 없습니다.',
     pending: '승인 요청', noPending: '대기 중인 요청이 없습니다.', matchTo: '명단의 누구인가요?', matchNone: '명단에 없음', approve: '승인', decline: '거절', inviteSent: '안내 메일 발송', inviteOn: (d) => `안내 메일 ${d}`, sendInvite: '안내 메일 보내기', inviteFail: '저장됨. 안내 메일은 발송되지 않았습니다.',
     roster: '명단', all: '전체', withAccess: '접근 허용', withoutAccess: '미허용',
     name: '이름', title: '직책', needsAccess: '접근', role: '역할', status: '상태',
     roleAdmin: '관리자', roleExec: '임원', roleTeam: '팀원',
-    stActive: '사용 중', stInvited: '초대됨', stNeedsEmail: '이메일 필요', stOff: '—', stDeparted: '퇴사', stDeclined: '꺼짐',
-    sumAccess: '접근 허용', sumActive: '로그인 완료', sumNeedEmail: '이메일 없음', noEmailFilter: '이메일 없음', sumTotal: '명단 인원',
+    stActive: '사용 중', stInvited: '초대됨', stNeedsEmail: '이메일 필요', stOff: '—', stDeparted: '퇴사', stDeclined: '비활성',
+    sumAccess: '접근 허용', sumActive: '사용 중', sumNeedEmail: '이메일 없음', noEmailFilter: '이메일 없음', sumTotal: '명단 인원',
     addPerson: '사람 추가', team: '팀', add: '추가', saved: '저장됨',
     roleHelp: '관리자: 전체 + 확정 버튼 + 내부 메모. 임원: 전체 보기. 팀원: WAR 보기와 검토.',
     errGeneric: '저장하지 못했습니다. 다시 시도하세요.', errCode: '코드가 맞지 않거나 만료되었습니다. 새 코드를 받으세요.',
@@ -73,34 +73,34 @@ const T = {
     declinedTitle: 'No access', declinedLede: 'This account cannot open this workspace. Contact your admin.',
     otherOrgTitle: 'Account belongs to another company', otherOrgLede: 'This account is set up for another company workspace.',
     signOut: 'Sign out',
-    projectsTitle: 'Projects', projectsLede: 'Awarded task orders, grouped by stage: Pre-NTP, Construction and Closeout.', proposalsTitle: 'Proposals', proposalsLede: 'Proposals already submitted, and proposals still in draft.', warrantiesTitle: 'Warranties', warrantiesLede: 'Active warranty requests and requests that are closed out.',
+    projectsTitle: 'Projects', projectsLede: 'Awarded task orders, grouped by stage: Pre-NTP, Construction and Closeout.', proposalsTitle: 'Bids & proposals', proposalsLede: 'Proposals already submitted, and proposals still in draft.', warrantiesTitle: 'Warranties', warrantiesLede: 'Active warranty requests and requests that are closed out.',
     stPreNtp: 'Pre-NTP', stConstruction: 'Construction', stCloseout: 'Closeout', submitted: 'Submitted', drafts: 'In draft', active: 'Active', activeRequests: 'Active requests', closedOut: 'Closed out',
-    count: (n) => `${n}`, none: 'None', noDrafts: 'No proposals in draft.', stageNotSet: 'Stage not set', openQuestions: 'question(s) waiting for an answer', menu: 'Menu', teamMenu: 'Team and access', settings: 'Settings',
+    count: (n) => `${n}`, none: 'None', noDrafts: 'No proposals in draft.', stageNotSet: 'Stage not set', openQuestions: 'question(s) waiting for an answer', menu: 'Menu', teamMenu: 'Users & access', settings: 'Settings',
     latestStatus: 'Latest status', openInWar: (d) => `Open in WAR (${d})`, noStatus: 'No WAR status for this project yet.', records: 'Project records', askTitle: 'Ask a question', askPh: 'Write your question about this project in Korean or English.', askSend: 'Send question', askSent: 'Question sent',
     qOpen: 'Waiting for an answer', qAnswered: 'Answered', answerPh: 'Write your answer', qAskedBy: 'Question from', qDelete: 'Delete', qDeleteConfirm: 'Delete this question? It disappears for everyone.', qDeleted: 'Deleted', qAnsweredBy: 'Answer from', qYourAnswer: 'Your answer', qWaitNote: 'Waiting for an admin to answer. You will get an email when they do.', answer: 'Answer', questionsTitle: 'Questions', questionsLede: 'Questions asked from project pages. Admins answer them here.', noQuestions: 'No questions yet.', projectPage: 'Open the project page',
-    recCount: (n, a) => `${n} · ${a} approved`, recFiles: (n) => `${n}`, recNone: 'None yet', recOpen: 'Open', recNoFile: 'No file', recNotes: 'Notes', recNotMade: 'AF 3000 not yet made (items not submitted)', recEmpty: 'Nothing here yet. This list updates every hour from the project folder in Drive and the PCES submittal register.', recLede: 'Updated every hour from the project folder in Drive and the PCES submittal register. Files open in Google Drive.', printEyebrow: 'Weekly status — all projects', printPrimeNote: 'Prime shown next to each project no.', cont: 'continued', printFoot: 'Values in KRW · full details in the Weekly Action Report', boardTitle: 'Weekly Status Board', weeksNav: 'Choose a week', backBoard: 'Back to the board', toTop: 'Back to top', newerWeek: 'A newer week is available:', itemNo: (n) => `Item ${n}`, thisWeek: 'This week', bothLangs: 'Show Korean and English', krimaText: 'Krima sheet status text', otherWeeks: 'Other weeks', warTitle: 'Weekly Action Report', warLede: 'This week’s WAR, updated through the day, and every past week.',
-    accessTitle: 'Team access', accessLede: 'People from the org chart (10_GNC_ORG). Tick who needs access, then set their email and role.',
+    recCount: (n, a) => `${n} · ${a} approved`, recFiles: (n) => `${n}`, recNone: 'None yet', recOpen: 'Open', recNoFile: 'No file', recNotes: 'Notes', recNotMade: 'AF 3000 not yet made (items not submitted)', recEmpty: 'Nothing here yet. This list updates every hour from the project folder in Drive and the PCES submittal register.', recLede: 'Updated every hour from the project folder in Drive and the PCES submittal register. Files open in Google Drive.', printEyebrow: 'Weekly status — all projects', printPrimeNote: 'Prime shown next to each project no.', cont: 'continued', printFoot: 'Values in KRW · full details in the Weekly Action Report', boardTitle: 'Weekly Status Board', weeksNav: 'Choose a week', backBoard: 'Back to the board', toTop: 'Back to top', newerWeek: 'A newer week is available:', itemNo: (n) => `Item ${n}`, thisWeek: 'This week', bothLangs: 'Show Korean and English', krimaText: 'Status for Krima', otherWeeks: 'Other weeks', warTitle: 'Weekly Action Report', warLede: 'This week’s WAR, updated through the day, and every past week.',
+    accessTitle: 'Users & access', accessLede: 'People from the org chart (10_GNC_ORG). Tick who needs access, then set their email and role.',
     reviewTitle: 'Review Desk', reviewLede: 'The team answers in Korean; answers are put into English for you.',
     krimaTitle: 'Krima status sheet', krimaLede: 'Krima task orders only. Generated when the week is final.',
-    soon: 'Coming next',
+    soon: 'Coming soon',
     projects: (n) => `${n} projects`, week: (d) => `Week of ${d}`,
     live: 'Working draft', review: 'In review', final: 'Final', comingSoon: 'Coming soon', comingSoonLede: 'This part is being built. For now, Gyeoldesk starts with the WAR.', draftNote: 'Working draft. It keeps updating through the week until it is finalized.', draftPrint: 'WORKING DRAFT (not final)', printFrom: (d) => `As of ${d}`,
-    carried: 'Carried from last week', updated: (t) => `Updated ${t}`,
+    carried: 'No update this week', updated: (t) => `Updated ${t}`,
     startReview: 'Start review', finalize: 'Finalize and lock', print: 'Print / PDF',
     confirmReview: 'Move this week to review? The team can then mark items as checked.',
     confirmFinal: 'Finalize this week? It locks and a new week opens.',
-    showInternal: 'Show internal notes', internal: 'Internal notes (admin only)', open: 'To confirm',
+    showInternal: 'Show internal notes', internal: 'Internal notes (admin only)', open: 'Open items',
     keyDates: 'Key dates', date: 'Date', item: 'Item', search: 'Search projects', searchPeople: 'Search people',
     noWeeks: 'No WAR yet. Docs placed in a 00_WAR week folder on Drive show up here within 15 minutes.',
-    noMatch: 'No projects match.',
+    noMatch: 'No projects match.', noPeople: 'No people match.',
     pending: 'Access requests', noPending: 'No requests waiting.', matchTo: 'Who is this on the roster?', matchNone: 'Not on roster', approve: 'Approve', decline: 'Decline', inviteSent: 'Invite email sent', inviteOn: (d) => `Invite emailed ${d}`, sendInvite: 'Send invite email', inviteFail: 'Saved, but the invite email did not send.',
     roster: 'Roster', all: 'All', withAccess: 'Has access', withoutAccess: 'No access',
     name: 'Name', title: 'Title', needsAccess: 'Access', role: 'Role', status: 'Status',
-    roleAdmin: 'Admin', roleExec: 'Executive', roleTeam: 'Team',
-    stActive: 'Signed in', stInvited: 'Invited', stNeedsEmail: 'Needs email', stOff: '—', stDeparted: 'Left', stDeclined: 'Turned off',
-    sumAccess: 'Have access', sumActive: 'Signed in', sumNeedEmail: 'No email yet', noEmailFilter: 'No email yet', sumTotal: 'On roster',
+    roleAdmin: 'Admin', roleExec: 'Executive', roleTeam: 'Member',
+    stActive: 'Active', stInvited: 'Invited', stNeedsEmail: 'Needs email', stOff: '—', stDeparted: 'Departed', stDeclined: 'Deactivated',
+    sumAccess: 'Have access', sumActive: 'Active', sumNeedEmail: 'No email yet', noEmailFilter: 'No email yet', sumTotal: 'On roster',
     addPerson: 'Add a person', team: 'Team', add: 'Add', saved: 'Saved',
-    roleHelp: 'Admin: everything, the Final button and internal notes. Executive: sees everything. Team: reads the WAR and reviews.',
+    roleHelp: 'Admin: everything, the Final button and internal notes. Executive: sees everything. Member: reads the WAR and reviews.',
     errGeneric: 'Could not save. Try again.', errCode: 'That code is wrong or expired. Send a new code.',
     errEmail: 'Check the email address.', errRate: 'Too many tries. Wait a minute and try again.',
     unknownOrg: 'No company uses this address.', notOnRoster: 'Signed-in users not on the roster', shareHelp: 'For anyone without an email here, share this link. They sign in with their own email and request access; you pick their name from the roster and approve, and their email fills in:', koOnly: 'No English text in the source doc yet. Korean original shown.', home: 'Home', back: 'Back to home',
@@ -283,7 +283,6 @@ function shell(crumb, inner) {
           <a href="#/">${esc(t('home'))}</a>
           <a href="#/contacts">${esc(t('contactsTitle'))}</a>
           ${isAdmin() ? `<a href="#/access">${esc(t('teamMenu'))}</a>` : ''}
-          <span class="soon-item">${esc(t('settings'))} <span class="chip muted">${esc(t('soon'))}</span></span>
           <button type="button" class="menu-out" id="signout2">${esc(t('signOut'))}<small>${esc(state.user?.email || '')}</small></button>
         </nav></div>` : ''}
     </div></header>
@@ -992,7 +991,7 @@ async function renderAccess() {
         <td class="inl"><span class="chip ${cls}">${esc(label)}</span>${inviteCell(r)} <span class="fb" aria-live="polite"></span></td>
       </tr>`;
     }
-    return html || `<tr><td colspan="6" class="empty">${esc(t('noMatch'))}</td></tr>`;
+    return html || `<tr><td colspan="6" class="empty">${esc(t('noPeople'))}</td></tr>`;
   };
 
   const extra = (profiles || []).filter((p) => p.status === 'approved' && !rosterEmails.has(p.email.toLowerCase()));
@@ -1203,7 +1202,7 @@ async function renderContacts(arg) {
       $('#ctBody').innerHTML = groups.length ? groups.map(({ o, ps }) => `<section class="ct-group">
         <h2>${esc(pick(o.name_ko, o.name_en))} <span>${esc(t('nPeople', ps.length))}</span></h2>
         ${o.mailbox ? `<p class="ct-org-mail"><a href="mailto:${esc(o.mailbox)}">${esc(o.mailbox)}</a></p>` : ''}
-        <div class="ct-grid">${ps.map((p) => contactCard(p, null, c)).join('')}</div></section>`).join('') : `<p class="empty">${esc(t('noMatch'))}</p>`;
+        <div class="ct-grid">${ps.map((p) => contactCard(p, null, c)).join('')}</div></section>`).join('') : `<p class="empty">${esc(t('noPeople'))}</p>`;
       return;
     }
     const rows = c.asg.filter((a) => (sel.pid === 'NO PID' ? a.project_no === sel.no : a.pid === sel.pid));
@@ -1226,7 +1225,7 @@ async function renderContacts(arg) {
         ${from.length ? `<div class="ct-list"><b>${esc(t('sendFrom'))}</b><span>${esc(from.join(' · '))}</span></div>` : ''}
       </section>` : ''}
       ${groups.length ? groups.map((g) => `<section class="ct-group"><h2>${esc(t('g' + g.k))}</h2>
-        <div class="ct-grid">${g.rows.map((a) => contactCard(byKey.get(a.contact_key), a, c)).join('')}</div></section>`).join('') : `<p class="empty">${esc(t('noMatch'))}</p>`}
+        <div class="ct-grid">${g.rows.map((a) => contactCard(byKey.get(a.contact_key), a, c)).join('')}</div></section>`).join('') : `<p class="empty">${esc(t('noPeople'))}</p>`}
       ${ended.length ? `<details class="ct-ended"><summary>${esc(t('earlier'))} (${ended.length})</summary>
         <div class="ct-grid">${ended.map((a) => contactCard(byKey.get(a.contact_key), a, c)).join('')}</div></details>` : ''}`;
     $('#ctBody').querySelectorAll('[data-copy]').forEach((b) => b.addEventListener('click', async () => {
