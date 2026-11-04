@@ -39,7 +39,7 @@ const T = {
     latestStatus: '최신 현황', openInWar: (d) => `WAR에서 보기 (${d})`, noStatus: '아직 WAR 현황이 없습니다.', records: '과업 기록', askTitle: '질문하기', askPh: '이 과업에 대한 질문을 한국어나 영어로 적어 주세요.', askSend: '질문 보내기', askSent: '질문을 보냈습니다',
     qOpen: '답변 대기', qAnswered: '답변 완료', answerPh: '답변을 입력하세요', qAskedBy: '질문', qDelete: '삭제', qDeleteConfirm: '이 질문을 삭제할까요? 팀 화면에서 사라집니다.', qDeleted: '삭제했습니다', qAnsweredBy: '답변', qYourAnswer: '내 답변', qWaitNote: '관리자 답변을 기다리고 있습니다. 답변이 등록되면 이메일로 알려 드립니다.', answer: '답변', questionsTitle: '질문', questionsLede: '과업 페이지에서 올라온 질문. 관리자가 답변합니다.', noQuestions: '질문이 없습니다.', projectPage: '과업 페이지 열기',
     recCount: (n, a) => `${n}건 · 승인 ${a}`, recFiles: (n) => `${n}건`, recNone: '없음', recOpen: '열기', recNoFile: '파일 없음', recNotes: '메모', recNotMade: 'AF 3000 미작성 (미제출 항목)', recEmpty: '아직 등록된 기록이 없습니다. 드라이브 과업 폴더와 PCES 제출물 대장에서 매시간 갱신됩니다.', recLede: '드라이브 과업 폴더와 PCES 제출물 대장에서 매시간 갱신. 파일은 구글 드라이브에서 열립니다.', printEyebrow: '주간 현황 — 전체 과업', printPrimeNote: '과업 번호 옆에 원도급사 표시', cont: '계속', printFoot: '금액 단위 원(KRW) · 상세 내용은 주간 현황 보고(WAR) 참조', boardTitle: '주간 현황 보드', weeksNav: '주 선택', backBoard: '보드로 돌아가기', toTop: '맨 위로', allStages: '전체', viewList: '목록', viewCards: '카드', sortBy: '정렬', sortStage: '단계별', sortStart: '착공일 (오래된 순)', sortPrime: '원도급사별', stageNav: '단계별 보기', openCard: '상세 카드 열기', recentEvents: '최근 진행', recentRecords: '최근 기록', noRecords: '등록된 기록이 없습니다.', updatedOn: (d) => `${d} 갱신`, timeUsed: (p, d) => `공기 ${p}% 경과 · 남은 기간 ${d}일`, timeOver: (d) => `공기 종료 후 ${d}일 경과`, timeNote: '기간 기준이며 공정률이 아닙니다', startLabel: '착공', endLabel: '준공', newerWeek: '더 최신 주가 있습니다:', itemNo: (n) => `항목 ${n}`, thisWeek: '이번 주 현황', bothLangs: '한국어·영어 함께 보기', krimaText: 'Krima 보고 문구', otherWeeks: '다른 주', warTitle: '주간 현황 보고', warLede: '매일 갱신되는 이번 주 WAR와 지난 주 기록.',
-    accessTitle: '사용자 및 권한', accessLede: '조직도(10_GNC_ORG)에서 불러온 명단입니다. 접근이 필요한 사람에 체크하고 이메일과 역할을 정하세요.',
+    accessTitle: '사용자 및 권한', accessLede: '조직도(10_GNC_ORG)에서 처음 가져온 팀 명단입니다. 수정을 눌러 이름·팀·직함을 바꾸고, 접근이 필요한 사람에 체크한 뒤 이메일과 역할을 정하세요. 바꾸면 바로 저장됩니다.',
     reviewTitle: '검토 데스크', reviewLede: '팀원이 한국어로 답하면 영어로 정리됩니다.',
     krimaTitle: 'Krima 현황 시트', krimaLede: 'Krima 과업만 해당. 주간 확정 시 생성됩니다.',
     soon: '준비 중',
@@ -60,6 +60,8 @@ const T = {
     stActive: '사용 중', stInvited: '초대됨', stNeedsEmail: '이메일 필요', stOff: '—', stDeparted: '퇴사', stDeclined: '비활성',
     sumAccess: '접근 허용', sumActive: '사용 중', sumNeedEmail: '이메일 없음', noEmailFilter: '이메일 없음', sumTotal: '명단 인원',
     addPerson: '사람 추가', team: '팀', add: '추가', saved: '저장됨',
+    rEdit: '수정', rSave: '저장', rCancel: '취소', rRemove: '명단에서 삭제', rNameEn: '영문 이름', rNameKo: '한글 이름', rTitleEn: '직함 (영문)', rTitleKo: '직함 (한글)', rNotes: '메모', rEmployed: '재직 중 (해제하면 접근도 종료)', rAccessLbl: '접근', rSelf: '본인 계정은 여기서 바꿀 수 없습니다.',
+    rRemoveAsk: (n) => `${n}님을 명단에서 삭제할까요? 접근 권한도 종료됩니다. 퇴사한 경우에는 \'재직 중\' 체크를 해제하는 편이 기록이 남습니다.`, rRemoved: '삭제됨',
     roleHelp: '관리자: 전체 + 확정 버튼 + 내부 메모. 임원: 전체 보기. 팀원: WAR 보기와 검토.',
     errGeneric: '저장하지 못했습니다. 다시 시도하세요.', errCode: '코드가 맞지 않거나 만료되었습니다. 새 코드를 받으세요.',
     errEmail: '이메일 주소를 확인하세요.', errRate: '요청이 너무 잦습니다. 1분 후 다시 시도하세요.',
@@ -84,7 +86,7 @@ const T = {
     latestStatus: 'Latest status', openInWar: (d) => `Open in WAR (${d})`, noStatus: 'No WAR status for this project yet.', records: 'Project records', askTitle: 'Ask a question', askPh: 'Write your question about this project in Korean or English.', askSend: 'Send question', askSent: 'Question sent',
     qOpen: 'Waiting for an answer', qAnswered: 'Answered', answerPh: 'Write your answer', qAskedBy: 'Question from', qDelete: 'Delete', qDeleteConfirm: 'Delete this question? It disappears for everyone.', qDeleted: 'Deleted', qAnsweredBy: 'Answer from', qYourAnswer: 'Your answer', qWaitNote: 'Waiting for an admin to answer. You will get an email when they do.', answer: 'Answer', questionsTitle: 'Questions', questionsLede: 'Questions asked from project pages. Admins answer them here.', noQuestions: 'No questions yet.', projectPage: 'Open the project page',
     recCount: (n, a) => `${n} · ${a} approved`, recFiles: (n) => `${n}`, recNone: 'None yet', recOpen: 'Open', recNoFile: 'No file', recNotes: 'Notes', recNotMade: 'AF 3000 not yet made (items not submitted)', recEmpty: 'Nothing here yet. This list updates every hour from the project folder in Drive and the PCES submittal register.', recLede: 'Updated every hour from the project folder in Drive and the PCES submittal register. Files open in Google Drive.', printEyebrow: 'Weekly status — all projects', printPrimeNote: 'Prime shown next to each project no.', cont: 'continued', printFoot: 'Values in KRW · full details in the Weekly Action Report', boardTitle: 'Weekly Status Board', weeksNav: 'Choose a week', backBoard: 'Back to the board', toTop: 'Back to top', allStages: 'All', viewList: 'List', viewCards: 'Cards', sortBy: 'Sort', sortStage: 'By stage', sortStart: 'Start date (oldest first)', sortPrime: 'By prime contractor', stageNav: 'Filter by stage', openCard: 'Open the full card', recentEvents: 'Recent activity', recentRecords: 'Recent records', noRecords: 'No records yet.', updatedOn: (d) => `Updated ${d}`, timeUsed: (p, d) => `${p}% of time used · ${d} days left`, timeOver: (d) => `${d} days past the completion date`, timeNote: 'Based on time, not work complete', startLabel: 'NTP', endLabel: 'Completion', newerWeek: 'A newer week is available:', itemNo: (n) => `Item ${n}`, thisWeek: 'This week', bothLangs: 'Show Korean and English', krimaText: 'Status for Krima', otherWeeks: 'Other weeks', warTitle: 'Weekly Action Report', warLede: 'This week’s WAR, updated through the day, and every past week.',
-    accessTitle: 'Users & access', accessLede: 'People from the org chart (10_GNC_ORG). Tick who needs access, then set their email and role.',
+    accessTitle: 'Users & access', accessLede: 'Your team list, first copied from the org chart (10_GNC_ORG). Tap Edit to change a name, team or title. Tick who needs access, then set their email and role. Every change saves as you make it.',
     reviewTitle: 'Review Desk', reviewLede: 'The team answers in Korean; answers are put into English for you.',
     krimaTitle: 'Krima status sheet', krimaLede: 'Krima task orders only. Generated when the week is final.',
     soon: 'Coming soon',
@@ -105,6 +107,8 @@ const T = {
     stActive: 'Active', stInvited: 'Invited', stNeedsEmail: 'Needs email', stOff: '—', stDeparted: 'Departed', stDeclined: 'Deactivated',
     sumAccess: 'Have access', sumActive: 'Active', sumNeedEmail: 'No email yet', noEmailFilter: 'No email yet', sumTotal: 'On roster',
     addPerson: 'Add a person', team: 'Team', add: 'Add', saved: 'Saved',
+    rEdit: 'Edit', rSave: 'Save', rCancel: 'Cancel', rRemove: 'Remove from roster', rNameEn: 'Name (EN)', rNameKo: 'Name (KO)', rTitleEn: 'Title (EN)', rTitleKo: 'Title (KO)', rNotes: 'Note', rEmployed: 'Still with the company (untick and their access ends)', rAccessLbl: 'Access', rSelf: 'Your own account cannot be changed here.',
+    rRemoveAsk: (n) => `Remove ${n} from the roster? Their access ends. If they left the company, untick "Still with the company" instead to keep the record.`, rRemoved: 'Removed',
     roleHelp: 'Admin: everything, the Final button and internal notes. Executive: sees everything. Member: reads the WAR and reviews.',
     errGeneric: 'Could not save. Try again.', errCode: 'That code is wrong or expired. Send a new code.',
     errEmail: 'Check the email address.', errRate: 'Too many tries. Wait a minute and try again.',
@@ -1063,7 +1067,7 @@ async function renderQuestions() {
 }
 
 // ---------------------------------------------------------------- Team access
-const accessView = { filter: 'all', q: '' };
+const accessView = { filter: 'all', q: '', editing: null };
 const norm = (x) => String(x || '').toLowerCase().replace(/[^a-z가-힣]/g, '');
 function guessMatch(p, r) {
   const n = norm(p.name);
@@ -1105,6 +1109,21 @@ async function renderAccess() {
   const roleSel = (id, val, disabled) => `<select data-f="access_role" data-id="${id}" ${disabled ? 'disabled' : ''} aria-label="${esc(t('role'))}">
       ${['team', 'exec', 'admin'].map((r) => `<option value="${r}" ${val === r ? 'selected' : ''}>${esc(t('role' + r[0].toUpperCase() + r.slice(1)))}</option>`).join('')}</select>`;
 
+  // Edit a person's details in place. Leaving the company (untick) ends their access through the roster sync.
+  const editRow = (r, self) => `<tr class="editrow"><td colspan="6"><form class="redit-form" data-form="${r.id}">
+      <div class="field"><label for="e1-${r.id}">${esc(t('rNameEn'))}</label><input id="e1-${r.id}" name="name_en" type="text" required value="${esc(r.name_en || '')}"></div>
+      <div class="field"><label for="e2-${r.id}">${esc(t('rNameKo'))}</label><input id="e2-${r.id}" name="name_ko" type="text" value="${esc(r.name_ko || '')}"></div>
+      <div class="field"><label for="e3-${r.id}">${esc(t('team'))}</label><input id="e3-${r.id}" name="team" type="text" list="teams" value="${esc(r.team || '')}"></div>
+      <div class="field"><label for="e4-${r.id}">${esc(t('rTitleEn'))}</label><input id="e4-${r.id}" name="title_en" type="text" value="${esc(r.title_en || '')}"></div>
+      <div class="field"><label for="e5-${r.id}">${esc(t('rTitleKo'))}</label><input id="e5-${r.id}" name="title_ko" type="text" value="${esc(r.title_ko || '')}"></div>
+      <div class="field wide"><label for="e6-${r.id}">${esc(t('rNotes'))}</label><input id="e6-${r.id}" name="notes" type="text" value="${esc(r.notes || '')}"></div>
+      <label class="chk wide"><input type="checkbox" name="employed" ${r.employed ? 'checked' : ''} ${self ? 'disabled' : ''}> ${esc(t('rEmployed'))}</label>
+      ${self ? `<p class="note wide">${esc(t('rSelf'))}</p>` : ''}
+      <div class="acts wide"><button class="btn small" type="submit">${esc(t('rSave'))}</button>
+        <button class="btn small quiet" type="button" data-cancel>${esc(t('rCancel'))}</button>
+        ${self ? '' : `<button class="linkbtn danger" type="button" data-remove="${r.id}">${esc(t('rRemove'))}</button>`}
+        <span class="fb" aria-live="polite"></span></div>
+    </form></td></tr>`;
   const rows = () => {
     const q = accessView.q.toLowerCase();
     const list = roster.filter((r) =>
@@ -1117,13 +1136,14 @@ async function renderAccess() {
       const self = r.email && r.email.toLowerCase() === state.user.email.toLowerCase();
       html += `<tr class="${r.employed ? '' : 'off'}" data-row="${r.id}">
         <td class="nm">${esc(pick(r.name_ko, r.name_en))}<small>${esc(lang === 'ko' ? r.name_en : (r.name_ko || ''))}</small>
-          ${r.notes ? `<span class="note">${esc(r.notes)}</span>` : ''}</td>
+          ${r.notes ? `<span class="note">${esc(r.notes)}</span>` : ''}
+          <button type="button" class="linkbtn redit" data-edit="${r.id}" aria-expanded="${accessView.editing === r.id}">${esc(t('rEdit'))}</button></td>
         <td>${esc(pick(r.title_ko, r.title_en))}</td>
-        <td class="keep"><input type="email" data-f="email" data-id="${r.id}" value="${esc(r.email || '')}" placeholder="name@company.com" aria-label="${esc(t('email'))}" ${self ? 'disabled' : ''}></td>
-        <td class="keep inl"><input type="checkbox" data-f="needs_access" data-id="${r.id}" ${r.needs_access ? 'checked' : ''} ${!r.employed || self ? 'disabled' : ''} aria-label="${esc(t('needsAccess'))}"></td>
+        <td class="keep"><span class="mlbl">${esc(t('email'))}</span><input type="email" data-f="email" data-id="${r.id}" value="${esc(r.email || '')}" placeholder="name@company.com" aria-label="${esc(t('email'))}" ${self ? 'disabled' : ''}></td>
+        <td class="keep inl"><label class="mlbl" for="na-${r.id}">${esc(t('rAccessLbl'))}</label><input type="checkbox" id="na-${r.id}" data-f="needs_access" data-id="${r.id}" ${r.needs_access ? 'checked' : ''} ${!r.employed || self ? 'disabled' : ''} aria-label="${esc(t('needsAccess'))}"></td>
         <td class="keep inl">${roleSel(r.id, r.access_role, self || !r.employed)}</td>
         <td class="inl"><span class="chip ${cls}">${esc(label)}</span>${inviteCell(r)} <span class="fb" aria-live="polite"></span></td>
-      </tr>`;
+      </tr>${accessView.editing === r.id ? editRow(r, self) : ''}`;
     }
     return html || `<tr><td colspan="6" class="empty">${esc(t('noPeople'))}</td></tr>`;
   };
@@ -1181,6 +1201,33 @@ async function renderAccess() {
 
   const tbody = $('#rows');
   const rebind = () => {
+    $$('[data-edit]', tbody).forEach((b) => b.addEventListener('click', () => {
+      accessView.editing = accessView.editing === b.dataset.edit ? null : b.dataset.edit;
+      tbody.innerHTML = rows(); rebind(); $(`#e1-${accessView.editing}`)?.focus();
+    }));
+    $$('[data-cancel]', tbody).forEach((b) => b.addEventListener('click', () => { accessView.editing = null; tbody.innerHTML = rows(); rebind(); }));
+    $$('form[data-form]', tbody).forEach((f) => f.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const id = f.dataset.form; const row = roster.find((r) => r.id === id); const fb = $('.fb', f);
+      const val = (n) => (f.elements[n].value || '').trim() || null;
+      const patch = { name_en: val('name_en'), name_ko: val('name_ko'), team: val('team'), title_en: val('title_en'), title_ko: val('title_ko'), notes: val('notes') };
+      if (!f.elements.employed.disabled) { patch.employed = f.elements.employed.checked; if (!patch.employed) patch.needs_access = false; }
+      if (!patch.name_en) { fb.className = 'fb err'; fb.textContent = t('rNameEn'); return; }
+      const { data, error } = await sb.from('roster').update(patch).eq('id', id).select().single();
+      if (error) { fb.className = 'fb err'; fb.textContent = errText(error); return; }
+      Object.assign(row, data); accessView.editing = null;
+      const { data: ps } = await sb.from('profiles').select('user_id,email,name,role,status,requested_note,created_at').eq('org_id', state.orgId);
+      byEmail.clear(); (ps || []).forEach((p) => byEmail.set(p.email.toLowerCase(), p));
+      tbody.innerHTML = rows(); rebind();
+      const fb2 = $(`tr[data-row="${id}"] .fb`); if (fb2) { fb2.className = 'fb saved'; fb2.textContent = t('saved'); }
+    }));
+    $$('[data-remove]', tbody).forEach((b) => b.addEventListener('click', async () => {
+      const id = b.dataset.remove; const row = roster.find((r) => r.id === id);
+      if (!confirm(t('rRemoveAsk', pick(row.name_ko, row.name_en)))) return;
+      const { error } = await sb.from('roster').delete().eq('id', id);
+      if (error) { const fb = $('.fb', b.closest('form')); fb.className = 'fb err'; fb.textContent = errText(error); return; }
+      accessView.editing = null; toast(t('rRemoved')); renderAccess();
+    }));
     $$('[data-f]', tbody).forEach((el) => el.addEventListener('change', async () => {
       const id = el.dataset.id; const fld = el.dataset.f;
       const value = el.type === 'checkbox' ? el.checked : el.value.trim();
