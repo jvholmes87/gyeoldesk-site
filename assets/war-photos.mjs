@@ -79,6 +79,8 @@ function renderGallery(photos, title, lang, both) {
       : `<img loading="lazy" decoding="async" src="${escape(p.image_path)}" alt="${escape(caption)}">`;
     const category = p.evidence_category === 'project daily-report evidence'
       ? (ko ? '과업 작업일보 사진 · CE 전송 여부를 의미하지 않음' : 'Project daily-report evidence · CE transmission not implied')
+      : p.evidence_category === 'owner site photo'
+        ? (ko ? '현장 사진(GNC 촬영) · 내부 전용 · CE 전송 여부를 의미하지 않음' : 'Owner site photo · internal only · CE transmission not implied')
       : p.evidence_category === 'CE-transmitted report evidence'
         ? (ko ? 'CE 전송 보고서 사진' : 'CE-transmitted report evidence') : '';
     return `<figure><a href="${escape(href)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">${img}</a><figcaption><time datetime="${p.capture_date}">${p.capture_date} (KST)</time>${category ? `<p class="photo-source">${escape(category)}</p>` : ''}<p>${escape(caption)}</p>${both && alt && alt !== caption ? `<p class="alt" lang="${ko ? 'en' : 'ko'}">${escape(alt)}</p>` : ''}<a href="${escape(p.evidence_url)}" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer">${ko ? '드라이브에서 원본 열기' : 'Open original in Drive'}</a></figcaption></figure>`;
