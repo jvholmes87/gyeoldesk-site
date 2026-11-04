@@ -3,7 +3,7 @@
 //   <company>.gyeoldesk.com  -> that company's workspace (sign-in, WAR, team access)
 // Local testing: ?org=gnc opens a workspace on any host.
 import { createClient } from './vendor/supabase.mjs';
-import { photoGallery, bindPhotoErrors, loadDrivePhotos } from './war-photos.mjs?v=5eae6af2';
+import { photoGallery, bindPhotoErrors, loadDrivePhotos } from './war-photos.mjs?v=a49aabcc';
 import { requestPhoto } from './photo-request.mjs?v=9238a66e';
 import { demoFetch, demoAuth, demoPhoto, demoPhotoLinks, DEMO_TEXT } from './demo.mjs?v=23525af5';
 
@@ -739,7 +739,7 @@ async function renderProject(dateParam, keyParam) {
   const krima = lang === 'ko' ? (sn.krima_ko?.length ? sn.krima_ko : sn.krima_en) : (sn.krima_en?.length ? sn.krima_en : sn.krima_ko);
   const si = Array.isArray(sn.snapshots_internal) ? sn.snapshots_internal[0] : sn.snapshots_internal;
   const kd = (sn.key_dates || []).filter((r) => r.date_text);
-  // Photo status for this card: counts plus release-approved records only (see war-photos.mjs?v=5eae6af2).
+  // Photo status for this card: counts plus release-approved records only (see war-photos.mjs?v=a49aabcc).
   const { data: ps, error: psErr } = await sb.from('war_photo_sets')
     .select('total,in_window,date_pending,historical,verified,excluded,approved_public,withheld,approved,updated_at')
     .eq('project_key', p.project_key).eq('war_date', w.war_date).maybeSingle();
