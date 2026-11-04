@@ -719,3 +719,5 @@ a.rec.empty-rec { color: var(--ink-3); }
   .redit-form { grid-template-columns: 1fr 1fr; }
   .roster tr.editrow td { padding: 12px 0; background: transparent; }
 }
+.pp-steps span { word-break: keep-all; overflow-wrap: normal; }
+@media (max-width: 480px) { .pp-steps span { font-size: 11px; letter-spacing: -.01em; } }
