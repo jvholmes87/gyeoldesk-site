@@ -79,6 +79,8 @@ function renderGallery(photos, title, lang, both) {
       : `<img loading="lazy" decoding="async" src="${escape(p.image_path)}" alt="${escape(caption)}">`;
     const category = p.evidence_category === 'project daily-report evidence'
       ? (ko ? '과업 작업일보 사진 · CE 전송 여부를 의미하지 않음' : 'Project daily-report evidence · CE transmission not implied')
+      : p.evidence_category === 'solicitation reference figure'
+        ? (ko ? '입찰 공고 참고 자료 · 내부 전용 · 현장 사진 아님' : 'Solicitation reference figure · internal only · not a site photo')
       : p.evidence_category === 'owner site photo'
         ? (ko ? '현장 사진(GNC 촬영) · 내부 전용 · CE 전송 여부를 의미하지 않음' : 'Owner site photo · internal only · CE transmission not implied')
       : p.evidence_category === 'CE-transmitted report evidence'
