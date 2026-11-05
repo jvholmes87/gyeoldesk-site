@@ -8,6 +8,9 @@ test('source category stays explicit in English and Korean',()=>{
   assert.match(photoGallery([daily],'DEMO','2026-11-05','en'),/Project daily-report evidence · CE transmission not implied/);
   assert.match(photoGallery([daily],'DEMO','2026-11-05','ko'),/CE 전송 여부를 의미하지 않음/);
   assert.match(photoGallery([{...base,evidence_category:'CE-transmitted report evidence'}],'DEMO','2026-11-05','en'),/CE-transmitted report evidence/);
+  const solic={...base,evidence_category:'solicitation reference figure'};
+  assert.match(photoGallery([solic],'DEMO','2026-11-05','en'),/Solicitation reference figure · internal only · not a site photo/);
+  assert.match(photoGallery([solic],'DEMO','2026-11-05','ko'),/입찰 공고 참고 자료 · 내부 전용/);
   const owner={...base,evidence_category:'owner site photo'};
   assert.match(photoGallery([owner],'DEMO','2026-11-05','en'),/Owner site photo · internal only · CE transmission not implied/);
   assert.match(photoGallery([owner],'DEMO','2026-11-05','ko'),/현장 사진\(GNC 촬영\) · 내부 전용/);
