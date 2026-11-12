@@ -21,6 +21,8 @@
   --radius: 8px;
   --radius-sm: 6px;
   --font: "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  /* Static (non-variable) Pretendard for the printed board: Chrome turns variable fonts into blurry Type 3 glyphs in PDFs. */
+  --print-font: Pretendard, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -377,7 +379,9 @@ a.tile:hover { border-color: var(--ink-3); }
 /* ---------- Printed WAR Board (landscape) ---------- */
 #print-root { display: none; }
 #print-root.measure { display: block; position: absolute; left: -20000px; top: 0; width: 1017px; background: #fff; }
-#print-root { font: 400 7.4pt/1.28 var(--font); color: #111; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+/* JPG download: the same sheet at 1017 px content width plus a white margin, drawn off screen and captured at 3x. */
+#print-root.snap { display: block; position: absolute; left: -20000px; top: 0; width: 1061px; padding: 18px 22px; background: #fff; }
+#print-root { font: 400 7.4pt/1.28 var(--print-font); color: #111; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 #print-root .pb-head { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2pt solid #111; padding-bottom: 4pt; }
 #print-root .pb-eyebrow { color: #B4532A; font-weight: 700; font-size: 7pt; letter-spacing: .08em; }
 #print-root .pb-head h1 { margin: 1pt 0 0; font-size: 18pt; letter-spacing: -.02em; line-height: 1.1; }

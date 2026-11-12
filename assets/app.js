@@ -46,7 +46,7 @@ const T = {
     projects: (n) => `과업 ${n}건`, week: (d) => `${d} 주`,
     live: '작성 중', review: '검토 중', final: '확정', comingSoon: '준비 중', comingSoonLede: '이 기능은 준비 중입니다. 지금은 WAR부터 사용합니다.', draftNote: '작성 중인 주간 보고입니다. 확정 전까지 한 주 동안 계속 갱신됩니다.', draftPrint: '작성 중 (확정 전)', printFrom: (d) => `${d} 기준`,
     carried: '금주 변동 없음', updated: (t) => `갱신 ${t}`,
-    startReview: '검토 시작', finalize: '확정 및 잠금', print: '인쇄 / PDF',
+    startReview: '검토 시작', finalize: '확정 및 잠금', print: '인쇄 / PDF', downloadJpg: 'JPG 저장', jpgWorking: 'JPG 만드는 중…', jpgFailed: 'JPG를 만들지 못했습니다. 다시 시도하거나 인쇄 / PDF를 사용하세요.',
     confirmReview: '이번 주를 검토 단계로 넘길까요? 팀원이 확인 표시를 할 수 있습니다.',
     confirmFinal: '이번 주를 확정할까요? 확정하면 잠기고 새 주가 시작됩니다.',
     showInternal: '내부 메모 보기', internal: '내부 메모 (관리자만)', open: '미결 사항',
@@ -93,7 +93,7 @@ const T = {
     projects: (n) => `${n} projects`, week: (d) => `Week of ${d}`,
     live: 'Working draft', review: 'In review', final: 'Final', comingSoon: 'Coming soon', comingSoonLede: 'This part is being built. For now, Gyeoldesk starts with the WAR.', draftNote: 'Working draft. It keeps updating through the week until it is finalized.', draftPrint: 'WORKING DRAFT (not final)', printFrom: (d) => `As of ${d}`,
     carried: 'No update this week', updated: (t) => `Updated ${t}`,
-    startReview: 'Start review', finalize: 'Finalize and lock', print: 'Print / PDF',
+    startReview: 'Start review', finalize: 'Finalize and lock', print: 'Print / PDF', downloadJpg: 'Download JPG', jpgWorking: 'Making the JPG…', jpgFailed: 'Could not make the JPG. Try again, or use Print / PDF.',
     confirmReview: 'Move this week to review? The team can then mark items as checked.',
     confirmFinal: 'Finalize this week? It locks and a new week opens.',
     showInternal: 'Show internal notes', internal: 'Internal notes (admin only)', open: 'Open items',
@@ -508,7 +508,7 @@ async function renderWar(dateParam) {
       <div class="title"><h1>${esc(t('boardTitle'))}</h1>
         <p class="lede" style="margin:0">${esc(fmtDate(wk.war_date))} <span class="chip ${wk.status}">${esc(t(wk.status))}</span>
         ${esc(t('projects', items.length))}${lastUpdate ? ` <span class="item-key">${esc(t('updated', fmtTime(lastUpdate)))}</span>` : ''}</p></div>
-      <div class="actions">${adminActions}<button class="btn quiet" id="print">${esc(t('print'))}</button></div>
+      <div class="actions">${adminActions}<button class="btn quiet" id="print">${esc(t('print'))}</button><button class="btn quiet" id="jpg">${esc(t('downloadJpg'))}</button></div>
     </div>
     ${wk.status !== 'final' ? `<p class="draft-note" role="status">${esc(t('draftNote'))}</p>` : ''}
     ${weekNav(weeks, wk)}
@@ -582,6 +582,7 @@ async function renderWar(dateParam) {
   }));
   warView.printData = { wk, items };
   $('#print').addEventListener('click', () => printBoard());
+  $('#jpg').addEventListener('click', () => downloadBoardJpg());
   $('#toReview')?.addEventListener('click', async () => {
     if (!confirm(t('confirmReview'))) return;
     const { error: er } = await sb.rpc('set_week_review', { w: wk.id }); if (er) return toast(errText(er)); renderWar(wk.war_date);
@@ -663,8 +664,7 @@ function printCard(it, wk, s) {
     ${dates.length ? `<div class="pc-dates">${dates.map((r) => `<div><b>${esc(r.date_text.replace(/\s*\(.+\)$/, ''))}</b><span>${esc(pick(r.ko, r.en))}</span></div>`).join('')}</div>` : ''}
   </div>`;
 }
-function printBoard() {
-  const d = warView.printData; if (!d) return window.print();
+function boardHtml(d) {
   const { wk, items } = d;
   const groups = STAGES.map((s) => ({ s, cards: items.filter((it) => stageOf(it.projects, latestSnap(it).fields) === s.k) })).filter((g) => g.cards.length);
   // Pack stage sections into rows of PRINT_COLS cards, like the paper board: small stages share a row.
@@ -697,12 +697,25 @@ function printBoard() {
         <div class="pb-cards">${c.cards.map((it) => printCard(it, wk, c.s)).join('')}</div>
       </section>`).join('')}</div>`).join('')}
     <footer class="pb-foot"><span>${esc(t('printFoot'))}</span><span>${esc(pick(org.name_ko, org.name))} · gyeoldesk.com</span></footer>`;
+  return html;
+}
+// The board sheet is drawn in #print-root, laid out at A4 landscape width (1017 px).
+function boardRoot(d) {
   let root = document.getElementById('print-root');
   if (!root) { root = document.createElement('div'); root.id = 'print-root'; document.body.append(root); }
-  root.innerHTML = html;
+  root.innerHTML = boardHtml(d);
+  root.style.zoom = '';
+  return root;
+}
+// Wait for the static print font (see index.html) so the PDF embeds real text, not blurry Type 3 glyphs.
+async function fontsSettled() { await new Promise((r) => requestAnimationFrame(() => r())); try { await document.fonts.ready; } catch { /* print anyway */ } }
+async function printBoard() {
+  const d = warView.printData; if (!d) return window.print();
+  const root = boardRoot(d);
   // Measure at landscape page width. If the board is only a little taller than one sheet, shrink it to fit;
   // otherwise let rows continue on further landscape sheets.
-  root.style.zoom = ''; root.classList.add('measure');
+  root.classList.add('measure');
+  await fontsSettled();
   // A4 landscape inside 12 mm / 14 mm margins: 269 x 186 mm = 1017 x 703 px.
   const PAGE_H = 700; const h = root.scrollHeight;
   root.classList.remove('measure');
@@ -711,6 +724,54 @@ function printBoard() {
   const done = () => { document.body.classList.remove('printing-board'); window.removeEventListener('afterprint', done); };
   window.addEventListener('afterprint', done);
   setTimeout(() => window.print(), 50);
+}
+
+// JPG of the same sheet, 3x scale (about 3,180 px wide): sharp on phones and easy to share on KakaoTalk.
+// The image is drawn from an SVG snapshot, which cannot read the CDN font stylesheets, so the three
+// static Pretendard weights the sheet uses are fetched once and passed in as embedded fonts.
+const PRINT_FONT_BASE = 'https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/';
+let printFontCss = null;
+async function printFontCssText() {
+  if (printFontCss) return printFontCss;
+  const faces = await Promise.all([['Regular', 400], ['SemiBold', 600], ['Bold', 700]].map(async ([n, w]) => {
+    const r = await fetch(`${PRINT_FONT_BASE}Pretendard-${n}.woff2`);
+    if (!r.ok) throw new Error(`font ${n} ${r.status}`);
+    const blob = await r.blob();
+    const url = await new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = rej; fr.readAsDataURL(blob); });
+    return `@font-face{font-family:Pretendard;font-style:normal;font-weight:${w};src:url(${url}) format('woff2');}`;
+  }));
+  return (printFontCss = faces.join('\n'));
+}
+function boardFileName(wk) {
+  const d = new Date(wk.war_date + 'T00:00:00+09:00');
+  const tag = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'Asia/Seoul' }).replace(/ /g, '').toUpperCase();
+  return `WAR_Board_${tag}_${lang.toUpperCase()}${wk.status === 'final' ? '' : '_DRAFT'}.jpg`;
+}
+async function downloadBoardJpg() {
+  const d = warView.printData; if (!d) return;
+  const btn = document.getElementById('jpg'); const label = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = t('jpgWorking'); }
+  const root = boardRoot(d); root.classList.add('snap');
+  try {
+    await fontsSettled();
+    const { domToBlob } = await import('./vendor/modern-screenshot.mjs');
+    const blob = await domToBlob(root, { type: 'image/jpeg', quality: 0.92, scale: 3, backgroundColor: '#ffffff', font: { cssText: await printFontCssText() },
+      style: { position: 'static', left: '0', top: '0', margin: '0' } });
+    const name = boardFileName(d.wk);
+    const file = new File([blob], name, { type: 'image/jpeg' });
+    // Phones: open the share sheet (Save image, KakaoTalk). Computers: download the file.
+    if (matchMedia('(pointer: coarse)').matches && navigator.canShare?.({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: name }); return; } catch (e) { if (e?.name === 'AbortError') return; }
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = name; document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  } catch (e) {
+    console.error('board jpg', e); toast(t('jpgFailed'));
+  } finally {
+    root.classList.remove('snap');
+    if (btn) { btn.disabled = false; btn.textContent = label; }
+  }
 }
 
 async function renderProject(dateParam, keyParam) {
