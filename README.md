@@ -1,6 +1,10 @@
-# gyeoldesk-site
+# Gyeoldesk — frontend source
 
-Static web app for Gyeoldesk. One codebase for every company:
+Bilingual construction project desk for company reporting, team access and project coordination. This repository is the canonical frontend source for the [live site](https://gyeoldesk.com/) and [fictional-data demo](https://gyeoldesk.com/demo/). Backend, intake and database engineering are maintained separately in a private repository.
+
+`gyeoldesk-preview` is the review deployment; `gyeoldesk-gnc` is a company deployment copy, not a separate product. Read [DEPLOY.md](DEPLOY.md): changes go to preview first, then Jason reviews and merges the release before company copies are synchronized.
+
+One frontend codebase serves every company:
 
 - `gyeoldesk.com` shows the company cards.
 - `<company>.gyeoldesk.com` opens that company's workspace (sign-in, WAR, team access).
