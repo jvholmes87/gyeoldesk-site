@@ -1,13 +1,35 @@
-# gyeoldesk-site
+# Gyeoldesk — frontend source
 
-Static web app for Gyeoldesk. One codebase for every company:
+Bilingual (Korean/English) project desk for Korean construction contractors working on USFK installations. This repository is the canonical frontend source for the [public site](https://gyeoldesk.com/), the [fictional-data demo](https://gyeoldesk.com/demo/) and every company workspace. Backend, database, document intake and data collectors are maintained separately in a private repository.
 
-- `gyeoldesk.com` shows the company cards.
-- `<company>.gyeoldesk.com` opens that company's workspace (sign-in, WAR, team access).
-- Local test: `python3 -m http.server` then open `http://localhost:8000/?org=gnc`.
+## Where it runs
 
-The Supabase publishable key in `assets/app.js` is meant for browsers; data is protected by row-level security.
-`assets/vendor/supabase.mjs` is supabase-js 2.118.0 bundled with esbuild.
+| Address | What it is | Built from |
+|---|---|---|
+| https://gyeoldesk.com/ | Public product page and company cards | `main` of this repository (GitHub Pages) |
+| https://gyeoldesk.com/demo/ | Short link to `?org=demo`, a fictional company that never contacts the database | `main` of this repository |
+| `https://<company>.gyeoldesk.com/` (for example `gnc.gyeoldesk.com`) | That company's workspace; sign-in required | A company repository such as `gyeoldesk-gnc`: a copy of this repository made after each release, not a separate product |
+| https://preview.gyeoldesk.com/ | Review build, hidden from search engines. **It uses the live database**, so anything saved there is real | `gyeoldesk-preview`, published by `deploy-preview.sh` |
+
+Read [DEPLOY.md](DEPLOY.md): changes go to preview first. Jason reviews them, then merges the release pull request, and the company copies are synchronized after that merge. A company workspace shows the release it was last synchronized to; its repository's latest commit message names the source commit.
+
+## What is built
+
+- **Released on `main`:** the Weekly Action Report (WAR) board, a working draft through the week that locks when finalized, with print/PDF and JPG download; WAR project pages with approved progress photos; a read-only contacts page; and team access, where an admin approves each person. People sign in with their company email. A company workspace gets each release at its next synchronization.
+- **Shown as "Coming soon", not built yet:** Projects, Proposals, Warranties and project questions.
+
+## Local test
+
+`python3 -m http.server`, then open `http://localhost:8000/?org=demo` for the demo. `?org=gnc` opens the GNC workspace sign-in against the live database.
+
+The Supabase publishable key in `assets/app.js` is meant for browsers; data is protected by row-level security in the database.
+
+## Third-party code
+
+- `assets/vendor/supabase.mjs`: supabase-js 2.118.0 (MIT License), bundled with esbuild.
+- `assets/vendor/modern-screenshot.mjs`: modern-screenshot 4.7.0 (MIT License), loaded only when someone downloads the WAR board as a JPG.
+
+More: [docs/war-photo-integration.md](docs/war-photo-integration.md) describes how WAR progress photos reach the board.
 
 ## Demo company (`?org=demo`)
 
