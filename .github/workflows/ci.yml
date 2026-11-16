@@ -1,0 +1,33 @@
+# Checks every pull request (and every push to main) before Jason merges.
+# Runs the existing automated tests and the version-stamp check. It never deploys anything.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Tests and stamp check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Automated tests (tests/*.mjs)
+        run: |
+          set -e
+          for t in tests/*.mjs; do
+            echo "== $t"
+            node "$t"
+          done
+      - name: Version stamp matches the CSS/JS (./stamp.sh --check)
+        run: ./stamp.sh --check
+      - name: No merge-conflict markers in site files
+        run: "! git grep -n -E '^(<<<<<<<|>>>>>>>)( |$)' -- index.html assets"

@@ -1,4 +1,4 @@
-// modern-screenshot 4.7.0 (MIT License, Copyright (c) 2021-present wxm). Vendored unchanged from npm for the WAR board JPG download.
+/*! modern-screenshot 4.7.0 (MIT License). Copyright (c) 2021-present wxm. Vendored unchanged from npm for the WAR board JPG download. License text: THIRD_PARTY_NOTICES.txt in this folder. */
 function changeJpegDpi(uint8Array, dpi) {
   uint8Array[13] = 1;
   uint8Array[14] = dpi >> 8;
