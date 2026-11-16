@@ -21,7 +21,7 @@ const app = document.getElementById('app');
 // ---------------------------------------------------------------- text
 const T = {
   ko: {
-    footLine: '주한미군 기지 공사를 수행하는 한국 건설사를 위한 프로젝트 데스크', featTitle: '결데스크가 하는 일', contactLine: '회사 도입 문의:', tagline: '주한미군 기지 안에서 공사를 수행하는 한국 건설사를 위한 프로젝트 데스크. 과업, 입찰, 제출물, 허가, 하자보수, 주간 보고까지 한국어와 영어로 한곳에서 관리합니다.',
+    footLine: '주한미군 기지 공사를 수행하는 한국 건설사를 위한 프로젝트 데스크', featTitle: '결데스크가 하는 일', contactLine: '회사 도입 문의:', tagline: '주한미군 기지 안에서 공사를 수행하는 한국 건설사를 위한 프로젝트 데스크. 지금은 주간 현황 보고(WAR)를 한국어와 영어로 사용하며, 과업·입찰·하자보수 화면을 준비하고 있습니다.',
     companies: '회사', openWorkspace: '작업 공간 열기',
     signInTitle: '로그인', signInLede: '회사 이메일을 입력하면 6자리 코드를 보내 드립니다.',
     email: '이메일', sendCode: '코드 받기', sending: '보내는 중…',
@@ -68,7 +68,7 @@ const T = {
     unknownOrg: '이 주소의 회사를 찾을 수 없습니다.', notOnRoster: '명단에 없는 사용자', shareHelp: '이메일을 모르는 사람은 이 주소로 직접 접근 요청을 보내게 하세요. 요청이 오면 명단의 이름을 골라 승인하면 이메일이 자동으로 채워집니다:', koOnly: '영문 없음 — 한국어 원문', home: '홈', back: '홈으로',
   },
   en: {
-    footLine: 'The project desk for Korean contractors on USFK installations', featTitle: 'What Gyeoldesk covers', contactLine: 'Want it for your company?', tagline: 'The project desk for Korean contractors building on USFK installations. Task orders, proposals, submittals, permits, warranties and the weekly report, in Korean and English, in one place.',
+    footLine: 'The project desk for Korean contractors on USFK installations', featTitle: 'What Gyeoldesk covers', contactLine: 'Want it for your company?', tagline: 'The project desk for Korean contractors building on USFK installations. The Weekly Action Report is in use now, in Korean and English; project, proposal and warranty pages are being built.',
     companies: 'Companies', openWorkspace: 'Open workspace',
     signInTitle: 'Sign in', signInLede: 'Enter your work email and we will send you a 6-digit code.',
     email: 'Email', sendCode: 'Send code', sending: 'Sending…',
@@ -234,11 +234,12 @@ const state = { slug: tenantSlug(), org: null, orgId: null, user: null, profile:
 const isAdmin = () => state.profile?.status === 'approved' && state.profile?.role === 'admin';
 
 // ---------------------------------------------------------------- portal
+// Last field: true = in use now, false = shown with a "Coming soon" chip. Keep this list honest.
 const FEATURES = [
-  ['Projects by stage', '단계별 과업', 'Every task order from Pre-NTP to construction and closeout, with its installation, prime contractor and COR.', '착공 전부터 시공·준공 정산까지 모든 과업을 기지, 원도급사, 감독관과 함께 봅니다.'],
-  ['Submittals and permits', '제출물과 허가', 'Submittal register, AF Form 3000, RFIs, dig permits (AF 103), TACW and RA, outage requests and JK-75 — approved, under review or not yet sent.', '제출물 대장, AF Form 3000, RFI, 굴착 허가(AF 103), TACW·RA, 단수 요청, JK-75를 승인·검토 중·미제출로 구분합니다.'],
-  ['Weekly Action Report', '주간 현황 보고', 'A live weekly board for every project. It locks when final and prints as one landscape sheet.', '모든 과업의 주간 현황 보드. 확정하면 잠기고 가로 한 장으로 인쇄됩니다.'],
-  ['Korean and English', '한국어와 영어', 'Every screen in both languages. The team asks in Korean, and answers arrive by email.', '모든 화면을 두 언어로. 팀은 한국어로 질문하고 답변은 이메일로 받습니다.'],
+  ['Weekly Action Report', '주간 현황 보고', 'A live weekly board for every project, grouped by stage from bid to warranty. It locks when final, prints as one landscape sheet and downloads as a JPG.', '모든 과업의 주간 현황 보드를 입찰부터 하자보수까지 단계별로 봅니다. 확정하면 잠기고 가로 한 장으로 인쇄하거나 JPG로 저장합니다.', true],
+  ['Project records', '과업 기록', 'Each WAR card opens the project\'s latest records from the company Drive (submittals, AF Form 3000s, permits) with their status.', 'WAR 카드에서 과업의 최신 기록(제출물, AF Form 3000, 허가)과 상태를 회사 드라이브에서 바로 봅니다.', true],
+  ['Korean and English', '한국어와 영어', 'Every screen in both languages, with a shared contact list for the team.', '모든 화면을 두 언어로, 팀 연락처도 함께 봅니다.', true],
+  ['Coming next', '준비 중', 'Project pages, proposals, warranty requests, and project questions answered by email.', '과업 페이지, 입찰, 하자보수 요청, 이메일로 답하는 과업 질문.', false],
 ];
 async function renderPortal() {
   document.title = 'Gyeoldesk 결데스크 — Project desk for Korean contractors on USFK installations';
@@ -255,7 +256,7 @@ async function renderPortal() {
       </main>
       <section class="portal-main features" aria-labelledby="ft">
         <h2 id="ft">${esc(t('featTitle'))}</h2>
-        <div class="feat-grid">${FEATURES.map(([en, ko, den, dko]) => `<div class="feat"><h3>${esc(lang === 'ko' ? ko : en)}</h3><p>${esc(lang === 'ko' ? dko : den)}</p></div>`).join('')}</div>
+        <div class="feat-grid">${FEATURES.map(([en, ko, den, dko, built]) => `<div class="feat${built ? '' : ' soon'}"><h3>${esc(lang === 'ko' ? ko : en)}${built ? '' : ` <span class="chip muted">${esc(t('comingSoon'))}</span>`}</h3><p>${esc(lang === 'ko' ? dko : den)}</p></div>`).join('')}</div>
         <p class="contact">${esc(t('contactLine'))} <a href="mailto:hello@gyeoldesk.com">hello@gyeoldesk.com</a></p>
       </section>
     </div>
