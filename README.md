@@ -24,10 +24,14 @@ Read [DEPLOY.md](DEPLOY.md): changes go to preview first. Jason reviews them, th
 
 The Supabase publishable key in `assets/app.js` is meant for browsers; data is protected by row-level security in the database.
 
-## Third-party code
+## Copyright and third-party code
 
-- `assets/vendor/supabase.mjs`: supabase-js 2.118.0 (MIT License), bundled with esbuild.
-- `assets/vendor/modern-screenshot.mjs`: modern-screenshot 4.7.0 (MIT License), loaded only when someone downloads the WAR board as a JPG.
+Copyright (c) 2026 Jason Von Holmes. All rights reserved. Gyeoldesk's own code is not licensed for reuse.
+
+Vendored third-party code keeps its own license. The full notices are in [assets/vendor/THIRD_PARTY_NOTICES.txt](assets/vendor/THIRD_PARTY_NOTICES.txt), which deploys with the code:
+
+- `assets/vendor/supabase.mjs`: supabase-js 2.118.0 and the Supabase packages it bundles (MIT), plus tslib (0BSD), bundled with esbuild.
+- `assets/vendor/modern-screenshot.mjs`: modern-screenshot 4.7.0 (MIT), loaded only when someone downloads the WAR board as a JPG.
 
 More: [docs/war-photo-integration.md](docs/war-photo-integration.md) describes how WAR progress photos reach the board.
 
