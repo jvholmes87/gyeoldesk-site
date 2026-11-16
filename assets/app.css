@@ -499,6 +499,8 @@ a.rec.empty-rec { color: var(--ink-3); }
 .feat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr)); gap: 14px; }
 .feat { border-top: 3px solid var(--grain); padding-top: 10px; }
 .feat h3 { margin: 0 0 4px; font-size: 16px; }
+.feat.soon { border-top-style: dashed; }
+.feat.soon h3 .chip { font-size: 11px; vertical-align: 2px; }
 .feat p { margin: 0; color: var(--ink-2); font-size: 14.5px; }
 .contact { margin: 22px 0 0; color: var(--ink-2); }
 .portal-foot { display: flex; align-items: center; gap: 12px; border-top: 1px solid var(--line); }
