@@ -21,6 +21,10 @@ Rules built into the scripts:
 
 The preview uses the **live database**. Anything saved there (answers, roster changes, questions) is real. Database changes go through numbered migrations, approved on the desk, before the site code that needs them.
 
+**Preview lock.** On preview.gyeoldesk.com, saving to the live database is locked by default (`assets/preview-guard.mjs`): finalizing or reviewing a WAR week, team access and roster changes, invites and other emails are refused before they leave the browser. Sign-in and reading still work. To test a save on purpose, press **Unlock** in the yellow bar; the bar turns red and saving stays on for that browser tab only until you press **Lock** or close the tab. This prevents accidents; the database's row-level security is still the real protection.
+
+Test new flows with the fictional demo company first (`?org=demo`, never touches the database), then on preview with live data only if needed.
+
 ## Which pull requests go to main
 
 - **Site changes** (anything under `assets/`, `index.html`, `demo/`, `site.webmanifest`, `sitemap.xml`): work on a feature branch, publish it with `./deploy-preview.sh`, and open **no** pull request of your own. After Jason approves the preview, `./deploy-live.sh --live` opens the one release PR (`release/<commit>`). Its head is exactly the commit on preview, which is what makes `--after-merge` safe.

@@ -6,6 +6,7 @@ import { createClient } from './vendor/supabase.mjs';
 import { photoGallery, bindPhotoErrors, loadDrivePhotos } from './war-photos.mjs?v=3416f371';
 import { requestPhoto } from './photo-request.mjs?v=9238a66e';
 import { demoFetch, demoAuth, demoPhoto, demoPhotoLinks, DEMO_TEXT } from './demo.mjs?v=23525af5';
+import { lockedFetch } from './preview-guard.mjs?v=e31cb39c';
 
 const SUPABASE_URL = 'https://wltuwsplrkrsfthkthxc.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_N8CLXOt4Sh01hSqJu8O9Rg_q8_V1LXh'; // publishable key: safe in the browser, data is protected by row-level security
@@ -15,7 +16,8 @@ const ROOT_DOMAIN = 'gyeoldesk.com';
 const DEMO = tenantSlug() === 'demo';
 const sb = DEMO
   ? createClient(SUPABASE_URL, SUPABASE_KEY, { auth: demoAuth, global: { fetch: demoFetch } })
-  : createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true } });
+  : createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true },
+      global: { fetch: lockedFetch((...a) => fetch(...a), previewLocked, previewBlocked) } });
 const app = document.getElementById('app');
 
 // ---------------------------------------------------------------- text
@@ -207,14 +209,30 @@ function tenantSlug() {
 const PREVIEW = location.hostname.toLowerCase() === 'preview.' + ROOT_DOMAIN;
 const LIVE_HOST = location.hostname.endsWith(ROOT_DOMAIN) && !PREVIEW;
 const orgUrl = (slug) => (slug === 'demo' ? (LIVE_HOST ? `https://${ROOT_DOMAIN}/?org=demo` : '?org=demo') : LIVE_HOST ? `https://${slug}.${ROOT_DOMAIN}/` : `?org=${slug}`);
+// Preview lock (see preview-guard.mjs?v=e31cb39c): saving to live data is off until unlocked for this browser tab.
+function onPreviewHost() { return location.hostname.toLowerCase() === 'preview.' + ROOT_DOMAIN; }
+function previewUnlocked() { try { return sessionStorage.getItem('gd.previewWrites') === 'on'; } catch { return false; } }
+function previewLocked() { return onPreviewHost() && !previewUnlocked(); }
+function previewBlocked() { try { toast('Preview: saving is locked. Unlock it in the yellow bar. / 미리보기: 저장 잠김 — 노란 바에서 해제'); } catch {} }
 function previewBar() {
-  if (!PREVIEW || document.getElementById('previewBar')) return;
+  if (!PREVIEW) return;
   const build = document.querySelector('meta[name="gd-build"]')?.content || '';
-  const bar = document.createElement('div');
-  bar.id = 'previewBar'; bar.className = 'preview-bar'; bar.setAttribute('role', 'status');
-  bar.textContent = `PREVIEW 미리보기${build ? ' · ' + build : ''} · live data`;
-  bar.title = 'Test build. It uses the live database: anything you save here is real. / 테스트 빌드 — 실제 데이터에 저장됩니다.';
-  document.body.prepend(bar);
+  let bar = document.getElementById('previewBar');
+  if (!bar) { bar = document.createElement('div'); bar.id = 'previewBar'; bar.className = 'preview-bar'; bar.setAttribute('role', 'status'); document.body.prepend(bar); }
+  const open = previewUnlocked();
+  bar.classList.toggle('unlocked', open && !DEMO);
+  const head = `PREVIEW 미리보기${build ? ' · ' + build : ''}`;
+  if (DEMO) { bar.textContent = `${head} · demo data`; bar.title = 'Test build with the fictional demo company. Nothing is saved.'; return; }
+  bar.innerHTML = `<span>${esc(head)} · live data · ${open ? 'saving ON 저장 가능' : 'saving locked 저장 잠김'}</span>
+    <button type="button" class="pv-toggle" id="pvToggle">${open ? 'Lock 잠그기' : 'Unlock 잠금 해제'}</button>`;
+  bar.title = open
+    ? 'Saving is unlocked for this tab: anything you save goes to the live database. / 이 탭에서 저장 가능 — 실제 데이터에 저장됩니다.'
+    : 'Test build on the live database. Saving (finalize WAR, team access, invites) is locked until you unlock it for this tab. / 실제 데이터 저장은 잠겨 있습니다.';
+  bar.querySelector('#pvToggle').addEventListener('click', () => {
+    if (!open && !confirm('Unlock saving for this tab? Anything you save will change the live database (real company data, real emails).\n\n이 탭에서 저장을 허용할까요? 실제 데이터가 바뀌고 실제 메일이 발송됩니다.')) return;
+    try { open ? sessionStorage.removeItem('gd.previewWrites') : sessionStorage.setItem('gd.previewWrites', 'on'); } catch {}
+    previewBar();
+  });
 }
 previewBar();
 // Demo banner on every demo page: says the company is fictional and links to the game it comes from.

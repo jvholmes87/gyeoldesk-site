@@ -530,6 +530,10 @@ a.rec.empty-rec { color: var(--ink-3); }
 /* preview.gyeoldesk.com only */
 .preview-bar { position: sticky; top: 0; z-index: 50; height: 28px; line-height: 28px; background: #F0B445; color: #14243A; font: 700 12.5px var(--font); text-align: center; padding: 0 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .preview-bar ~ #app .top { top: 28px; }
+.preview-bar { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.preview-bar > span { overflow: hidden; text-overflow: ellipsis; }
+.preview-bar.unlocked { background: #B3261E; color: #fff; }
+.preview-bar .pv-toggle { flex: none; height: 20px; padding: 0 8px; border: 1px solid currentColor; border-radius: 4px; background: transparent; color: inherit; font: 700 11.5px var(--font); cursor: pointer; }
 @media print { .preview-bar { display: none; } }
 
 /* WAR-first: tiles not open yet */
