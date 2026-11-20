@@ -36,7 +36,7 @@ echo "$log" | sed 's/^/  /'
 branch="release/$head"
 git push -q origin "HEAD:refs/heads/$branch"
 title="Release $head: $(git log -1 --format=%s HEAD)"
-body="$(printf 'Tested on preview.gyeoldesk.com as commit %s. Jason approved the preview.\n\nMerging this puts gyeoldesk.com live. Then run ./deploy-live.sh --after-merge to sync the company desks.\n\nCommits:\n%s\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n' "$head" "$(echo "$log" | sed 's/^/- /')")"
+body="$(printf 'agent_runs row: %s\n\nTested on preview.gyeoldesk.com as commit %s. Jason approved the preview.\n\nMerging this puts gyeoldesk.com live. Then run ./deploy-live.sh --after-merge to sync the company desks.\n\nCommits:\n%s\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n' "${AGENT_RUN:-none recorded (set AGENT_RUN=<id>)}" "$head" "$(echo "$log" | sed 's/^/- /')")"
 url="$(gh api "repos/$repo/pulls" -f title="$title" -f head="$branch" -f base=main -f body="$body" --jq .html_url)"
 echo "Release PR: $url"
 echo "Jason merges it. Then: ./deploy-live.sh --after-merge"

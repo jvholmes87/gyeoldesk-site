@@ -35,6 +35,8 @@ Reconciled on 16 Nov 2026: PRs #6, #7 and #8 were feature PRs merged straight in
 
 ## Checks on every pull request
 
+Every Claude or Codex pull request names its run-log row on its first line: `agent_runs row: <id>` (GNC_RULES §5.3). The PR template adds the line for PRs opened on GitHub; `deploy-live.sh --live` adds it to release PRs from `AGENT_RUN=<id>`.
+
 GitHub Actions (`.github/workflows/ci.yml`) runs `node tests/*.mjs`, `./stamp.sh --check` and a merge-marker check on every pull request and every push to main. It never deploys. A red check means do not merge.
 
 ## Branch protection for main (Jason sets this on GitHub)
