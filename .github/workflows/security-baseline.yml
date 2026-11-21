@@ -54,7 +54,6 @@ jobs:
           echo "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  $scan_dir/gitleaks.tar.gz" | sha256sum --check --status
           tar -xzf "$scan_dir/gitleaks.tar.gz" -C "$scan_dir" gitleaks
           printf '[extend]\nuseDefault = true\n' > "$scan_dir/config.toml"
-          : > "$scan_dir/empty-ignore"
       - name: Scan reachable Git history without disclosing matches
         shell: bash
         run: |
@@ -62,7 +61,7 @@ jobs:
           scan_dir="$RUNNER_TEMP/security-baseline"
           if ! "$scan_dir/gitleaks" git . --log-opts="--all" \
             --config "$scan_dir/config.toml" \
-            --gitleaks-ignore-path "$scan_dir/empty-ignore" \
+            --gitleaks-ignore-path .github/security-reviewed.gitleaksignore \
             --ignore-gitleaks-allow --redact=100 --no-banner --no-color \
             --timeout 240 --max-archive-depth 2 --log-level fatal > /dev/null 2>&1; then
             echo '::error::Secret scan failed or found a potential secret. Stop and investigate privately. Never paste matching values into logs, issues or PRs.'

@@ -40,6 +40,21 @@ repository owner. Never put an exposed value into a public issue or PR.
 
 For local scanning, install Gitleaks from its official release, verify its
 checksum, and run `gitleaks git . --redact=100 --no-banner`. Inspect results
-privately. CI uses its own default-rule configuration so repository-local
-allowlists cannot silently exempt findings. Scanner version updates require
+privately. CI uses its own default-rule configuration. Inline suppression comments are
+disabled; only the explicitly documented historical fingerprints below are used. Scanner version updates require
 review and a new verified checksum.
+
+## Reviewed historical non-secret matches
+
+`.github/security-reviewed.gitleaksignore` proposes exceptions for exact
+commit/file/rule/line fingerprints, with a reason for each. No matching value
+is stored in that file. Jason reviews these exceptions with this PR.
+
+These matches are published client/analytics identifiers, runtime JavaScript
+expressions, or synthetic test fixtures, rather than production authentication
+secrets. Future or changed findings still fail. No rule-wide, path-wide or
+pattern-wide ignore is added. Public Supabase client keys still require correct
+RLS and authorization; this disposition does not verify those controls.
+
+References: [Supabase API key types](https://supabase.com/docs/guides/getting-started/api-keys),
+[Cloudflare Web Analytics installation](https://developers.cloudflare.com/web-analytics/get-started/).
