@@ -1,10 +1,10 @@
 # Gyeoldesk release notes
 
-Versions follow the Forkline scheme: `vX.Y`, one release commit per version, titled `vX.Y: what changed`.
-v1.0 is the live build before versioning started (main at d11da4a, 24 NOV 2026: WAR, Contacts, demo company, preview lock).
+Versions follow the Forkline scheme: `vX.Y`. The full list (v1.0 MVP on 1 NOV through v1.8 on 4 NOV) is on the Releases tab of Jason's Command Center.
+The 20 NOV preview-lock release (e3e40f7) was not given a number.
 Every entry records the feedback from real users that shaped it (standing rule, 3 NOV 2026).
 
-## v1.1: Submittal status (24 NOV 2026)
+## v1.9: Submittal status (24 NOV 2026)
 
 **User feedback behind it**
 - 17 NOV: Jason showed GNC's PMs and engineers a one-project submittal coverage review (26-1051). They liked it a lot: in Jason's words, it was "way easier and faster for them to see what they need to do, what is missing, where things are currently at."
