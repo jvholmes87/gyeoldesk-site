@@ -7,7 +7,7 @@ import { photoGallery, bindPhotoErrors, loadDrivePhotos } from './war-photos.mjs
 import { requestPhoto } from './photo-request.mjs?v=9238a66e';
 import { demoFetch, demoAuth, demoPhoto, demoPhotoLinks, DEMO_TEXT } from './demo.mjs?v=978d09f5';
 import { lockedFetch } from './preview-guard.mjs?v=e31cb39c';
-import { summaryHtml, projectHtml, counts as subCounts, str as subStr, todayKst } from './submittals.mjs?v=8c6401e4';
+import { summaryHtml, projectHtml, counts as subCounts, str as subStr, todayKst } from './submittals.mjs?v=7a5eeb18';
 
 const SUPABASE_URL = 'https://wltuwsplrkrsfthkthxc.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_N8CLXOt4Sh01hSqJu8O9Rg_q8_V1LXh'; // publishable key: safe in the browser, data is protected by row-level security
@@ -24,7 +24,7 @@ const app = document.getElementById('app');
 // ---------------------------------------------------------------- text
 const T = {
   ko: {
-    footLine: '주한미군 기지 공사를 수행하는 한국 건설사를 위한 프로젝트 데스크', featTitle: '결데스크가 하는 일', contactLine: '회사 도입 문의:', tagline: '주한미군 기지 안에서 공사를 수행하는 한국 건설사를 위한 프로젝트 데스크. 지금은 주간 현황 보고(WAR)를 한국어와 영어로 사용하며, 과업·입찰·하자보수 화면을 준비하고 있습니다.',
+    footLine: '주한미군 기지 공사를 수행하는 한국 건설사를 위한 프로젝트 데스크', featTitle: '결데스크가 하는 일', contactLine: '회사 도입 문의:', tagline: '주한미군 기지 안에서 공사를 수행하는 한국 건설사를 위한 프로젝트 데스크. 지금은 주간 현황 보고(WAR)와 제출물 현황을 한국어와 영어로 사용하며, 과업·입찰·하자보수 화면을 준비하고 있습니다.',
     companies: '회사', openWorkspace: '작업 공간 열기',
     signInTitle: '로그인', signInLede: '회사 이메일을 입력하면 6자리 코드를 보내 드립니다.',
     email: '이메일', sendCode: '코드 받기', sending: '보내는 중…',
@@ -71,7 +71,7 @@ const T = {
     unknownOrg: '이 주소의 회사를 찾을 수 없습니다.', notOnRoster: '명단에 없는 사용자', shareHelp: '이메일을 모르는 사람은 이 주소로 직접 접근 요청을 보내게 하세요. 요청이 오면 명단의 이름을 골라 승인하면 이메일이 자동으로 채워집니다:', koOnly: '영문 없음 — 한국어 원문', home: '홈', back: '홈으로',
   },
   en: {
-    footLine: 'The project desk for Korean contractors on USFK installations', featTitle: 'What Gyeoldesk covers', contactLine: 'Want it for your company?', tagline: 'The project desk for Korean contractors building on USFK installations. The Weekly Action Report is in use now, in Korean and English; project, proposal and warranty pages are being built.',
+    footLine: 'The project desk for Korean contractors on USFK installations', featTitle: 'What Gyeoldesk covers', contactLine: 'Want it for your company?', tagline: 'The project desk for Korean contractors building on USFK installations. The Weekly Action Report and submittal status are in use now, in Korean and English; project, proposal and warranty pages are being built.',
     companies: 'Companies', openWorkspace: 'Open workspace',
     signInTitle: 'Sign in', signInLede: 'Enter your work email and we will send you a 6-digit code.',
     email: 'Email', sendCode: 'Send code', sending: 'Sending…',
@@ -1426,9 +1426,10 @@ async function renderSubmittals(arg) {
         + (synced ? `<p class="item-key">${esc(subStr(lang, 'updated', fmtTime(synced)))}</p>` : '');
       box.querySelectorAll('.sm-filter button').forEach((b) => b.addEventListener('click', () => { subView.openOnly = b.dataset.open === '1'; draw(); }));
     };
-    document.title = `${pid} · ${crumb} · Gyeoldesk`;
+    document.title = `${pid} · ${crumb} · ${state.baseTitle}`;
     return draw();
   }
+  document.title = `${crumb} · ${state.baseTitle}`;
   const draw = () => {
     box.innerHTML = `<h1>${esc(crumb)}</h1><p class="lede">${esc(subStr(lang, 'lede'))}</p>
       <div class="sm-filter no-print" role="group" aria-label="${esc(subStr(lang, 'filter'))}">
@@ -1579,8 +1580,9 @@ async function route() {
         <a class="btn" href="https://${ROOT_DOMAIN}/">${esc(t('back'))}</a></div></div>${siteFoot()}`;
       return;
     }
-    document.title = DEMO ? `${state.org.name} (demo) · Gyeoldesk` : document.querySelector('meta[name="application-name"]')?.content || `${state.org.name} · Gyeoldesk`;
+    state.baseTitle = DEMO ? `${state.org.name} (demo) · Gyeoldesk` : document.querySelector('meta[name="application-name"]')?.content || `${state.org.name} · Gyeoldesk`;
   }
+  if (state.baseTitle) document.title = state.baseTitle;   // reset on every page; a page may add its own part in front
   if (!state.user) return renderEmailStep();
   if (!state.profile) await loadProfile();
   const p = state.profile;

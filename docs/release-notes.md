@@ -4,6 +4,16 @@ Versions follow the Forkline scheme: `vX.Y`. The full list (v1.0 MVP on 1 NOV th
 The 20 NOV preview-lock release (e3e40f7) was not given a number.
 Every entry records the feedback from real users that shaped it (standing rule, 3 NOV 2026).
 
+## v1.10: Page metadata covers Submittal status (24 NOV 2026)
+
+**Feedback behind it:** Jason, 24 NOV 17:14: "Make sure all of the pages meta data is updated correctly."
+
+**What changed**
+- gyeoldesk.com: description, Open Graph description, structured data (JSON-LD) and the no-JavaScript summary now list Submittal status and Contacts with the WAR. The homepage tagline says the same in Korean and English.
+- gnc.gyeoldesk.com: the company description (search, link previews, manifest) now names submittal status.
+- Browser tab titles: each page now resets the title. Before, after opening a project's submittals, other pages kept that project's title. Submittal pages read "Submittal status · GNC — Projects Desk" and "P-02 · Submittal status · GNC — Projects Desk".
+- Submittal status lede no longer names one company's tracker tabs ("Updated hourly from the project tracker").
+
 ## v1.9: Submittal status (24 NOV 2026)
 
 **User feedback behind it**
