@@ -1,9 +1,9 @@
 // Demo company (gyeoldesk.com/?org=demo): the real app code with fictional data and no database.
-// Every request the Supabase client makes is answered here from assets/demo/data.json?v=45094219.
+// Every request the Supabase client makes is answered here from assets/demo/data.json?v=bbe6f227.
 // Reads work; anything that would save, send or sign in is refused with a "Demo" error.
 // Nothing here ever calls the real Supabase project.
 
-const DATA_URL = '/assets/demo/data.json?v=45094219';
+const DATA_URL = '/assets/demo/data.json?v=bbe6f227';
 const BASE_WAR = '2026-11-05';   // the live week the data was written for
 const DAY = 86400000;
 const realFetch = globalThis.fetch.bind(globalThis);
