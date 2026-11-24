@@ -1,0 +1,29 @@
+name: Agent run line
+
+# Weekly review 23 NOV 2026 (review-20261123-1, accepted 24 NOV): every pull request body names its agent_runs row,
+# so agent work cannot reach main unlogged. Templates are skipped by API-opened PRs; this check is not.
+# Pass: a line "agent_runs row: <uuid>" or "agent_runs row: none (Jason)". Dependabot PRs are skipped.
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions: {}
+
+jobs:
+  agent-run-line:
+    name: agent_runs row line
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    if: github.event.pull_request.user.login != 'dependabot[bot]'
+    steps:
+      - name: Check the PR body
+        env:
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          if printf '%s\n' "$BODY" | grep -Eiq '^[[:space:]]*agent_runs row:[[:space:]]*([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|none \(Jason\))[[:space:]]*$'; then
+            echo "agent_runs row line found."
+          else
+            echo "::error::The PR body needs a line 'agent_runs row: <uuid>' (the run's row in public.agent_runs) or 'agent_runs row: none (Jason)'."
+            exit 1
+          fi
