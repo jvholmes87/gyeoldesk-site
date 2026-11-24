@@ -16,7 +16,7 @@ export const LATE_DAYS = 30;
 
 const S = {
   ko: {
-    title: '제출물 현황', lede: '전체 과업의 제출물 라인별 현황 (내부용). 공식 제출물 대장이 아닙니다. PCES 트래커 04B·04C에서 매시간 갱신 — 수정은 트래커에서.',
+    title: '제출물 현황', lede: '전체 과업의 제출물 라인별 현황 (내부용). 공식 제출물 대장이 아닙니다. 과업 트래커에서 매시간 갱신 — 수정은 트래커에서.',
     tile: '과업별 제출물 승인·검토·조치 현황.', project: '과업', lines: '라인', followUp: '▶ 후속 조치', total: '합계',
     teamActions: '팀 조치 사항', keyPoints: '핵심 사항', all: '전체 보기', actionOnly: '조치 필요만', filter: '보기',
     noData: '아직 데이터가 없습니다. PCES 트래커 04B 탭이 동기화되면 표시됩니다.', noAction: '조치 필요 항목이 없습니다.',
@@ -26,7 +26,7 @@ const S = {
     onWar: '제출물 현황 보기', none: '–',
   },
   en: {
-    title: 'Submittal status', lede: 'Line-by-line submittal status for every project (internal). Not the official submittal register. Updated hourly from PCES tracker tabs 04B and 04C; make changes in the tracker.',
+    title: 'Submittal status', lede: 'Line-by-line submittal status for every project (internal). Not the official submittal register. Updated hourly from the project tracker; make changes in the tracker.',
     tile: 'Approved, in review and action-needed submittals by project.', project: 'Project', lines: 'Lines', followUp: '▶ Follow-up', total: 'Total',
     teamActions: 'Team actions', keyPoints: 'Key points', all: 'Everything', actionOnly: 'Action needed only', filter: 'Show',
     noData: 'No data yet. It appears after the PCES tracker tab 04B syncs.', noAction: 'Nothing needs action.',
