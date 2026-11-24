@@ -23,7 +23,7 @@ if [[ "$mode" == "sync" ]]; then
   [[ "$(git rev-parse 'origin/main^{tree}')" == "$(git rev-parse 'HEAD^{tree}')" ]] || {
     echo "main ($(git rev-parse --short origin/main)) does not match the tested build $head. Has Jason merged the release PR? Stop." >&2; exit 1; }
   for s in "${companies[@]}"; do "$src/deploy-company.sh" "../gyeoldesk-$s" --live; done
-  echo "Live: $head on gyeoldesk.com and ${companies[*]/%/.gyeoldesk.com}"
+  echo "gyeoldesk.com serves $head (main). Company desks: merge the sync PR(s) above to publish ${companies[*]/%/.gyeoldesk.com}."
   exit 0
 fi
 
