@@ -279,11 +279,67 @@ profiles += [{'user_id': f'u{i}', 'org_id': ORG, 'email': r['email'], 'name': f"
 profiles.append({'user_id': 'u9', 'org_id': ORG, 'email': 'yuna.seo@halyardworks.example', 'name': 'Seo Yu-na (서유나)', 'role': 'team', 'status': 'pending',
                  'requested_note': 'Field engineer, Artemis Base', 'lang': 'ko', 'created_at': '2026-11-02T00:00:00Z'})
 
+# Submittals (Master Submittal Status): fictional register lines for three demo projects. Dates sit around the base week.
+# Fields follow submittal_lines; statuses: approved, in_review, covered, action, later, na.
+SUB = {
+  'P-01': [
+    ('01 33 00', 'SUBMITTAL PROCEDURES', '1', '01', 'Submittal register', '1.8', 'G', 'approved', False, None, '2026-09-18', '9/18 승인', 'Approved 9/18'),
+    ('01 35 26', 'GOVERNMENTAL SAFETY REQUIREMENTS', '1', '01', 'Accident Prevention Plan (APP)', '1.6', 'G', 'approved', False, None, '2026-09-25', '9/25 승인', 'Approved 9/25'),
+    ('01 35 26', 'GOVERNMENTAL SAFETY REQUIREMENTS', '2', '01', 'Activity Hazard Analysis (AHA)', '1.7', 'G', 'in_review', True, '2026-09-28', None,
+     '9/28 제출 — 회신 없음. 감독관에게 결과 요청', 'Sent 9/28 — no reply. Ask the COR for a decision'),
+    ('08 34 63', 'PRESSURE-RATED DOORS', '1', '02', 'Door shop drawings', '1.4', 'G', 'approved', False, None, '2026-10-09', '10/9 승인', 'Approved 10/9'),
+    ('08 34 63', 'PRESSURE-RATED DOORS', '2', '03', 'Seal gasket product data', '2.2', '', 'in_review', False, '2026-10-30', None,
+     '10/30 제출. 감독관: 검토 중', 'Sent 10/30. COR: under review'),
+    ('08 34 63', 'PRESSURE-RATED DOORS', '3', '06', 'Leak test report', '3.3', 'G', 'later', False, None, None, '시공 후 제출', 'After installation'),
+    ('08 34 63', 'PRESSURE-RATED DOORS', '4', '07', 'Installer certification', '1.6', '', 'action', True, None, None,
+     '미제출 — 설치업체 자격증 사본 필요', 'Not sent — installer certificate copy needed'),
+    ('01 78 00', 'CLOSEOUT SUBMITTALS', '1', '11', 'As-built drawings', '1.3', 'G', 'later', False, None, None, '준공 시 제출', 'At closeout'),
+  ],
+  'P-03': [
+    ('01 33 00', 'SUBMITTAL PROCEDURES', '1', '01', 'Submittal register', '1.8', 'G', 'in_review', True, '2026-10-02', None,
+     '10/2 제출 — 회신 없음. 재송부 + 결과 요청', 'Sent 10/2 — no reply. Resend and ask for a decision'),
+    ('01 45 00', 'QUALITY CONTROL', '1', '01', 'Quality Control Plan', '3.2', 'G', 'approved', False, None, '2026-10-20', '10/20 승인', 'Approved 10/20'),
+    ('13 21 26', 'COLD STORAGE ROOMS', '1', '02', 'Cold-room layout', '1.5', 'G', 'covered', False, '2026-10-27', None,
+     '10/27 작업계획서 도면 A-1에 포함 · 감독관 확인 요청 중', 'In the 10/27 work plan, sheet A-1 · COR asked to confirm'),
+    ('13 21 26', 'COLD STORAGE ROOMS', '2', '03', 'Insulated panel product data', '2.1', 'G', 'action', True, None, None,
+     '미제출 — 패널 제조사 확정 필요', 'Not sent — panel maker still to be chosen'),
+    ('13 21 26', 'COLD STORAGE ROOMS', '3', '06', 'Pull-down test', '3.4', '', 'later', False, None, None, '시운전 시 제출', 'At commissioning'),
+    ('01 35 26', 'GOVERNMENTAL SAFETY REQUIREMENTS', '1', '07', 'Confined space entry permit', '1.8', '', 'na', False, None, None,
+     '해당 없음 — 감독관 확인', 'Not required — COR confirmed'),
+  ],
+  'P-07': [
+    ('01 33 00', 'SUBMITTAL PROCEDURES', '1', '01', 'Submittal register', '1.8', 'G', 'approved', False, None, '2026-10-23', '10/23 승인', 'Approved 10/23'),
+    ('08 71 00', 'DOOR HARDWARE', '1', '03', 'Door seal product data', '2.3', 'G', 'in_review', False, '2026-11-03', None,
+     '11/3 제출. 엔지니어 검토 중', 'Sent 11/3. With the engineer'),
+    ('08 71 00', 'DOOR HARDWARE', '2', '04', 'Seal sample', '1.4', '', 'action', True, None, None,
+     '실물 샘플 — 미제작. 팀: 제작', 'Physical sample — not made yet. Team: make it'),
+    ('01 78 00', 'CLOSEOUT SUBMITTALS', '1', '11', 'Warranty', '1.7', 'G', 'later', False, None, None, '준공 시 제출', 'At closeout'),
+  ],
+}
+SUB_NOTES = [
+  ('P-01', 'key', 1, '압력문 도면 승인. AHA와 개스킷 자료는 감독관 회신 대기.', 'Door drawings approved. The AHA and gasket data wait on the COR.'),
+  ('P-01', 'action', 1, 'AHA 결과 요청 (9/28 제출)', 'Ask the COR for a decision on the AHA (sent 9/28)'),
+  ('P-01', 'action', 2, '설치업체 자격증 사본 받기', 'Get the installer certificate copy'),
+  ('P-03', 'key', 1, '제출물 목록 10/2 제출 후 회신 없음.', 'No reply on the register sent 10/2.'),
+  ('P-03', 'action', 1, '제출물 목록 재송부 + 결과 요청', 'Resend the register and ask for a decision'),
+  ('P-03', 'action', 2, '패널 제조사 확정 후 제품자료 제출', 'Choose the panel maker, then send the product data'),
+  ('P-07', 'action', 1, '실링 샘플 제작', 'Make the seal sample'),
+]
+submittal_lines = []
+for pid, rows in SUB.items():
+    for i, (spec, sec, line, sd, item, para, g, st, fu, sent, resp, rko, ren) in enumerate(rows):
+        submittal_lines.append({'id': f'sl-{pid}-{i}', 'org_id': ORG, 'row_key': f'{pid}|{spec}|{line}', 'pid': pid, 'spec': spec, 'section_title': sec,
+            'line': line, 'sd': sd, 'item': item, 'para': para, 'g': g or None, 'status': st, 'follow_up': fu, 'sent_on': sent, 'response_on': resp,
+            'reason_ko': rko, 'reason_en': ren, 'af3000_url': None, 'extra': False, 'sort': i, 'updated_at': '2026-11-05T09:00:00Z'})
+submittal_notes = [{'id': f'sn{i}', 'org_id': ORG, 'row_key': f'{pid}|{k}|{o}', 'pid': pid, 'kind': k, 'ord': o, 'text_ko': ko, 'text_en': en,
+                    'updated_at': '2026-11-05T09:00:00Z'} for i, (pid, k, o, ko, en) in enumerate(SUB_NOTES)]
+
 data = {
   'orgs': [{'id': ORG, 'slug': 'demo', 'name': 'Halyard Works Contractors', 'name_ko': '핼야드 웍스 건설', 'logo_url': '/assets/demo/hwc-mark.svg',
             'logo_wide_url': None, 'logo_wide_en_url': None, 'brand_color': '#1E5A5A'}],
   'projects': projects, 'weeks': weeks, 'items': items, 'snapshots': snaps, 'records': records, 'war_photo_sets': photo_sets,
   'contact_orgs': contact_orgs, 'contacts': contacts, 'contacts_private': contacts_private, 'contact_assignments': asg,
+  'submittal_lines': submittal_lines, 'submittal_notes': submittal_notes,
   'roster': roster, 'profiles': profiles, 'questions': [], 'snapshots_internal': [],
 }
 out = os.path.join(os.path.dirname(__file__), '..', 'assets', 'demo', 'data.json')
