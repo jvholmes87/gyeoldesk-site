@@ -5,8 +5,9 @@
 import { createClient } from './vendor/supabase.mjs';
 import { photoGallery, bindPhotoErrors, loadDrivePhotos } from './war-photos.mjs?v=3416f371';
 import { requestPhoto } from './photo-request.mjs?v=9238a66e';
-import { demoFetch, demoAuth, demoPhoto, demoPhotoLinks, DEMO_TEXT } from './demo.mjs?v=23525af5';
+import { demoFetch, demoAuth, demoPhoto, demoPhotoLinks, DEMO_TEXT } from './demo.mjs?v=978d09f5';
 import { lockedFetch } from './preview-guard.mjs?v=e31cb39c';
+import { summaryHtml, projectHtml, counts as subCounts, str as subStr, todayKst } from './submittals.mjs?v=8c6401e4';
 
 const SUPABASE_URL = 'https://wltuwsplrkrsfthkthxc.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_N8CLXOt4Sh01hSqJu8O9Rg_q8_V1LXh'; // publishable key: safe in the browser, data is protected by row-level security
@@ -256,6 +257,7 @@ const isAdmin = () => state.profile?.status === 'approved' && state.profile?.rol
 const FEATURES = [
   ['Weekly Action Report', '주간 현황 보고', 'A live weekly board for every project, grouped by stage from bid to warranty. It locks when final, prints as one landscape sheet and downloads as a JPG.', '모든 과업의 주간 현황 보드를 입찰부터 하자보수까지 단계별로 봅니다. 확정하면 잠기고 가로 한 장으로 인쇄하거나 JPG로 저장합니다.', true],
   ['Project records', '과업 기록', 'Each WAR card opens the project\'s latest records from the company Drive (submittals, AF Form 3000s, permits) with their status.', 'WAR 카드에서 과업의 최신 기록(제출물, AF Form 3000, 허가)과 상태를 회사 드라이브에서 바로 봅니다.', true],
+  ['Submittal status', '제출물 현황', 'One internal view of every project\'s submittal lines: approved, in review, action needed, and how long each sent item has waited.', '과업별 제출물 라인을 한 화면에서: 승인, 검토 중, 조치 필요, 제출 후 대기 일수.', true],
   ['Korean and English', '한국어와 영어', 'Every screen in both languages, with a shared contact list for the team.', '모든 화면을 두 언어로, 팀 연락처도 함께 봅니다.', true],
   ['Coming next', '준비 중', 'Project pages, proposals, warranty requests, and project questions answered by email.', '과업 페이지, 입찰, 하자보수 요청, 이메일로 답하는 과업 질문.', false],
 ];
@@ -329,6 +331,7 @@ function shell(crumb, inner) {
       ${state.profile?.status === 'approved' ? `<div class="menu"><button type="button" id="menuBtn" aria-expanded="false" aria-controls="menuList" aria-label="${esc(t('menu'))}">☰</button>
         <nav id="menuList" hidden>
           <a href="#/">${esc(t('home'))}</a>
+          <a href="#/submittals">${esc(subStr(lang, 'title'))}</a>
           <a href="#/contacts">${esc(t('contactsTitle'))}</a>
           ${isAdmin() ? `<a href="#/access">${esc(t('teamMenu'))}</a>` : ''}
           <button type="button" class="menu-out" id="signout2">${esc(t('signOut'))}<small>${esc(state.user?.email || '')}</small></button>
@@ -802,7 +805,7 @@ async function renderProject(dateParam, keyParam) {
   const wk = weeks.find((w) => w.war_date === dateParam) || weeks[0];
   const intl = isAdmin() ? ',snapshots_internal(internal_notes,open_items)' : '';
   const { data: rows, error } = await sb.from('items')
-    .select(`id,item_no,week_id,projects!inner(project_key,title_ko,title_en,prime,stage,facts,installation),snapshots(id,captured_at,source_modified_at,fields,ko,en,krima_ko,krima_en,key_dates,payments${intl})`)
+    .select(`id,item_no,week_id,projects!inner(project_key,pid,title_ko,title_en,prime,stage,facts,installation),snapshots(id,captured_at,source_modified_at,fields,ko,en,krima_ko,krima_en,key_dates,payments${intl})`)
     .eq('projects.project_key', key)
     .order('source_modified_at', { referencedTable: 'snapshots', ascending: false });
   if (error) { box.innerHTML = `<div class="msg err">${esc(t('errGeneric'))}</div>`; return; }
@@ -837,6 +840,7 @@ async function renderProject(dateParam, keyParam) {
       <p class="item-key">${esc(fmtDate(w.war_date))} <span class="chip ${w.status}">${esc(t(w.status))}</span>
         ${sn.captured_at ? esc(t('updated', fmtTime(sn.captured_at))) : ''}${f.status === 'carried' ? ` <span class="chip muted">${esc(t('carried'))}</span>` : ''}</p>
       ${factsBox(p.facts)}
+      <p class="sm-warlink no-print" id="smLink" hidden></p>
       <section><div class="sec-head"><h2>${esc(t('thisWeek'))}</h2>
         ${alt.length ? `<label class="toggle no-print"><input type="checkbox" id="both" ${warView.both ? 'checked' : ''}> ${esc(t('bothLangs'))}</label>` : ''}</div>
         <div class="${warView.both && alt.length ? 'two' : ''}">
@@ -857,6 +861,12 @@ async function renderProject(dateParam, keyParam) {
     </article>`;
   bindPhotoErrors(box, lang);
   if (DEMO) demoPhotoLinks(box, t('demoFull'));
+  if (p.pid) sb.from('submittal_lines').select('status,follow_up,extra').eq('pid', p.pid).then(({ data }) => {
+    const el = $('#smLink'); if (!el || !data?.length) return;
+    const c = subCounts(data);
+    el.innerHTML = `<a href="#/submittals/${encodeURIComponent(p.project_key)}">${esc(subStr(lang, 'onWar'))} →</a> <span class="item-key">${c.lines} · ${esc(lang === 'ko' ? '조치 필요' : 'action needed')} ${c.action}</span>`;
+    el.hidden = false;
+  });
   loadDrivePhotos(box, async (id) => {
     try { return DEMO ? await demoPhoto(id) : await requestPhoto(`${SUPABASE_URL}/functions/v1/photo?id=${encodeURIComponent(id)}&w=1600`,SUPABASE_KEY,sb.auth); }
     catch (error) {
@@ -904,12 +914,18 @@ async function renderHome() {
   $('#tiles').innerHTML =
     tile(wk ? `#/war/${wk.war_date}` : '#/war', 'WAR', t('warLede'),
       wk ? `<span class="chip ${wk.status}">${esc(t(wk.status))}</span> <span>${esc(fmtDate(wk.war_date))}</span>` : esc(t('noWeeks')), true) +
+    tile('#/submittals', subStr(lang, 'title'), subStr(lang, 'tile'), '<span id="smStat"></span>') +
     tile('#/contacts', t('contactsTitle'), t('contactsHome'), '<span id="ctStat"></span>') +
     soonTile(t('projectsTitle'), t('projectsLede')) +
     soonTile(t('proposalsTitle'), t('proposalsLede')) +
     soonTile(t('warrantiesTitle'), t('warrantiesLede'));
 
   void qs; // questions come back with the project pages
+  sb.from('submittal_lines').select('pid,status,follow_up,extra').then(({ data }) => {
+    const el = $('#smStat'); if (!el || !data?.length) return;
+    const c = subCounts(data);
+    el.innerHTML = `<span class="num"><b>${c.action}</b>${esc(lang === 'ko' ? '조치 필요' : 'action needed')}</span><span class="num"><b>${c.in_review + c.covered}</b>${esc(lang === 'ko' ? '검토 중' : 'in review')}</span>`;
+  });
   sb.from('contact_assignments').select('pid,project_no,contact_key,status').then(({ data }) => {
     const el = $('#ctStat'); if (!el || !data?.length) return;
     const ppl = new Set(data.filter((a) => a.status !== 'Ended' && !/^(GNC|HWC)-/.test(a.contact_key)).map((a) => a.contact_key)).size;
@@ -1376,6 +1392,55 @@ const AUTH_GROUPS = [
   ['IN', /^Info/], ['PR', /^Prime/], ['GN', /^(GNC|Contractor)/],
 ];
 const groupOf = (a) => (AUTH_GROUPS.find(([, re]) => re.test(a || '')) || ['OT'])[0];
+// ---------------------------------------------------------------- Submittals (Master Submittal Status)
+const subView = { actionOnly: false, openOnly: false };
+let subCache = null;
+async function loadSubmittals() {
+  if (subCache) return subCache;
+  const [l, n, pj] = await Promise.all([
+    sb.from('submittal_lines').select('*').order('pid').order('sort'),
+    sb.from('submittal_notes').select('*').order('pid').order('ord'),
+    sb.from('projects').select('pid,project_key,title_en,title_ko,prime'),
+  ]);
+  if (l.error || n.error) return null;
+  subCache = { lines: l.data || [], notes: n.data || [], projects: (pj.data || []).filter((x) => x.pid) };
+  setTimeout(() => { subCache = null; }, 5 * 60 * 1000);
+  return subCache;
+}
+async function renderSubmittals(arg) {
+  const crumb = subStr(lang, 'title');
+  shell(crumb, `<div id="sm" class="sm"><p class="empty">…</p></div>`);
+  const d = await loadSubmittals();
+  const box = $('#sm');
+  if (!d) { box.innerHTML = `<div class="msg err">${esc(t('errGeneric'))}</div>`; return; }
+  const today = todayKst();
+  const synced = d.lines.reduce((m, x) => (x.updated_at > m ? x.updated_at : m), '');
+  if (arg) {
+    const k = decodeURIComponent(arg);
+    const project = d.projects.find((x) => x.project_key === k || x.pid === k);
+    const pid = project?.pid || (d.lines.some((x) => x.pid === k) ? k : null);
+    const lines = pid ? d.lines.filter((x) => x.pid === pid) : [];
+    if (!lines.length) { box.innerHTML = `<p><a href="#/submittals">${esc(subStr(lang, 'back'))}</a></p><p class="empty">${esc(subStr(lang, 'noData'))}</p>`; return; }
+    const draw = () => {
+      box.innerHTML = projectHtml({ pid, lines, notes: d.notes.filter((x) => x.pid === pid), project, lang, today, openOnly: subView.openOnly })
+        + (synced ? `<p class="item-key">${esc(subStr(lang, 'updated', fmtTime(synced)))}</p>` : '');
+      box.querySelectorAll('.sm-filter button').forEach((b) => b.addEventListener('click', () => { subView.openOnly = b.dataset.open === '1'; draw(); }));
+    };
+    document.title = `${pid} · ${crumb} · Gyeoldesk`;
+    return draw();
+  }
+  const draw = () => {
+    box.innerHTML = `<h1>${esc(crumb)}</h1><p class="lede">${esc(subStr(lang, 'lede'))}</p>
+      <div class="sm-filter no-print" role="group" aria-label="${esc(subStr(lang, 'filter'))}">
+        <button type="button" data-a="0" aria-pressed="${!subView.actionOnly}">${esc(subStr(lang, 'all'))}</button>
+        <button type="button" data-a="1" aria-pressed="${subView.actionOnly}">${esc(subStr(lang, 'actionOnly'))}</button></div>
+      ${summaryHtml({ lines: d.lines, notes: d.notes, projects: d.projects, lang, actionOnly: subView.actionOnly, today })}
+      ${synced ? `<p class="item-key">${esc(subStr(lang, 'updated', fmtTime(synced)))}</p>` : ''}`;
+    box.querySelectorAll('.sm-filter button').forEach((b) => b.addEventListener('click', () => { subView.actionOnly = b.dataset.a === '1'; draw(); }));
+  };
+  draw();
+}
+
 const contactsView = { q: '' };
 let contactsCache = null;
 async function loadContacts() {
@@ -1530,6 +1595,7 @@ async function route() {
   if (page === 'war') return renderWar(arg);
   if (page === 'access') return renderAccess();
   if (page === 'contacts') return renderContacts(arg);
+  if (page === 'submittals') return renderSubmittals(arg);
   if (['projects', 'proposals', 'warranties', 'questions', 'p'].includes(page)) return renderSoon();
   const sub2 = (location.hash || '').split('/')[3];
   if (page === 'p' && arg && sub2) return renderRecords(arg, sub2);
