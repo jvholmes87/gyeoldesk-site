@@ -21,5 +21,13 @@ open(p, 'w', encoding='utf-8').write(s)
 PY
 printf 'User-agent: *\nDisallow: /\n' > robots.txt
 printf '{"commit":"%s","branch":"%s","at":"%s"}\n' "$commit" "$branch" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > preview.json
-git add -A && git commit -q -m "Preview $commit ($branch)" && git push -q origin main || echo "nothing new to preview"
+# main is protected (24 NOV 2026): the preview build goes to a branch and a pull request Jason merges. A failed push stops the run.
+git add -A
+if git diff --cached --quiet; then echo "Preview already serves $commit."; exit 0; fi
+git commit -q -m "Preview $commit ($branch)"
+git push -q origin "HEAD:refs/heads/preview/$commit"
+body="$(printf 'agent_runs row: %s\n\nPreview build %s (%s). Merging publishes it to preview.gyeoldesk.com (noindex). Live sites are not touched.\n' "${AGENT_RUN:-none (Jason)}" "$commit" "$branch")"
+url="$(gh api repos/jvholmes87/gyeoldesk-preview/pulls -f title="Preview $commit ($branch)" -f head="preview/$commit" -f base=main -f body="$body" --jq .html_url)"
+git reset -q --hard origin/main
+echo "Preview PR: $url (Jason merges it; preview.json then reads $commit)"
 echo "Preview: https://preview.gyeoldesk.com/  (company desk: https://preview.gyeoldesk.com/?org=gnc, demo: ?org=demo)  build $commit"
